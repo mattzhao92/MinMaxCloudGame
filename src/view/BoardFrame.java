@@ -2,9 +2,12 @@ package view;
 
 import gameIO.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 
@@ -24,7 +27,7 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     private JButton startBtn = new JButton("Start");
     private JLabel jLabel1 = new JLabel("Starting player (X):");
     private JButton[][] btnArray;
-    private String[] symbolStr = {"X", "0"};
+    private HashMap<Integer, String> symbolStr = new HashMap<Integer, String>();
 
     private IModelAdmin<TPlayer> modelAdmin;
     private IViewRequestor requestor;
@@ -38,8 +41,11 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     private JLabel jLabel3 = new JLabel("Add player");
     private JTextField addPlayerTF = new JTextField("comp202prof.SBW_DXN_strategy1");
 
+    
     public BoardFrame(IModelAdmin<TPlayer> modelAdmin) {
         this.modelAdmin = modelAdmin;
+        symbolStr.put(-2, "X");
+        symbolStr.put(-1, "&");
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         try {
             initGUI();
@@ -55,8 +61,11 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     public ICommand getCommand() {
         return new ICommand() {
             public void setTokenAt(int row, int col, int player) {
-                btnArray[row] [col].setText(symbolStr[player]);
-                statusLbl.setText(" ");
+            	if(player == -1 || player == -2)
+            		btnArray[row] [col].setText(symbolStr.get(player));
+            	else
+            		btnArray[row][col].setText("" + player);
+            	statusLbl.setText(" ");
             }
 
             public void clearTokenAt(int row, int col) {
@@ -228,7 +237,7 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
 
 			@Override
 			public void run() {
-				new GameOverDialog(BoardFrame.this).playerWon("Player \""+ symbolStr[player]+"\"");
+				new GameOverDialog(BoardFrame.this).playerWon("Player \""+ symbolStr.get(player)+"\"");
 			}
     	});
         
@@ -252,9 +261,11 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
         gridLayout1.setHgap(5);
         gridLayout1.setVgap(5);
         btnArray = new JButton[nRows] [nCols];
+        Random rand = new Random();
         for (int row = 0; row < nRows; row++) {
             for (int col = 0; col<nCols; col++) {
                 btnArray[row][col] = new JButton();
+                
                 final int thisRow = row;
                 final int thisCol = col;
                 btnArray[thisRow][thisCol].addActionListener(new ActionListener() {
@@ -270,6 +281,7 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
                 }
               });
               btnArray[thisRow][thisCol].setBackground(Color.cyan);
+              
               btnArray[thisRow][thisCol].setFont(new java.awt.Font("Dialog", 1, 50));
               jPanel2.add(btnArray[thisRow][thisCol], null);
           }

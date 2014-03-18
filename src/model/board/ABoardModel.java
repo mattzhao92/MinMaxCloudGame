@@ -116,11 +116,8 @@ public abstract class ABoardModel implements IBoardModel {
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
                                        int row, int col, int value, Void... nu) {
-                    value = cells[row][col];
-                    if(value == EMPTY)
-                      command.clearTokenAt(row, col);
-                    else
-                      command.setTokenAt(row, col, valueToPlayer(value));
+                    command.setTokenAt(row, col, value);
+                    
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {

@@ -123,8 +123,8 @@ public final class GameModel implements IModel {
 	 */
 	 public void setPlayers(IMakePlayer player0, IMakePlayer player1) {
 		 // Last in/first play
-		 turnControl = new TurnControl(player1.create(1));
-		 turnControl.addPlayer( player0.create(0));
+		 turnControl = new TurnControl(player1.create(-1));
+		 turnControl.addPlayer( player0.create(-2));
 		 turnControl.setAdapters(viewAdmin, iCommand);
 		 turnControl.run(maxTurnTime);
 	 }

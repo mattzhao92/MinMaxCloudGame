@@ -23,6 +23,7 @@ public class InitFrame extends JFrame {
 
 	JLabel jLabel3 = new JLabel("Max. turn time (s):");
 	JTextField maxTurnTimeTF = new JTextField("60");
+	private final JButton btnMakeGrid = new JButton("Make ScoreGrid!");
 
 	public InitFrame(int closeOp, IInitModelAdapter model) {
 		this.model = model;
@@ -55,6 +56,8 @@ public class InitFrame extends JFrame {
 						 );
 			}
 		});
+		
+		
 
 		inRowTF.setMinimumSize(new Dimension(10, 21));
 		inRowTF.setPreferredSize(new Dimension(20, 21));
@@ -71,6 +74,17 @@ public class InitFrame extends JFrame {
 		jPanel2.add(makeTTTBtn, null);
 		jPanel2.add(inRowTF, null);
 		jPanel2.add(jLabel1, null);
+		btnMakeGrid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.makeGameGrid(
+						 Integer.parseInt(nRowsTF.getText()),
+						 Integer.parseInt(nColsTF.getText()),
+						 Integer.parseInt(maxTurnTimeTF.getText())
+						 );
+			}
+		});
+		
+		jPanel2.add(btnMakeGrid);
 	}
 
 	public void start(){
