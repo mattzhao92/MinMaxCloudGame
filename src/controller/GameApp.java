@@ -34,6 +34,11 @@ public class GameApp extends JApplet {
 			public void makeOthello(int nRows, int nCols, int maxTurnTime) {
 				model.makeOthello(nRows, nCols, maxTurnTime);
 			}
+
+			@Override
+			public void makeGameGrid(int nRows, int nCols, int maxTurnTime) {
+				model.makeGameGrid(nRows, nCols, maxTurnTime);
+			}
 			
 		});
 		
