@@ -52,6 +52,10 @@ public class GameGridBoard extends ABoardModel {
                                            ICheckMoveVisitor chkMoveVisitor,
                                            IBoardStatusVisitor<Void, Void> statusVisitor) {
         if (isValidMove(player,row,col)) {
+        	for(int i = 0; i < cells.length; i++)
+        		for(int j = 0; j < cells[i].length; j++)
+        			if(cells[i][j] == player)
+        				cells[i][j] = 0;
             cells[row] [col] = player;
             chgState(winCheck(row, col));
             chkMoveVisitor.validMoveCase();
