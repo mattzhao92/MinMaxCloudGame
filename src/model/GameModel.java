@@ -192,7 +192,7 @@ public final class GameModel implements IModel {
 		 v.add(new IMakePlayer() {
 			 public APlayer create(int playerNo) {
 				 return new ComputerPlayer(requestor, playerNo, GameModel.this,
-						 new MinMax(new DepthFac(new AlphaBetaFac(),2)));
+						 new MinMax(new DepthFac(new AlphaBetaFac(),2, getBoardModel())));
 			 }
 			 public String toString() {
 				 return "Computer w. Depth 2";
@@ -202,7 +202,7 @@ public final class GameModel implements IModel {
 		 v.add(new IMakePlayer() {
 			 public APlayer create(int playerNo) {
 				 return new ComputerPlayer(requestor, playerNo, GameModel.this,
-						 new MinMax(new DepthFac(new AlphaBetaFac(),3)));
+						 new MinMax(new DepthFac(new AlphaBetaFac(),3, getBoardModel())));
 			 }
 			 public String toString() {
 				 return "Computer w. Depth 3";
@@ -262,4 +262,5 @@ public final class GameModel implements IModel {
 		 // TODO Auto-generated method stub
 		 viewAdmin.setDimension(getBoardModel().getDimension());
 	 }
+	 
 }

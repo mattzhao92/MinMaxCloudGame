@@ -11,6 +11,12 @@ public abstract class AAccumulator {
     protected int _val;
 
     protected AAccumulator(int modelPlayer) {
+    	if(modelPlayer == -2){
+    		modelPlayer = -1;
+    	}
+    	else if(modelPlayer == -1){
+    		modelPlayer = 1;
+    	}
       _modelPlayer = modelPlayer;
     }
 

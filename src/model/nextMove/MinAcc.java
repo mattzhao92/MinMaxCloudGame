@@ -36,6 +36,6 @@ public class MinAcc extends AAccumulator {	/**
      * The player who is trying to find the best move is the opposite player
      * to  the one that is using this accumulator.
      */
-    public int getPlayer() { return 1 - _modelPlayer; }
+    public int getPlayer() { return -1*_modelPlayer; }
 }
 

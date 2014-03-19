@@ -85,7 +85,7 @@ public abstract class ABoardModel implements IBoardModel {
     * (board.getCells())[row][col] =  -1 (player #0), 0 (no player), or +1 (player #1).
     * @return
     */
-    int[][] getCells()  {
+    public int[][] getCells()  {
         return cells;
     }
 
