@@ -61,10 +61,18 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     public ICommand getCommand() {
         return new ICommand() {
             public void setTokenAt(int row, int col, int player) {
-            	if(player == -1 || player == -2)
+            	if(player == -1 || player == -2){
+            		btnArray[row][col].setForeground(Color.red);
             		btnArray[row] [col].setText(symbolStr.get(player));
-            	else
+            	}
+            	else if(player == 0){
+            		btnArray[row][col].setForeground(Color.magenta);
             		btnArray[row][col].setText("" + player);
+            	}
+            	else{
+            		btnArray[row][col].setForeground(Color.black);
+            		btnArray[row][col].setText("" + player);
+            	}
             	statusLbl.setText(" ");
             }
 
