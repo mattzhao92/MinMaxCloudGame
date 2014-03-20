@@ -32,33 +32,27 @@ public class GameGridBoard extends ABoardModel {
      * Changes the state of the board according to the input.
      * @param winner Which player is the winner {-1, 0, +1} where 0 = no winner or draw.
      */
-    synchronized private void chgState(int[] result)  {
-        if (result[0] == -1) {
+    synchronized private void chgState(int winner)  {
+        if (winner == -1) {
             state = Player0WonState.Singleton;
         }
-        else if (result[0] == 1) {
+        else if (winner == 1) {
             state = Player1WonState.Singleton;
         }
         else  {// winner == 0 -> no winner, but perhaps a draw
         	
-        	if (result[1] == 0) {
-        		state = DrawState.Singleton;
-        	}
-        	else {
-        		state = NonTerminalState.Singleton;
-        	}
         	
-//            map(winner, new IBoardLambda<Void>() {
-//                public boolean apply(int player, IBoardModel host, 
-//                                     int row, int col, int value, Void... nu) {
-//                    state = NonTerminalState.Singleton;
-//                    return false;
-//                }
-//
-//                public void noApply(int player, IBoardModel host, Void... nu) {
-//                    state = DrawState.Singleton;
-//                }
-//            });
+            map(winner, new IBoardLambda<Void>() {
+                public boolean apply(int player, IBoardModel host, 
+                                     int row, int col, int value, Void... nu) {
+                    state = NonTerminalState.Singleton;
+                    return false;
+                }
+
+                public void noApply(int player, IBoardModel host, Void... nu) {
+                    state = DrawState.Singleton;
+                }
+            });
         }
     }
 
@@ -143,17 +137,14 @@ public class GameGridBoard extends ABoardModel {
      * @param row
      * @param col
      * @return The winner {-1, 0, +1} where 0 = no winner or draw.
-     * result[0] = winner
-     * result[1] = 0 if draw, !=0 if not complete
      */
-    private int[] winCheck(int row, int col){
+    private int winCheck(int row, int col){
     	int count = 0;
-    	int result[] = new int[2];
+    	int result = 0;
     	for(int i = 0; i < cells.length; i++)
     		for(int j = 0; j < cells[i].length; j++)
     			if(cells[i][j] != 0)
     				count++;
-    	result[1] = count;
     	System.out.println("winCheck: Count "+count);
     	if(count == 0) {
     		
@@ -170,12 +161,10 @@ public class GameGridBoard extends ABoardModel {
     		
     		System.out.println("winCheck: Count  " + player1TotalScore + " " + player2TotalScore);
     		if (player1TotalScore > player2TotalScore)
-    			result[0] =  -1;
+    			return -1;
     		else if (player2TotalScore > player1TotalScore)
-    			result[0] =  1;
-    		else {
-    			result[0] = 0;
-    		}
+    			return 1;
+    		
  
     	}
     	return result;

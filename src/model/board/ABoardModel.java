@@ -71,6 +71,10 @@ public abstract class ABoardModel implements IBoardModel {
     }
 
 
+    /**
+     * Get the dimension of the game board
+     * @return a dimension representing the size of the game baord
+     */
     public Dimension getDimension() {
         return new Dimension(cells[0].length, cells.length);
     }
@@ -79,6 +83,9 @@ public abstract class ABoardModel implements IBoardModel {
     public abstract IUndoMove makeMove(int r, int c, int plyr,
                                  ICheckMoveVisitor cm, IBoardStatusVisitor<Void, Void> bs);
 
+    /**
+     * Reset the game board by setting all cells to EMPTY
+     */
     synchronized public void reset() {
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
@@ -114,8 +121,13 @@ public abstract class ABoardModel implements IBoardModel {
         }
     }
 
+    /**
+     * TODO: 
+     * Utility method that returns an integer representing the player
+     * at a specific row and column on the game board
+     */
     public int playerAt(int row, int col) {
-        return cells[row][col];
+        return cells[row][col]; //TODO: FIX THIS
     }
 
     public <R, P> R execute(IBoardStatusVisitor<R, P> visitor, @SuppressWarnings("unchecked") P... params) {
@@ -124,12 +136,15 @@ public abstract class ABoardModel implements IBoardModel {
 
     protected abstract boolean isValidMove(int player, int row, int col);
 
+    /**
+     * Redraws all the spaces on the board with the input command
+     */
     public void redrawAll(final ICommand command) {
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
                                        int row, int col, int value, Void... nu) {
                     value = cells[row][col];
-                    command.setTokenAt(row, col, player, value);
+                    command.setTokenAt(row, col, playerAt(row,col), value);
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {
