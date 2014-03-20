@@ -1,7 +1,6 @@
 package model.board;
 
 import java.awt.Point;
-import java.util.Random;
 import java.util.ArrayList;
 import model.*;
 
@@ -80,10 +79,20 @@ public class GameGridBoard extends ABoardModel {
         		player1Scores.add(score_pair);
         		location1[0] = row;
         		location1[1] = col;
+        		System.out.println("HERE");
+        		locations[row][col] = 0;
+        		System.out.println("HERE 2");
+        		if (oldPlayer1X != -1) {
+        		locations[oldPlayer1X][oldPlayer1Y] = -1;
+        		}
         	} else {
         		player2Scores.add(score_pair);
         		location2[0] = row;
         		location2[1] = col;
+        		locations[row][col] = 1;
+        		if (oldPlayer2X != -1) {
+        		locations[oldPlayer2X][oldPlayer2Y] = -2;
+        		}
         	}
         	
             cells[row] [col] = 0;

@@ -3,6 +3,8 @@ package model.board;
 import gameIO.*;
 
 import java.awt.*;
+import java.util.Arrays;
+
 import model.*;
 
 /**
@@ -29,6 +31,13 @@ public abstract class ABoardModel implements IBoardModel {
      */
     protected int[] location2 = {-1,-1};
     
+    
+    /**
+     * Game board representation that keeps track of where
+     * players are and where they are previously been
+     */
+    protected int[] [] locations;
+    
     /**
      * State pattern!
      */
@@ -47,6 +56,10 @@ public abstract class ABoardModel implements IBoardModel {
      */
     public ABoardModel(int nRows, int nCols) {
         cells = new int[nRows][nCols];
+        locations = new int[nRows][nCols];
+        for (int i=0; i<nRows; i++) {
+        	Arrays.fill(locations[i], 100);
+        }
     }
 
     /**
@@ -132,16 +145,12 @@ public abstract class ABoardModel implements IBoardModel {
     }
 
     /**
-     * TODO: 
      * Utility method that returns an integer representing the player
      * at a specific row and column on the game board
      */
     public int playerAt(int row, int col) {
-        if (row == location1[0] && col == location1[1]) 
-        	return 0;
-        if (row == location2[0] && col == location2[1])
-        	return 1;
-        return 2;
+System.out.println("HI");
+        return locations[row][col];
     }
 
     public <R, P> R execute(IBoardStatusVisitor<R, P> visitor, @SuppressWarnings("unchecked") P... params) {

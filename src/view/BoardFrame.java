@@ -57,19 +57,26 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
         return new ICommand() {
             public void setTokenAt(int row, int col, int player, int value) {
             	if (player == 0) {
-            		System.out.println("-------- setTokenAt");
-            		btnArray[row][col].setBackground(Color.cyan);
+            		btnArray[row][col].setBackground(new Color(0,105,210,231));
             		btnArray[row][col].setOpaque(true);
         
             	}
             	else if(player == 1) {
-            		btnArray[row][col].setBackground(Color.green);
+            		btnArray[row][col].setBackground(new Color(250,105,0));
             		btnArray[row][col].setOpaque(true);
             
             	}
+            	else if(player == -1) {
+            		btnArray[row][col].setBackground(new Color(167,219,216));
+            		btnArray[row][col].setOpaque(true);
+            		
+            	}
+            	else if(player == -2) {
+            		btnArray[row][col].setBackground(new Color(243,134,48));
+            		btnArray[row][col].setOpaque(true);
+            	}
             	else {
-            		if (value != 0)
-            			btnArray[row][col].setBackground(Color.white);
+            		btnArray[row][col].setBackground(new Color(249,242,231));
             		btnArray[row][col].setOpaque(true);
             		
             	}
