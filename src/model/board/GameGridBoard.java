@@ -9,11 +9,7 @@ public class GameGridBoard extends ABoardModel {
 
 	ArrayList<ArrayList<Integer>> player1Scores = new ArrayList<ArrayList<Integer>>();
 	ArrayList<ArrayList<Integer>> player2Scores = new ArrayList<ArrayList<Integer>>();
-	
-	Integer[] player1prevmove = new Integer[] {-1,-1};
-	Integer[] player2prevmove = new Integer[] {-1,-1};
 
-	
     public GameGridBoard(int nRows, int nCols)  {
         super(nRows, nCols);
     }
@@ -58,7 +54,7 @@ public class GameGridBoard extends ABoardModel {
 
     Point old_pos;
 	int old_value_zero;
-	public synchronized IUndoMove makeMove(final int row, final int col, int player,
+	public synchronized IUndoMove makeMove(final int row, final int col, final int player,
                                            ICheckMoveVisitor chkMoveVisitor,
                                            IBoardStatusVisitor<Void, Void> statusVisitor) {
         if (isValidMove(player,row,col)) {
@@ -75,16 +71,17 @@ public class GameGridBoard extends ABoardModel {
         	
     		System.out.println("makeMove "+player);
     		
+       		final int oldPlayer1X = location1[0];
+    		final int oldPlayer1Y = location1[1];
+    		final int oldPlayer2X = location2[0];
+    		final int oldPlayer2Y = location2[1];
+    		
     		if (player == 0) {
         		player1Scores.add(score_pair);
-        		player1prevmove[0] = col;
-        		player1prevmove[1] = row;
         		location1[0] = row;
         		location1[1] = col;
         	} else {
         		player2Scores.add(score_pair);
-        		player2prevmove[0] = col;
-        		player2prevmove[1] = row;
         		location2[0] = row;
         		location2[1] = col;
         	}
@@ -95,8 +92,9 @@ public class GameGridBoard extends ABoardModel {
             execute(statusVisitor);
             return new IUndoMove() {
                 public void apply(IUndoVisitor undoVisitor) {
-                    undoMove(row, col, old_value, undoVisitor);
+                    undoMove(row, col, old_value, player, oldPlayer1X, oldPlayer1Y, oldPlayer2X, oldPlayer2Y, undoVisitor);
                 }
+               
             };
         }
         chkMoveVisitor.invalidMoveCase();
@@ -113,10 +111,21 @@ public class GameGridBoard extends ABoardModel {
      * @param col
      * @param undoVisitor The appropriate method of the visitor is called after the undo is performed.
      */
-    private synchronized void undoMove(int row, int col, int old_value, IUndoVisitor undoVisitor)  {
-
+    private synchronized void undoMove(int row, int col, int old_value, int player, 
+    		int oldPlayer1X, int oldPlayer1Y, int oldPlayer2X, int oldPlayer2Y,
+    		IUndoVisitor undoVisitor)  {
+    	
         cells[row][col] = old_value;
     
+        if (player == 0) {
+        	this.location1[0] = oldPlayer1X;
+        	this.location1[1] = oldPlayer1Y;
+        } else {
+        	this.location2[0] = oldPlayer2X;
+        	this.location2[1] = oldPlayer2Y;
+        }
+        
+        
    		for (ArrayList<Integer> score : this.player1Scores) {
    			if (score.get(0) == row && score.get(1) == col) {
    				this.player1Scores.remove(score);
@@ -177,26 +186,27 @@ public class GameGridBoard extends ABoardModel {
     protected boolean isValidMove(int player, int row, int col){
     	int prevX;
     	int prevY;
-    
-//    	if(cells[row][col] == 0)
-//        	return false;
+
+    	if(cells[row][col] == 0)
+        	return false;
     	
     	if (player == 0) {
-    		if (player1prevmove[0] == -1) return true;
-    		prevX = player1prevmove[0];
-    		prevY = player1prevmove[1];
+    		if (location1[0] == -1) return true;
+    		prevX = location1[0];
+    		prevY = location1[1];
     	}
     	else {
-    		if (player2prevmove[0] == -1) return true;
-    		prevX = player2prevmove[0];
-    		prevY = player2prevmove[1];
+    		if (location2[0] == -1) return true;
+    		prevX = location2[0];
+    		prevY = location2[1];
     	}
-    	System.err.println("prevX is: " + prevX + " and prevY is: " + prevY);
     	
-    	int yDiff = Math.abs(prevY - row);
-    	int xDiff = Math.abs(prevX - col);
+    	//System.err.println("------player "+player+" prevX is: " + prevX + " and prevY is: " + prevY);
+    	//System.err.println("------player "+player+" currX is " + row +" and currY is: "+col);
+    	int xDiff = Math.abs(prevY - col);
+    	int yDiff = Math.abs(prevX - row);
     	
-    	System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
+    	//System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
     	
     	if (yDiff + xDiff == 1) {
     		return true;
