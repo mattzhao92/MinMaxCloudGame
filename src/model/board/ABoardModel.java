@@ -110,10 +110,15 @@ public abstract class ABoardModel implements IBoardModel {
      * Reset the game board by setting all cells to EMPTY
      */
     synchronized public void reset() {
+    	location1[0] = -1;
+    	location1[1] = -1;
+    	location2[0] = -1;
+    	location2[1] = -1;
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
                                      int row, int col, int value, Void... nu) {
                     cells[row][col] = EMPTY;
+                    locations[row][col] = 100;
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {
