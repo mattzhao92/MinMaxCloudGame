@@ -129,14 +129,7 @@ public abstract class ABoardModel implements IBoardModel {
                 public boolean apply(int player, IBoardModel host, 
                                        int row, int col, int value, Void... nu) {
                     value = cells[row][col];
-                    boolean playerChecks[] = {false, false};
-                    Point[] playersLoc = host.getPlayersLoc();
-                    if(new Point(row, col).equals(playersLoc[0]))
-                    	playerChecks[0] = true;
-                    else if(new Point(row, col).equals(playersLoc[1]))
-                    	playerChecks[1] = true;
-                    
-                    command.setTokenAt(row, col, value, playerChecks);
+                    command.setTokenAt(row, col, value);
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {
@@ -185,9 +178,4 @@ public abstract class ABoardModel implements IBoardModel {
         }
         return idx;
    }
-    
-    public Point[] getPlayersLoc(){
-    	return new Point[]{new Point(-1, -1), new Point(-1, -1)};
-    }
-    
 }
