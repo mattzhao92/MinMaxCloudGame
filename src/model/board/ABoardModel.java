@@ -18,17 +18,7 @@ public abstract class ABoardModel implements IBoardModel {
      * The game board.
      */
     protected int[] [] cells;
-    
-    /**
-     * The location of player 1
-     */
-    protected int[] location1 = {-1,-1};
-    
-    /**
-     * The location of player 2
-     */
-    protected int[] location2 = {-1,-1};
-    
+
     /**
      * State pattern!
      */
@@ -81,21 +71,15 @@ public abstract class ABoardModel implements IBoardModel {
     }
 
 
-    /**
-     * Get the dimension of the game board
-     * @return a dimension representing the size of the game baord
-     */
     public Dimension getDimension() {
         return new Dimension(cells[0].length, cells.length);
     }
 
 
     public abstract IUndoMove makeMove(int r, int c, int plyr,
-                                 ICheckMoveVisitor cm, IBoardStatusVisitor<Void, Void> bs);
+                            
+    		ICheckMoveVisitor cm, IBoardStatusVisitor<Void, Void> bs);
 
-    /**
-     * Reset the game board by setting all cells to EMPTY
-     */
     synchronized public void reset() {
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
@@ -131,17 +115,8 @@ public abstract class ABoardModel implements IBoardModel {
         }
     }
 
-    /**
-     * TODO: 
-     * Utility method that returns an integer representing the player
-     * at a specific row and column on the game board
-     */
     public int playerAt(int row, int col) {
-        if (row == location1[0] && col == location1[1]) 
-        	return 0;
-        if (row == location2[0] && col == location2[1])
-        	return 1;
-        return 2;
+        return cells[row][col];
     }
 
     public <R, P> R execute(IBoardStatusVisitor<R, P> visitor, @SuppressWarnings("unchecked") P... params) {
@@ -150,15 +125,12 @@ public abstract class ABoardModel implements IBoardModel {
 
     protected abstract boolean isValidMove(int player, int row, int col);
 
-    /**
-     * Redraws all the spaces on the board with the input command
-     */
     public void redrawAll(final ICommand command) {
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
                                        int row, int col, int value, Void... nu) {
                     value = cells[row][col];
-                    command.setTokenAt(row, col, playerAt(row,col), value);
+                    command.setTokenAt(row, col, value);
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {

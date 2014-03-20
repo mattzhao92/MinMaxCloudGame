@@ -24,7 +24,7 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     private JButton startBtn = new JButton("Start");
     private JLabel jLabel1 = new JLabel("Starting player (X):");
     private JButton[][] btnArray;
-    private String[] symbolStr = {"X", "Y"};
+    private String[] symbolStr = {"1", "2"};
 
     private IModelAdmin<TPlayer> modelAdmin;
     private IViewRequestor requestor;
@@ -54,26 +54,14 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
 
     public ICommand getCommand() {
         return new ICommand() {
-            public void setTokenAt(int row, int col, int player, int value) {
-            	if (player == 0) {
-            		btnArray[row][col].setBackground(Color.cyan);
-            		btnArray[row][col].setOpaque(true);
-            	}
-            	else if(player == 1) {
-            		btnArray[row][col].setBackground(Color.green);
-            		btnArray[row][col].setOpaque(true);
-            	}
-            	else {
-            		btnArray[row][col].setBackground(Color.white);
-            		btnArray[row][col].setOpaque(true);
-            		
-            	}
-            	btnArray[row] [col].setText("" + value);
+            public void setTokenAt(int row, int col, int player) {
+            	if(player == -2)
+            		btnArray[row] [col].setText(symbolStr[0]);
+            	else if(player == -1)
+            		btnArray[row][col].setText(symbolStr[1]);
+            	else
+            		btnArray[row] [col].setText("" + player);
                 statusLbl.setText(" ");
-            }
-            
-            public void setValueAt(int row, int col, int value) {
-            	btnArray[row][col].setText("" + value);
             }
 
             public void clearTokenAt(int row, int col) {
