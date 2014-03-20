@@ -129,7 +129,7 @@ public abstract class ABoardModel implements IBoardModel {
                 public boolean apply(int player, IBoardModel host, 
                                        int row, int col, int value, Void... nu) {
                     value = cells[row][col];
-                    command.setTokenAt(row, col, value);
+                    command.setTokenAt(row, col, player, value);
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {
