@@ -9,6 +9,7 @@ public class GameGridBoard extends ABoardModel {
 
 	ArrayList<ArrayList<Integer>> player1Scores = new ArrayList<ArrayList<Integer>>();
 	ArrayList<ArrayList<Integer>> player2Scores = new ArrayList<ArrayList<Integer>>();
+	Point playersLoc[] = {new Point(-1,-1), new Point(-1, -1)};
 	
     public GameGridBoard(int nRows, int nCols)  {
         super(nRows, nCols);
@@ -52,13 +53,13 @@ public class GameGridBoard extends ABoardModel {
 
     Point old_pos;
 	int old_value_zero;
-	public synchronized IUndoMove makeMove(final int row, final int col, int player,
+	public synchronized IUndoMove makeMove(final int row, final int col, final int player,
                                            ICheckMoveVisitor chkMoveVisitor,
                                            IBoardStatusVisitor<Void, Void> statusVisitor) {
         if (isValidMove(player,row,col)) {
         	
         	
-      
+        	playersLoc[player] = new Point(row, col);
         	final int old_value = cells[row][col];
         	
         	// adding <coordinate, score> pair player's score record
@@ -67,7 +68,7 @@ public class GameGridBoard extends ABoardModel {
     		score_pair.add(col);
     		score_pair.add(cells[row][col]);
         	
-    		System.out.println("makeMove "+player);
+    		//System.out.println("makeMove "+player);
     		
     		if (player == 0) {
         		player1Scores.add(score_pair);
@@ -81,7 +82,7 @@ public class GameGridBoard extends ABoardModel {
             execute(statusVisitor);
             return new IUndoMove() {
                 public void apply(IUndoVisitor undoVisitor) {
-                    undoMove(row, col, old_value, undoVisitor);
+                    undoMove(row, col, old_value, player, undoVisitor);
                 }
             };
         }
@@ -99,10 +100,11 @@ public class GameGridBoard extends ABoardModel {
      * @param col
      * @param undoVisitor The appropriate method of the visitor is called after the undo is performed.
      */
-    private synchronized void undoMove(int row, int col, int old_value, IUndoVisitor undoVisitor)  {
+    private synchronized void undoMove(int row, int col, int old_value, int player, IUndoVisitor undoVisitor)  {
 
+    	playersLoc[player] = new Point(row, col);
         cells[row][col] = old_value;
-    
+        
    		for (ArrayList<Integer> score : this.player1Scores) {
    			if (score.get(0) == row && score.get(1) == col) {
    				this.player1Scores.remove(score);
@@ -135,7 +137,7 @@ public class GameGridBoard extends ABoardModel {
     			if(cells[i][j] != 0)
     				count++;
     	
-    	System.out.println("winCheck: Count "+count);
+    	//System.out.println("winCheck: Count "+count);
     	if(count == 0) {
     		
     		int player1TotalScore = 0;
@@ -149,7 +151,7 @@ public class GameGridBoard extends ABoardModel {
     			player2TotalScore += score.get(2);
     		}
     		
-    		System.out.println("winCheck: Count  " + player1TotalScore + " " + player2TotalScore);
+    		//System.out.println("winCheck: Count  " + player1TotalScore + " " + player2TotalScore);
     		if (player1TotalScore > player2TotalScore)
     			return -1;
     		else if (player2TotalScore > player1TotalScore)
@@ -164,4 +166,9 @@ public class GameGridBoard extends ABoardModel {
         	return true;
         return false;
     }
+
+	@Override
+	public Point[] getPlayersLoc() {
+		return playersLoc;
+	}
 }

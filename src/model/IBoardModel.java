@@ -1,5 +1,7 @@
 
 package model;
+import java.awt.Point;
+
 import gameIO.*;
 
 /**
@@ -89,4 +91,6 @@ public interface IBoardModel {
      * @return
      */
     public abstract boolean isSkipPlayer(int player);
+
+	public abstract Point[] getPlayersLoc();
 }

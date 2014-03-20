@@ -11,7 +11,7 @@ public interface ICommand {
      * @param col
      * @param player
      */
-    public abstract void setTokenAt(int row, int col, int player);
+    public abstract void setTokenAt(int row, int col, int player, boolean[] playerChecks);
 
     /**
      * Clears the displayed token at  (row, col) on the screen.

@@ -54,10 +54,10 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
 
     public ICommand getCommand() {
         return new ICommand() {
-            public void setTokenAt(int row, int col, int player) {
-            	if(player == -2)
+            public void setTokenAt(int row, int col, int player, boolean[] pChecks) {
+            	if(pChecks[0])
             		btnArray[row] [col].setText(symbolStr[0]);
-            	else if(player == -1)
+            	else if(pChecks[1])
             		btnArray[row][col].setText(symbolStr[1]);
             	else
             		btnArray[row] [col].setText("" + player);
