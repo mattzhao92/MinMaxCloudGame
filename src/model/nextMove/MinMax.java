@@ -44,13 +44,7 @@ public class MinMax implements INextMoveStrategy {
         */
         public boolean apply(final int player, IBoardModel host,  final int row,
                              final int col, int value, final AAccumulator... accs) {
-        	
-        	int getPlayer = -5;
-        	if(accs[0].getPlayer() == -1)
-        		getPlayer = -2;
-        	else if(accs[0].getPlayer() == 1)
-        		getPlayer = -1;
-            IUndoMove undo = host.makeMove(row, col, getPlayer, validMoveVisitor,
+            IUndoMove undo = host.makeMove(row, col, accs[0].getPlayer(), validMoveVisitor,
                 new IBoardStatusVisitor<Void, Void>() {
                     public Void player0WonCase(IBoardModel host, Void... nu) {
                         accs[0].updateBest(row, col, win0ValueForPlayer(accs[0].getModelPlayer()));
@@ -69,8 +63,6 @@ public class MinMax implements INextMoveStrategy {
 
                     public Void noWinnerCase(IBoardModel host, Void... nu) {
                         AAccumulator nextAcc = accs[0].makeOpposite();
-                        System.out.println("length of accs:" + accs.length + " | get player: " + nextAcc.getPlayer());
-                        System.out.println("get val:" + nextAcc.getVal());
                         host.map(nextAcc.getPlayer(), minMaxEval, nextAcc); // nextAcc contains the best move
                                                        //and value of the child node.
                         accs[0].updateBest(row, col, nextAcc.getVal());
@@ -98,14 +90,14 @@ public class MinMax implements INextMoveStrategy {
      *  Utility methods to convert from a player to value if player 0 won
      */
     private int win0ValueForPlayer(int p) {
-      return MAX_VALUE;
+      return MAX_VALUE * (1 - 2*p);  //  for player = 0 -> 1, for player = 1 -> -1
     }
 
     /**
      *  Utility methods to convert from a player to value if player 1 won
      */
     private int win1ValueForPlayer(int p) {
-      return -1 * MAX_VALUE;
+      return MAX_VALUE * (2*p-1);  // for player = 0 -> -1, for player = 1 -> 1
     }
 
 // ***************** End of Utility methods **********************************

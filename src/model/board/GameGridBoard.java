@@ -2,11 +2,14 @@ package model.board;
 
 import java.awt.Point;
 import java.util.Random;
-
+import java.util.ArrayList;
 import model.*;
 
 public class GameGridBoard extends ABoardModel {
-    private int IN_ROW= 3;
+
+	ArrayList<ArrayList<Integer>> player1Scores = new ArrayList<ArrayList<Integer>>();
+	ArrayList<ArrayList<Integer>> player2Scores = new ArrayList<ArrayList<Integer>>();
+	
     public GameGridBoard(int nRows, int nCols)  {
         super(nRows, nCols);
     }
@@ -16,11 +19,9 @@ public class GameGridBoard extends ABoardModel {
 		Random rand = new Random();
 		for(int i = 0; i < cells.length; i++){
 			for(int j = 0; j < cells[i].length; j++){
-				cells[i][j] = rand.nextInt(10) + 5;
+				cells[i][j] = rand.nextInt(10);
 			}
-		}
-
-		
+		}		
 	}
 	
     /**
@@ -35,7 +36,6 @@ public class GameGridBoard extends ABoardModel {
             state = Player1WonState.Singleton;
         }
         else  {// winner == 0 -> no winner, but perhaps a draw
-        	System.out.println("in winner check");
             map(winner, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
                                      int row, int col, int value, Void... nu) {
@@ -50,32 +50,38 @@ public class GameGridBoard extends ABoardModel {
         }
     }
 
- 	Point old_pos;
-	int old_value;
-	Point new_pos;
-	int new_value;
+    Point old_pos;
+	int old_value_zero;
 	public synchronized IUndoMove makeMove(final int row, final int col, int player,
                                            ICheckMoveVisitor chkMoveVisitor,
                                            IBoardStatusVisitor<Void, Void> statusVisitor) {
         if (isValidMove(player,row,col)) {
-       
-        	for(int i = 0; i < cells.length; i++)
-        		for(int j = 0; j < cells[i].length; j++)
-        			if(cells[i][j] == player){
-        			 	old_pos = new Point(i, j);
-        			 	old_value = cells[i][j];
-        				cells[i][j] = 0;
-        			}
-        	final Point new_pos = new Point(row, col);
-        	final int new_pos_value = cells[row][col];
-            cells[row] [col] = player;
-            pprint(cells);
+        	
+        	
+      
+        	final int old_value = cells[row][col];
+        	
+        	// adding <coordinate, score> pair player's score record
+        	ArrayList<Integer> score_pair = new ArrayList<Integer>();
+    		score_pair.add(row);
+    		score_pair.add(col);
+    		score_pair.add(cells[row][col]);
+        	
+    		System.out.println("makeMove "+player);
+    		
+    		if (player == 0) {
+        		player1Scores.add(score_pair);
+        	} else {
+        		player2Scores.add(score_pair);
+        	}
+        	
+            cells[row] [col] = 0;
             chgState(winCheck(row, col));
             chkMoveVisitor.validMoveCase();
             execute(statusVisitor);
             return new IUndoMove() {
                 public void apply(IUndoVisitor undoVisitor) {
-                    undoMove(old_pos, old_value, new_pos, new_pos_value, undoVisitor);
+                    undoMove(row, col, old_value, undoVisitor);
                 }
             };
         }
@@ -87,27 +93,30 @@ public class GameGridBoard extends ABoardModel {
         };
     }
 
-	public void pprint(int[][] matrix){
-		for (int i = 0; i < matrix.length; i++) {
-		    for (int j = 0; j < matrix[i].length; j++) {
-		        System.out.print(matrix[i][j] + " ");
-		    }
-		    System.out.print("\n");
-		}
-	}
     /**
      * Undoes the move at (row,col).
      * @param row
      * @param col
      * @param undoVisitor The appropriate method of the visitor is called after the undo is performed.
      */
-    private synchronized void undoMove(Point old_pos, int old_value, Point new_pos, int new_pos_value, IUndoVisitor undoVisitor)  {
-        
-    	if(old_value != -5){
-    		if(this.isValidMove(old_value, old_pos.x, old_pos.y))
-    			cells[old_pos.x][old_pos.y] = old_value;
-    	}
-        cells[new_pos.x][new_pos.y]= new_pos_value; 
+    private synchronized void undoMove(int row, int col, int old_value, IUndoVisitor undoVisitor)  {
+
+        cells[row][col] = old_value;
+    
+   		for (ArrayList<Integer> score : this.player1Scores) {
+   			if (score.get(0) == row && score.get(1) == col) {
+   				this.player1Scores.remove(score);
+   				break;
+   			}
+		}
+		
+		for (ArrayList<Integer> score : this.player2Scores) {
+   			if (score.get(0) == row && score.get(1) == col) {
+   				this.player2Scores.remove(score);
+   				break;
+   			}
+		}
+		
         state = NonTerminalState.Singleton;
     }
 
@@ -121,24 +130,38 @@ public class GameGridBoard extends ABoardModel {
      */
     private int winCheck(int row, int col){
     	int count = 0;
-        int player = cells[row][col];
-        for(int i = 0; i < cells.length; i++)
-        	for(int j = 0; j < cells[i].length; j++){
-        		if(cells[i][j] == 0)
-        			count++;
-        	}
-        System.out.println("count: " + count + " | cells[0]length*cells.length -1:" + (cells[0].length * cells.length - 2));
-        if(count == cells[0].length * cells.length - 2)
-        	return 1;
-        
-        return 0;
+    	for(int i = 0; i < cells.length; i++)
+    		for(int j = 0; j < cells[i].length; j++)
+    			if(cells[i][j] != 0)
+    				count++;
+    	
+    	System.out.println("winCheck: Count "+count);
+    	if(count == 0) {
+    		
+    		int player1TotalScore = 0;
+    		int player2TotalScore = 0;
+    		
+    		for (ArrayList<Integer> score : this.player1Scores) {
+    			player1TotalScore += score.get(2);
+    		}
+    		
+    		for (ArrayList<Integer> score : this.player2Scores) {
+    			player2TotalScore += score.get(2);
+    		}
+    		
+    		System.out.println("winCheck: Count  " + player1TotalScore + " " + player2TotalScore);
+    		if (player1TotalScore > player2TotalScore)
+    			return -1;
+    		else if (player2TotalScore > player1TotalScore)
+    			return 1;
+ 
+    	}
+    	return 0;
     }
 
     protected boolean isValidMove(int player, int row, int col){
-        if(cells[row][col] == -2 || cells[row][col] == -1){
-        	return false;
-        }
-        else
+        if(cells[row][col] != 0)
         	return true;
+        return false;
     }
 }

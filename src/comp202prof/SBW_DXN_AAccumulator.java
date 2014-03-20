@@ -1,20 +1,22 @@
-
-package model.nextMove;
+ package comp202prof;
 
 import java.awt.Point;
 
 
-public abstract class AAccumulator {
+public abstract class SBW_DXN_AAccumulator {
     public int _modelPlayer;  // The player that is using this accumulator to try to find the best next move.
     protected int _row = -10;
     protected int _col = -10;
     protected int _val;
 
-    protected AAccumulator(int modelPlayer) {
+    protected SBW_DXN_AAccumulator(int modelPlayer)
+    {
       _modelPlayer = modelPlayer;
     }
 
-    public abstract AAccumulator makeOpposite();
+/*    protected AAccumulator() {}
+*/
+    public abstract SBW_DXN_AAccumulator makeOpposite();
 
     /**
      * @return The player who is trying to find the best move.

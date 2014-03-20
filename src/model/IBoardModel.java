@@ -89,6 +89,4 @@ public interface IBoardModel {
      * @return
      */
     public abstract boolean isSkipPlayer(int player);
-
-	public abstract int[][] getCells();
 }

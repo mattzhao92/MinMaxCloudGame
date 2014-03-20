@@ -123,8 +123,8 @@ public final class GameModel implements IModel {
 	 */
 	 public void setPlayers(IMakePlayer player0, IMakePlayer player1) {
 		 // Last in/first play
-		 turnControl = new TurnControl(player1.create(-1));
-		 turnControl.addPlayer( player0.create(-2));
+		 turnControl = new TurnControl(player1.create(1));
+		 turnControl.addPlayer( player0.create(0));
 		 turnControl.setAdapters(viewAdmin, iCommand);
 		 turnControl.run(maxTurnTime);
 	 }
@@ -192,7 +192,7 @@ public final class GameModel implements IModel {
 		 v.add(new IMakePlayer() {
 			 public APlayer create(int playerNo) {
 				 return new ComputerPlayer(requestor, playerNo, GameModel.this,
-						 new MinMax(new DepthFac(new AlphaBetaFac(),2, getBoardModel())));
+						 new MinMax(new DepthFac(new AlphaBetaFac(),2)));
 			 }
 			 public String toString() {
 				 return "Computer w. Depth 2";
@@ -202,7 +202,7 @@ public final class GameModel implements IModel {
 		 v.add(new IMakePlayer() {
 			 public APlayer create(int playerNo) {
 				 return new ComputerPlayer(requestor, playerNo, GameModel.this,
-						 new MinMax(new DepthFac(new AlphaBetaFac(),3, getBoardModel())));
+						 new MinMax(new DepthFac(new AlphaBetaFac(),3)));
 			 }
 			 public String toString() {
 				 return "Computer w. Depth 3";
@@ -262,5 +262,4 @@ public final class GameModel implements IModel {
 		 // TODO Auto-generated method stub
 		 viewAdmin.setDimension(getBoardModel().getDimension());
 	 }
-	 
 }

@@ -1,15 +1,13 @@
 package model.nextMove;
 
-import model.IBoardModel;
-
 
 public class DepthAcc extends ADepthAcc {
-    public DepthAcc(int mP, AAccumulator acc, int maxD, IBoardModel ibm){
-        super(mP, acc, maxD, ibm);
+    public DepthAcc(int mP, AAccumulator acc, int maxD){
+        super(mP, acc, maxD);
     }
 
     public AAccumulator makeOpposite() {
-        return new DepthAcc(_modelPlayer, _acc.makeOpposite(), _maxDepth, ibm) {
+        return new DepthAcc(_modelPlayer, _acc.makeOpposite(), _maxDepth) {
             public int getDepth() {
                 return 1 + DepthAcc.this.getDepth();
             }
@@ -20,12 +18,10 @@ public class DepthAcc extends ADepthAcc {
                   if(getDepth() == getMaxDepth())
                   {
                     //_acc._val = ((int)(3.0*Math.random()))-1;
-                	  
+
 //                    int[] payOffVal = {0, 0};
 //                    _boardModel.mapAll(_modelPlayer, _payOff, payOffVal);
-                	
-                	 int cells[][] = ibm.getCells(); 
-                    _acc.updateBest(_acc.getMove().y, _acc.getMove().x, cells[_acc.getMove().x][_acc.getMove().y]);
+                    _acc.updateBest(_acc.getMove().y, _acc.getMove().x, payoff());
 //                    _acc._val = payOffVal[0]-payOffVal[1];
                     //System.out.println("Payoff = " + _acc._val);
 

@@ -105,7 +105,7 @@ public class OthelloBoard extends ABoardModel {
 
 	synchronized public void reset()  {
 		super.reset();
-		
+
 		int r = cells.length/2;
 		int c = cells[0].length/2;
 

@@ -12,8 +12,8 @@ public class InitFrame extends JFrame {
 	private IInitModelAdapter model;
 	
 	JPanel jPanel1 = new JPanel();
-	JTextField nRowsTF = new JTextField("3");
-	JTextField nColsTF = new JTextField("3");
+	JTextField nRowsTF = new JTextField("8");
+	JTextField nColsTF = new JTextField("8");
 	JButton makeTTTBtn = new JButton("Make TicTacToe!");
 	JPanel jPanel2 = new JPanel();
 	JButton othelloBtn = new JButton("Make Othello!");
@@ -23,7 +23,7 @@ public class InitFrame extends JFrame {
 
 	JLabel jLabel3 = new JLabel("Max. turn time (s):");
 	JTextField maxTurnTimeTF = new JTextField("60");
-	private final JButton btnMakeGrid = new JButton("Make ScoreGrid!");
+	private final JButton btnMakeGamegrid = new JButton("Make GameGrid!");
 
 	public InitFrame(int closeOp, IInitModelAdapter model) {
 		this.model = model;
@@ -56,8 +56,6 @@ public class InitFrame extends JFrame {
 						 );
 			}
 		});
-		
-		
 
 		inRowTF.setMinimumSize(new Dimension(10, 21));
 		inRowTF.setPreferredSize(new Dimension(20, 21));
@@ -74,8 +72,8 @@ public class InitFrame extends JFrame {
 		jPanel2.add(makeTTTBtn, null);
 		jPanel2.add(inRowTF, null);
 		jPanel2.add(jLabel1, null);
-		btnMakeGrid.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnMakeGamegrid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				model.makeGameGrid(
 						 Integer.parseInt(nRowsTF.getText()),
 						 Integer.parseInt(nColsTF.getText()),
@@ -84,7 +82,7 @@ public class InitFrame extends JFrame {
 			}
 		});
 		
-		jPanel2.add(btnMakeGrid);
+		jPanel2.add(btnMakeGamegrid);
 	}
 
 	public void start(){

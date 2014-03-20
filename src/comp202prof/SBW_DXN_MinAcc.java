@@ -1,11 +1,11 @@
 
-package model.nextMove;
+package comp202prof;
 
-public class MinAcc extends AAccumulator {	/**
+public class SBW_DXN_MinAcc extends SBW_DXN_AAccumulator { /**
      * @param player
      * @SBGen Constructor
      */
-    public MinAcc(int modelPlayer) {
+    public SBW_DXN_MinAcc(int modelPlayer) {
         super(modelPlayer);
         _val = Integer.MAX_VALUE;
     }
@@ -13,9 +13,8 @@ public class MinAcc extends AAccumulator {	/**
     /**
      * @return
      */
-    public AAccumulator makeOpposite() {
-//        return new MaxAcc(1 - _modelPlayer);
-        return new MaxAcc(_modelPlayer);
+    public SBW_DXN_AAccumulator makeOpposite() {
+        return new SBW_DXN_MaxAcc(_modelPlayer);
     }
 
     /**

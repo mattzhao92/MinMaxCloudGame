@@ -46,7 +46,13 @@ public abstract class ABoardModel implements IBoardModel {
      * @return
      */
     public int valueToPlayer(int value)  {
-        return (value + 1) / 2;
+        if(value == -2){
+        	return 0;
+        }
+        else if(value == -1){
+        	return 1;
+        }
+		return value;
     }
 
     /**
@@ -55,7 +61,13 @@ public abstract class ABoardModel implements IBoardModel {
      * @return
      */
     public int playerToValue(int player) {
-        return 2 * player - 1;
+    	if(player == 0){
+    		return -2;
+    	}
+    	else if(player == 1){
+    		return -1;
+    	}
+		return player;
     }
 
 
@@ -85,7 +97,7 @@ public abstract class ABoardModel implements IBoardModel {
     * (board.getCells())[row][col] =  -1 (player #0), 0 (no player), or +1 (player #1).
     * @return
     */
-    public int[][] getCells()  {
+    int[][] getCells()  {
         return cells;
     }
 
@@ -116,8 +128,8 @@ public abstract class ABoardModel implements IBoardModel {
         mapAll(0, new IBoardLambda<Void>() {
                 public boolean apply(int player, IBoardModel host, 
                                        int row, int col, int value, Void... nu) {
+                    value = cells[row][col];
                     command.setTokenAt(row, col, value);
-                    
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {

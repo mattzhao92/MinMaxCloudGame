@@ -1,20 +1,16 @@
 package model.nextMove;
 
-import model.IBoardModel;
-
 
 public abstract class ADepthAcc extends AAccumulator {
     protected AAccumulator _acc;
     protected int _maxDepth= 0;
-    protected IBoardModel ibm;
 
-    public ADepthAcc(int mP, AAccumulator acc, int maxD, IBoardModel ibm) {
+    public ADepthAcc(int mP, AAccumulator acc, int maxD) {
         super(mP);
         _acc = acc;
         _maxDepth = maxD;
         _row = -100;
         _col = -100;
-        ibm = ibm;
     }
 
     public int getModelPlayer()  {

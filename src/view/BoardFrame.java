@@ -2,12 +2,9 @@ package view;
 
 import gameIO.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 
 
@@ -27,13 +24,13 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     private JButton startBtn = new JButton("Start");
     private JLabel jLabel1 = new JLabel("Starting player (X):");
     private JButton[][] btnArray;
-    private HashMap<Integer, String> symbolStr = new HashMap<Integer, String>();
+    private String[] symbolStr = {"X", "Y"};
 
     private IModelAdmin<TPlayer> modelAdmin;
     private IViewRequestor requestor;
     private JLabel statusLbl = new JLabel(" Remaining time:");
     private JComboBox<TPlayer> player1CBx = new JComboBox<TPlayer>();
-    private JLabel jLabel2 = new JLabel("Second player (O):");
+    private JLabel jLabel2 = new JLabel("Second player (Y):");
     private JComboBox<TPlayer> player2CBx = new JComboBox<TPlayer>();
     private JPanel jPanel4 = new JPanel();
     private JPanel jPanel5 = new JPanel();
@@ -41,11 +38,8 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     private JLabel jLabel3 = new JLabel("Add player");
     private JTextField addPlayerTF = new JTextField("comp202prof.SBW_DXN_strategy1");
 
-    
     public BoardFrame(IModelAdmin<TPlayer> modelAdmin) {
         this.modelAdmin = modelAdmin;
-        symbolStr.put(-2, "X");
-        symbolStr.put(-1, "&");
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         try {
             initGUI();
@@ -61,19 +55,13 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
     public ICommand getCommand() {
         return new ICommand() {
             public void setTokenAt(int row, int col, int player) {
-            	if(player == -1 || player == -2){
-            		btnArray[row][col].setForeground(Color.red);
-            		btnArray[row] [col].setText(symbolStr.get(player));
-            	}
-            	else if(player == 0){
-            		btnArray[row][col].setForeground(Color.magenta);
-            		btnArray[row][col].setText("" + player);
-            	}
-            	else{
-            		btnArray[row][col].setForeground(Color.black);
-            		btnArray[row][col].setText("" + player);
-            	}
-            	statusLbl.setText(" ");
+            	if(player == -2)
+            		btnArray[row] [col].setText(symbolStr[0]);
+            	else if(player == -1)
+            		btnArray[row][col].setText(symbolStr[1]);
+            	else
+            		btnArray[row] [col].setText("" + player);
+                statusLbl.setText(" ");
             }
 
             public void clearTokenAt(int row, int col) {
@@ -245,7 +233,7 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
 
 			@Override
 			public void run() {
-				new GameOverDialog(BoardFrame.this).playerWon("Player \""+ symbolStr.get(player)+"\"");
+				new GameOverDialog(BoardFrame.this).playerWon("Player \""+ symbolStr[player]+"\"");
 			}
     	});
         
@@ -269,11 +257,9 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
         gridLayout1.setHgap(5);
         gridLayout1.setVgap(5);
         btnArray = new JButton[nRows] [nCols];
-        Random rand = new Random();
         for (int row = 0; row < nRows; row++) {
             for (int col = 0; col<nCols; col++) {
                 btnArray[row][col] = new JButton();
-                
                 final int thisRow = row;
                 final int thisCol = col;
                 btnArray[thisRow][thisCol].addActionListener(new ActionListener() {
@@ -289,7 +275,6 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
                 }
               });
               btnArray[thisRow][thisCol].setBackground(Color.cyan);
-              
               btnArray[thisRow][thisCol].setFont(new java.awt.Font("Dialog", 1, 50));
               jPanel2.add(btnArray[thisRow][thisCol], null);
           }
