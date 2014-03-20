@@ -16,10 +16,10 @@ public class GameGridBoard extends ABoardModel {
 
 	synchronized public void reset()  {
 		super.reset();
-		Random rand = new Random();
+		int Min = 1, Max = 10;
 		for(int i = 0; i < cells.length; i++){
 			for(int j = 0; j < cells[i].length; j++){
-				cells[i][j] = rand.nextInt(10);
+				cells[i][j] = (int) ( Min + (Math.random() * (Max - Min)));
 			}
 		}		
 	}
@@ -201,8 +201,6 @@ public class GameGridBoard extends ABoardModel {
     		prevY = location2[1];
     	}
     	
-    	//System.err.println("------player "+player+" prevX is: " + prevX + " and prevY is: " + prevY);
-    	//System.err.println("------player "+player+" currX is " + row +" and currY is: "+col);
     	int xDiff = Math.abs(prevY - col);
     	int yDiff = Math.abs(prevX - row);
     	

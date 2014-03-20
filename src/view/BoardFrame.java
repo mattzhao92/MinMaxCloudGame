@@ -52,19 +52,24 @@ public class BoardFrame<TPlayer> extends JFrame implements IView<TPlayer> {
 
     }
 
+    
     public ICommand getCommand() {
         return new ICommand() {
             public void setTokenAt(int row, int col, int player, int value) {
             	if (player == 0) {
+            		System.out.println("-------- setTokenAt");
             		btnArray[row][col].setBackground(Color.cyan);
             		btnArray[row][col].setOpaque(true);
+        
             	}
             	else if(player == 1) {
             		btnArray[row][col].setBackground(Color.green);
             		btnArray[row][col].setOpaque(true);
+            
             	}
             	else {
-            		btnArray[row][col].setBackground(Color.white);
+            		if (value != 0)
+            			btnArray[row][col].setBackground(Color.white);
             		btnArray[row][col].setOpaque(true);
             		
             	}
