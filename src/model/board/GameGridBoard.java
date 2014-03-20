@@ -11,6 +11,10 @@ public class GameGridBoard extends ABoardModel {
 	ArrayList<ArrayList<Integer>> player2Scores = new ArrayList<ArrayList<Integer>>();
 	Point playersLoc[] = {new Point(-1,-1), new Point(-1, -1)};
 	
+	Integer[] player1prevmove = new Integer[] {-1,-1};
+	Integer[] player2prevmove = new Integer[] {-1,-1};
+
+	
     public GameGridBoard(int nRows, int nCols)  {
         super(nRows, nCols);
     }
@@ -72,8 +76,12 @@ public class GameGridBoard extends ABoardModel {
     		
     		if (player == 0) {
         		player1Scores.add(score_pair);
+        		player1prevmove[0] = col;
+        		player1prevmove[1] = row;
         	} else {
         		player2Scores.add(score_pair);
+        		player2prevmove[0] = col;
+        		player2prevmove[1] = row;
         	}
         	
             cells[row] [col] = 0;
@@ -162,8 +170,33 @@ public class GameGridBoard extends ABoardModel {
     }
 
     protected boolean isValidMove(int player, int row, int col){
-        if(cells[row][col] != 0)
-        	return true;
+    	int prevX;
+    	int prevY;
+    
+    	if(cells[row][col] == 0)
+        	return false;
+    	
+    	if (player == 0) {
+    		if (player1prevmove[0] == -1) return true;
+    		prevX = player1prevmove[0];
+    		prevY = player1prevmove[1];
+    	}
+    	else {
+    		if (player2prevmove[0] == -1) return true;
+    		prevX = player2prevmove[0];
+    		prevY = player2prevmove[1];
+    	}
+    	System.err.println("prevX is: " + prevX + " and prevY is: " + prevY);
+    	
+    	int yDiff = Math.abs(prevY - row);
+    	int xDiff = Math.abs(prevX - col);
+    	
+    	System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
+    	
+    	if (yDiff + xDiff == 1) {
+    		return true;
+    	}
+    	
         return false;
     }
 
