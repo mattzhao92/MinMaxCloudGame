@@ -75,12 +75,12 @@ public class GameGridBoard extends ABoardModel {
     		
     		if (player == 0) {
         		player1Scores.add(score_pair);
-        		player1prevmove[0] = row;
-        		player1prevmove[1] = col;
+        		player1prevmove[0] = col;
+        		player1prevmove[1] = row;
         	} else {
         		player2Scores.add(score_pair);
-        		player2prevmove[0] = row;
-        		player2prevmove[1] = col;
+        		player2prevmove[0] = col;
+        		player2prevmove[1] = row;
         	}
         	
             cells[row] [col] = 0;
