@@ -79,10 +79,14 @@ public class GameGridBoard extends ABoardModel {
         		player1Scores.add(score_pair);
         		player1prevmove[0] = col;
         		player1prevmove[1] = row;
+        		location1[0] = row;
+        		location1[1] = col;
         	} else {
         		player2Scores.add(score_pair);
         		player2prevmove[0] = col;
         		player2prevmove[1] = row;
+        		location2[0] = row;
+        		location2[1] = col;
         	}
         	
             cells[row] [col] = 0;
@@ -174,8 +178,8 @@ public class GameGridBoard extends ABoardModel {
     	int prevX;
     	int prevY;
     
-    	if(cells[row][col] == 0)
-        	return false;
+//    	if(cells[row][col] == 0)
+//        	return false;
     	
     	if (player == 0) {
     		if (player1prevmove[0] == -1) return true;

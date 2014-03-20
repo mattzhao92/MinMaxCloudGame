@@ -18,7 +18,17 @@ public abstract class ABoardModel implements IBoardModel {
      * The game board.
      */
     protected int[] [] cells;
-
+    
+    /**
+     * The location of player 1
+     */
+    protected int[] location1 = {-1,-1};
+    
+    /**
+     * The location of player 2
+     */
+    protected int[] location2 = {-1,-1};
+    
     /**
      * State pattern!
      */
@@ -127,7 +137,11 @@ public abstract class ABoardModel implements IBoardModel {
      * at a specific row and column on the game board
      */
     public int playerAt(int row, int col) {
-        return cells[row][col]; //TODO: FIX THIS
+        if (row == location1[0] && col == location1[1]) 
+        	return 0;
+        if (row == location2[0] && col == location2[1])
+        	return 1;
+        return 2;
     }
 
     public <R, P> R execute(IBoardStatusVisitor<R, P> visitor, @SuppressWarnings("unchecked") P... params) {
