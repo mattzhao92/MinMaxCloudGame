@@ -118,7 +118,7 @@ public abstract class ABoardModel implements IBoardModel {
                 public boolean apply(int player, IBoardModel host, 
                                      int row, int col, int value, Void... nu) {
                     cells[row][col] = EMPTY;
-                    locations[row][col] = 100;
+                   // locations[row][col] = 100;
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {
@@ -154,8 +154,13 @@ public abstract class ABoardModel implements IBoardModel {
      * at a specific row and column on the game board
      */
     public int playerAt(int row, int col) {
-System.out.println("HI");
-        return locations[row][col];
+//        if (location1[0] == row && location1[1] == col)
+//        	return 0;
+//        else if (location2[0] == row && location2[1] == col)
+//        	return 1;
+//        else return 2;
+    	
+    	 return locations[row][col];
     }
 
     public <R, P> R execute(IBoardStatusVisitor<R, P> visitor, @SuppressWarnings("unchecked") P... params) {

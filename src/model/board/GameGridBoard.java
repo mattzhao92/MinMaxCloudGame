@@ -61,6 +61,7 @@ public class GameGridBoard extends ABoardModel {
         	
       
         	final int old_value = cells[row][col];
+        	final int old_color = locations[row][col];
         	
         	// adding <coordinate, score> pair player's score record
         	ArrayList<Integer> score_pair = new ArrayList<Integer>();
@@ -79,9 +80,7 @@ public class GameGridBoard extends ABoardModel {
         		player1Scores.add(score_pair);
         		location1[0] = row;
         		location1[1] = col;
-        		System.out.println("HERE");
         		locations[row][col] = 0;
-        		System.out.println("HERE 2");
         		if (oldPlayer1X != -1) {
         		locations[oldPlayer1X][oldPlayer1Y] = -1;
         		}
@@ -101,7 +100,7 @@ public class GameGridBoard extends ABoardModel {
             execute(statusVisitor);
             return new IUndoMove() {
                 public void apply(IUndoVisitor undoVisitor) {
-                    undoMove(row, col, old_value, player, oldPlayer1X, oldPlayer1Y, oldPlayer2X, oldPlayer2Y, undoVisitor);
+                    undoMove(row, col, old_value, player, oldPlayer1X, oldPlayer1Y, oldPlayer2X, oldPlayer2Y, old_color, undoVisitor);
                 }
                
             };
@@ -121,10 +120,11 @@ public class GameGridBoard extends ABoardModel {
      * @param undoVisitor The appropriate method of the visitor is called after the undo is performed.
      */
     private synchronized void undoMove(int row, int col, int old_value, int player, 
-    		int oldPlayer1X, int oldPlayer1Y, int oldPlayer2X, int oldPlayer2Y,
+    		int oldPlayer1X, int oldPlayer1Y, int oldPlayer2X, int oldPlayer2Y, int oldColor,
     		IUndoVisitor undoVisitor)  {
     	
         cells[row][col] = old_value;
+        locations[row][col] = oldColor;
     
         if (player == 0) {
         	this.location1[0] = oldPlayer1X;
