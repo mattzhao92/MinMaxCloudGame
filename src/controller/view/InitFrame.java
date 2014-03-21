@@ -14,11 +14,7 @@ public class InitFrame extends JFrame {
 	JPanel jPanel1 = new JPanel();
 	JTextField nRowsTF = new JTextField("8");
 	JTextField nColsTF = new JTextField("8");
-	JButton makeTTTBtn = new JButton("Make TicTacToe!");
 	JPanel jPanel2 = new JPanel();
-	JButton othelloBtn = new JButton("Make Othello!");
-	JTextField inRowTF = new JTextField("3");
-	JLabel jLabel1 = new JLabel("in-a-row");
 	JLabel jLabel2 = new JLabel("rows, cols:");
 
 	JLabel jLabel3 = new JLabel("Max. turn time (s):");
@@ -36,30 +32,6 @@ public class InitFrame extends JFrame {
 		nRowsTF.setPreferredSize(new Dimension(50, 21));
 		nColsTF.setPreferredSize(new Dimension(50, 21));
 
-		makeTTTBtn.addActionListener(new java.awt.event.ActionListener()  {
-			public void actionPerformed(ActionEvent e) {
-				model.makeTicTacToe(
-						Integer.parseInt(nRowsTF.getText()),
-						Integer.parseInt(nColsTF.getText()),
-						Integer.parseInt(inRowTF.getText()),
-						Integer.parseInt(maxTurnTimeTF.getText())
-						);
-			}
-		});
-
-		othelloBtn.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-					model.makeOthello(
-						 Integer.parseInt(nRowsTF.getText()),
-						 Integer.parseInt(nColsTF.getText()),
-						 Integer.parseInt(maxTurnTimeTF.getText())
-						 );
-			}
-		});
-
-		inRowTF.setMinimumSize(new Dimension(10, 21));
-		inRowTF.setPreferredSize(new Dimension(20, 21));
-
 		maxTurnTimeTF.setPreferredSize(new Dimension(30, 21));
 		this.getContentPane().add(jPanel1, BorderLayout.NORTH);
 		jPanel1.add(jLabel2, null);
@@ -67,11 +39,7 @@ public class InitFrame extends JFrame {
 		jPanel1.add(nColsTF, null);
 		jPanel1.add(jLabel3, null);
 		jPanel1.add(maxTurnTimeTF, null);
-		this.getContentPane().add(jPanel2, BorderLayout.SOUTH);
-		jPanel2.add(othelloBtn, null);
-		jPanel2.add(makeTTTBtn, null);
-		jPanel2.add(inRowTF, null);
-		jPanel2.add(jLabel1, null);
+		this.getContentPane().add(jPanel2, BorderLayout.CENTER);
 		btnMakeGamegrid.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				model.makeGameGrid(

@@ -118,7 +118,7 @@ public abstract class ABoardModel implements IBoardModel {
                 public boolean apply(int player, IBoardModel host, 
                                      int row, int col, int value, Void... nu) {
                     cells[row][col] = EMPTY;
-                   // locations[row][col] = 100;
+                    locations[row][col] = 100;
                     return true;
                 }
                 public void noApply(int player, IBoardModel host, Void... nu) {
