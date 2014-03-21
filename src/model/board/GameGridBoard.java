@@ -192,12 +192,65 @@ public class GameGridBoard extends ABoardModel {
     	return result;
     }
 
+    public boolean bad(int num){
+    	if(num == 0)
+    		return true;
+    	return false;
+    }
+    
+    public boolean checkIfStuck(int r, int c){
+    	if(r == 0 && c == 0){
+    		if(bad(cells[r+1][c]) && bad(cells[r][c+1]))
+    			return true;
+    	}
+    	if(r == cells.length - 1 && c == 0){
+    		if(bad(cells[r-1][c]) &&  bad(cells[r][c+1]))
+    			return true;
+    	}
+    	if(r == 0 && c == cells[r].length - 1){
+    		if(bad(cells[r][c-1]) && bad(cells[r+1][c]))
+    			return true;
+    	}
+    	if(r == cells.length - 1 && c == cells[r].length - 1){
+    		if(bad(cells[r][c-1]) && bad(cells[r-1][c]))
+    			return true;
+    	}
+    	
+    	if(r > 0 && r < cells.length - 1 && c == 0){
+    		if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c+1]))
+    			return true;
+    	}
+    	
+    	if(r > 0 && r < cells.length - 1 && c == cells[r].length - 1){
+    		if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]))
+    			return true;
+    	}
+    	
+    	if(r == 0 && c > 0 && c < cells[r].length - 1){
+    		if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r+1][c])){
+    			return true;
+    		}
+    	}
+    	
+    	if(r == cells.length - 1 && c > 0 && c < cells[r].length - 1){
+    		if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r-1][c]))
+    			return true;
+    	}
+    	
+    	if(r > 0 && r < cells.length - 1 && c > 0 && c < cells[r].length - 1){
+    		if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]) && bad(cells[r][c+1]))
+    			return true;
+    	}
+    	return false;
+    }
+    
     protected boolean isValidMove(int player, int row, int col){
     	int prevX;
     	int prevY;
 
     	if(cells[row][col] == 0)
         	return false;
+    	
     	
     	if (player == 0) {
     		if (location1[0] == -1) return true;
@@ -214,6 +267,8 @@ public class GameGridBoard extends ABoardModel {
     	int yDiff = Math.abs(prevX - row);
     	
     	//System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
+    	if(checkIfStuck(prevX, prevY))
+    		return true;
     	
     	if (yDiff + xDiff == 1) {
     		return true;
