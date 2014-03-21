@@ -12,8 +12,8 @@ public class InitFrame extends JFrame {
 	private IInitModelAdapter model;
 	
 	JPanel jPanel1 = new JPanel();
-	JTextField nRowsTF = new JTextField("8");
-	JTextField nColsTF = new JTextField("8");
+	JTextField nRowsTF = new JTextField("3");
+	JTextField nColsTF = new JTextField("3");
 	JPanel jPanel2 = new JPanel();
 	JLabel jLabel2 = new JLabel("rows, cols:");
 
