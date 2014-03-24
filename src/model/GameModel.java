@@ -192,7 +192,7 @@ public final class GameModel implements IModel {
 		 v.add(new IMakePlayer() {
 			 public APlayer create(int playerNo) {
 				 return new ComputerPlayer(requestor, playerNo, GameModel.this,
-						 new MinMax(new DepthFac(new AlphaBetaFac(),2)));
+						 new MinMax(new DepthFac(new AlphaBetaFac(),2, GameModel.this)));
 			 }
 			 public String toString() {
 				 return "Computer w. Depth 2";
@@ -202,7 +202,7 @@ public final class GameModel implements IModel {
 		 v.add(new IMakePlayer() {
 			 public APlayer create(int playerNo) {
 				 return new ComputerPlayer(requestor, playerNo, GameModel.this,
-						 new MinMax(new DepthFac(new AlphaBetaFac(),3)));
+						 new MinMax(new DepthFac(new AlphaBetaFac(),3, GameModel.this)));
 			 }
 			 public String toString() {
 				 return "Computer w. Depth 3";

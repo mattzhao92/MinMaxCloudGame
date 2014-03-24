@@ -276,4 +276,24 @@ public class GameGridBoard extends ABoardModel {
     	
         return false;
     }
+
+	public int getPayoff(int player) {
+
+		int player1TotalScore = 0;
+		int player2TotalScore = 0;
+		
+		for (ArrayList<Integer> score : this.player1Scores) {
+			player1TotalScore += score.get(2);
+		}
+		
+		for (ArrayList<Integer> score : this.player2Scores) {
+			player2TotalScore += score.get(2);
+		}
+		
+		System.out.println("winCheck: Count  " + player1TotalScore + " " + player2TotalScore);
+		if (player == 0)
+			return player1TotalScore - player2TotalScore;
+		else
+			return player2TotalScore - player1TotalScore;
+	}
 }
