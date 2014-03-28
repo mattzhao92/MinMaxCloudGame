@@ -26,6 +26,22 @@ public class Board {
    */
   private String state;
 
+  private String board;
+
+  
+  public Board() {
+     int [] values = new int [] {4, 2, 3, 7, 6, 4, 9, 8, 4, 5, 6, 8, 5, 2, 5, 8};
+     int count = 0;
+     Gson gson = new Gson();
+     ArrayList<Cell> cells = new ArrayList<Cell>();
+     for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            cells.add(new Cell(i, j, values[count++]));
+        }
+     }
+     this.board = gson.toJson(cells);
+  }
+
   public String getState() {
     return state;
   }

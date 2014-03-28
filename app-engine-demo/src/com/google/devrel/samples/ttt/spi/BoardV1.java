@@ -57,6 +57,12 @@ public class BoardV1 {
     updated.setState(builder.toString());
     return updated;
   }
+
+  @ApiMethod(name = "board.getmove", httpMethod = "POST")
+  public Board getboard() {
+    
+  }
+
   
   private char[][] parseBoard(String boardString) {
     char[][] board = new char[3][3];
