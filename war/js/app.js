@@ -215,7 +215,7 @@ flappyMMCJ.model.init = function() {
 		);
 	}
 
-	var apiRoot = 'http://localhost:8888/_ah/api';
+	var apiRoot = 'https://app405cloudgame.appspot.com/_ah/api';
 	gapi.client.load('tictactoe', 'v1', callback, apiRoot);
 };
 
