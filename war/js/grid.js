@@ -123,9 +123,9 @@ var GameView = Class.extend({
 		this.model = model;
 		this.container = document.getElementById('container');
 		
-		this.viewWidth = 1000;// Math.min(container.clientWidth,container.clientHeight);
-		this.viewHeight = this.viewWidth;
-
+		this.viewWidth = container.clientWidth;//1000;// Math.min(container.clientWidth,container.clientHeight);
+		this.viewHeight = container.clientHeight;//this.viewWidth;
+		
 		this.cellSize = this.viewWidth / dimension;
 
 		// set up three.js renderer
@@ -145,7 +145,7 @@ var GameView = Class.extend({
 
 		// set up camera
 		this.camera = new THREE.PerspectiveCamera( 45, this.viewWidth / this.viewHeight, 1, 10000 );
-		this.camera.position.set( 0, 0, 1200);
+		this.camera.position.set( 0, 0, 1500);
 
 		// set up controls
 		this.controls = new THREE.MapControls(this.camera, this.scene, this.container);
