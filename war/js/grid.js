@@ -1,3 +1,5 @@
+var currentLoc = null;
+
 var GridTile = Class.extend({
 	// Class constructor
 	init: function(world, tileMesh, xPos, yPos, zheight) {
@@ -304,12 +306,20 @@ var GameView = Class.extend({
 			if (intersects.length > 0) {
 				var intersection = intersects[ 0 ],
 				obj = intersection.object;
-
+				//HERE
 				if (!obj.owner.free) return;
+				
+				if (currentLoc == null) {
+					currentLoc = obj;
+				}
+				
+				currentLoc.material.color.setRGB(0.8,0.8,0.8);
+				currentLoc = obj;
 				obj.material.color.setRGB(0.0, 1, 0.0);
 				this.moveToPosition(obj.owner.xPos, obj.owner.yPos);
 				obj.material.opacity = 0.5;
 				obj.material.color.setRGB( 1, 1, 1 );
+				
 				obj.owner.free = false;
 				if (this.previousHeightedCell == obj) {
 					this.previousHeightedCell = null;
