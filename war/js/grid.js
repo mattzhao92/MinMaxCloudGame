@@ -125,8 +125,11 @@ var GameView = Class.extend({
 		this.model = model;
 		this.container = document.getElementById('container');
 		
-		this.viewWidth = container.clientWidth;//1000;// Math.min(container.clientWidth,container.clientHeight);
-		this.viewHeight = container.clientHeight;//this.viewWidth;
+		this.viewWidth = $(window).width();//1000;// Math.min(container.clientWidth,container.clientHeight);
+		this.viewHeight = $(window).height();//this.viewWidth;
+		console.log(this.container);
+		console.log("width " + this.viewWidth);
+		console.log("height "+ this.viewHeight);
 		
 		this.cellSize = this.viewWidth / dimension;
 

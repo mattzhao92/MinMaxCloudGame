@@ -1,5 +1,8 @@
 package com.google.devrel.samples.ttt;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import com.google.gson.*;
@@ -24,9 +27,16 @@ public class CellContainer {
 		return gson.fromJson(str, CellContainer.class);
 	}
 	
+	public static CellContainer fromJson(InputStream inputStream) {
+		Gson gson = new Gson();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        return gson.fromJson(reader, CellContainer.class);
+	}
+	
 	public static String toJson(CellContainer container) {
 		Gson gson = new Gson();
 		System.out.println(">>>remove "+gson.toJson(container, CellContainer.class));
 		return gson.toJson(container, CellContainer.class);
 	}
+	
 }

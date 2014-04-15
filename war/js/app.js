@@ -96,17 +96,18 @@ flappyMMCJ.model.resetGame = function() {
  * @param {string} boardString Current state of the board.
  */
 flappyMMCJ.model.getComputerMove = function(boardString) {
-	gapi.client.tictactoe.board.getmove({'state': boardString}).execute(
-			function(resp) {
-				var board = JSON.parse(resp.state);
-				gameView.updateBoard(board);
-				var status = flappyMMCJ.model.checkForVictory(board);
-				if (status != flappyMMCJ.model.NOT_DONE) {
-					flappyMMCJ.model.handleFinish(status);
-				} else {
-					flappyMMCJ.model.waitingForMove = true;
-				}
-			});
+
+	$.post("http://localhost:8888/getRandomMoveServlet", boardString, function(boardState){
+		console.log("getComputerMove: "+boardState);
+		var board = JSON.parse(boardState);
+		gameView.updateBoard(board);
+		var status = flappyMMCJ.model.checkForVictory(board);
+		if (status != flappyMMCJ.model.NOT_DONE) {
+			flappyMMCJ.model.handleFinish(status);
+		} else {
+			flappyMMCJ.model.waitingForMove = true;
+		}
+	});
 };
 
 /**
@@ -114,11 +115,7 @@ flappyMMCJ.model.getComputerMove = function(boardString) {
  * @param {number} status Result of the game.
  */
 flappyMMCJ.model.sendResultToServer = function(status) {
-	gapi.client.tictactoe.scores.insert({'outcome':
-		flappyMMCJ.model.STATUS_STRINGS[status]}).execute(
-				function(resp) {
-					flappyMMCJ.model.queryScores();
-				});
+	
 };
 
 /**
@@ -198,30 +195,17 @@ flappyMMCJ.model.handleFinish = function(status) {
  * Initializes the application.
  */
 flappyMMCJ.model.init = function() {
-	// Loads the Tic Tac Toe API asynchronously, and triggers login
-	// in the UI when loading has completed.
-	var callback = function() {
-		console.log('set up api key');
+	$.get("http://localhost:8888/initGameServlet", function(boardState){
+		console.log("initializing game with board "+ boardState);
+		var board = JSON.parse(boardState);
 
-		var clientid = '310847526935-r758bkquplt27bk4sb820mpg150rdmib.apps.googleusercontent.com'
-		gapi.client.setApiKey(clientid);  
-		gapi.client.tictactoe.board.getboard().execute(
-			function(resp) {
-
-				var board = JSON.parse(resp.state);
-				console.log("initializing game with board "+ resp.state);
-				gameView = new GameView(flappyMMCJ.model, 4, board);
-			}
-		);
-	}
-
-	var apiRoot = 'https://app405cloudgame.appspot.com/_ah/api';
-	gapi.client.load('tictactoe', 'v1', callback, apiRoot);
+		gameView = new GameView(flappyMMCJ.model, 4, board);
+	});
 };
 
 window['flappyMMCJ.model.init'] = flappyMMCJ.model.init;
 
-(function() {
+$(function() {
 	console.log('set up api key');
 
 	var newScriptElement = document.createElement('script');
@@ -233,4 +217,4 @@ window['flappyMMCJ.model.init'] = flappyMMCJ.model.init;
 	firstScriptElement.parentNode.insertBefore(newScriptElement,
 			firstScriptElement);
 
-})();
+});

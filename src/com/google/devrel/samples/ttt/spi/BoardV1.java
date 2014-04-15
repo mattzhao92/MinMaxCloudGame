@@ -46,6 +46,7 @@ public class BoardV1 {
    * @param board object representing the state of the board
    * @return the board including the computer's move
    */
+  
   @ApiMethod(name = "board.getmove", path="getmove", httpMethod = "POST")
   public Board getmove(Board board) {
 	CellContainer cellContainer = CellContainer.fromJson(board.getState());
