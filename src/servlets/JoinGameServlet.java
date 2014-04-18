@@ -63,7 +63,7 @@ public class JoinGameServlet  extends HttpServlet{
 	    	System.out.println("000000 >>>>>>>>>>> player list has size "+ playerList.size());
 		   		
 	    	if (playerList.size() == 0) {
-	    		gameInfo.setEnableMosue(false);
+	    		//gameInfo.setEnableMosue(false);
 	    	}
 	    	
 			try {

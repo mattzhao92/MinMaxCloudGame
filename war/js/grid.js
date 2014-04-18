@@ -1,4 +1,9 @@
+
+//Variable to keep track of player's current location for coloring
 var currentLoc = null;
+
+//Variable to keep track of opponent's current location for color
+var oppLoc = null;
 
 var GridTile = Class.extend({
 	// Class constructor
@@ -21,11 +26,11 @@ var GridTile = Class.extend({
 		return this.tileMesh;
 	},
 
+	/**
+	 * Updates the value of this tile
+	 */
 	updateValue: function(otherName, myName) {
-		console.log('updateValue ' + otherName + ' ' + myName);
-
 		if (otherName ==  myName) {
-			console.log('updateValue 000 ' + otherName + ' ' + myName);
 			this.tileMesh.material.opacity = 0.5;
 			this.tileMesh.material.color.setRGB(1, 1, 1);
 			this.free = false;
@@ -40,6 +45,9 @@ var GridTile = Class.extend({
 		}
 	},
 
+	/**
+	 * Reset the properties of this tile
+	 */
 	reset: function() {
 		this.isSelectable = false;
 		this.isMovable = false;
@@ -50,10 +58,16 @@ var GridTile = Class.extend({
 		this.isSelectable = isSelectable;
 	},
 
+	/**
+	 * Set the tile's movable property
+	 */
 	setMovable: function(isMovable) {
 		this.isMovable = isMovable;
 	},
 
+	/**
+	 * Set the mouseover action
+	 */
 	onMouseOver: function(scope) {
 		if (this.isSelectable) {
 			//this.world.markTileAsSelected(this);
@@ -72,6 +86,9 @@ var TileFactory = Class.extend({
 		this.tileSize = tileSize;
 	},
 
+	/**
+	 * Creates a new tile
+	 */
 	createTile: function(xPos, yPos, height) {
 		this.tileGeom = new THREE.CubeGeometry(this.tileSize, height * 20, this.tileSize);
 		var mat = new THREE.MeshBasicMaterial();
@@ -173,13 +190,15 @@ var GameView = Class.extend({
         	currentScope.onWindowResize(event);
         }, false );
 
-        // window.addEventListener( 'keydown', function(event) {
-        // 	currentScope.onKeyDown(event);
-        // }, false );
+         window.addEventListener( 'keydown', function(event) {
+         	if (currentScope.mouseListenersEnabled)
+         	currentScope.onKeyDown(event);
+         }, false );
 
 		// start animations
 		this.animate();
 	},
+
 
 	setPlayerName: function(name) {
 		this.playerName = name;
@@ -193,6 +212,9 @@ var GameView = Class.extend({
 		this.mouseListenersEnabled = false;
 	},
 
+	/**
+	 * Returns a board representation of the current tile values
+	 */
 	getBoard: function() {
 		var board = [];
 		for (var i = 0; i < this.tiles.length; i++) {
@@ -205,6 +227,9 @@ var GameView = Class.extend({
 	},
 
 
+	/**
+	 * Updates the displayed board
+	 */
 	updateBoard: function(board) {
 		var remoteCells = board.cells;
 	
@@ -238,6 +263,22 @@ var GameView = Class.extend({
 		tile.playerName = this.playerName;
 		tile.free = false;
 		this.model.clickSquare(newY, newY);
+	},
+	
+	moveCurrentPosition: function(deltaX, deltaY) {
+		if (currentLoc == null) return;
+		
+		var oldX = currentLoc.owner.xPos;
+		var oldY = currentLoc.owner.yPos;
+		
+		var tile = this.tiles[(oldX + deltaX) * this.numberSquaresOnXAxis + (oldY + deltaY)];
+		if (tile == null) return;
+		if (!tile.free) return;
+
+		this.colorSelectedTile(tile);
+		console.log("moveCurrentPosition");
+		this.moveToPosition(tile.xPos, tile.yPos);
+		
 	},
 
 	animate: function() {
@@ -299,27 +340,59 @@ var GameView = Class.extend({
 				if (cube.owner != null && cube.owner.player == null)
 					cube.material.opacity = 0.5;
 			});
-
+			
+			//Select a tile
 			if (intersects.length > 0) {
 				var intersection = intersects[ 0 ],
 				obj = intersection.object;
-				//HERE
+				
+				//Return if this tile is not free to be selected
 				if (!obj.owner.free) return;
 				
-				if (currentLoc == null) {
-					currentLoc = obj;
-				}
+				this.colorSelectedTile(obj.owner);
+				// //If this is the first move, sent this to be current location
+				// if (currentLoc == null) {
+				// 	currentLoc = obj;
+				// }
 				
-				currentLoc.material.color.setRGB(0.8,0.8,0.8);
-				currentLoc = obj;
-				this.moveToPosition(obj.owner.xPos, obj.owner.yPos);
-				obj.material.opacity = 0.5;
-				obj.material.color.setRGB( 1, 1, 1 );
+				// //Set the location of the previous location to light grey
+				// currentLoc.material.color.setRGB(0.8,0.8,0.8);
 				
-				obj.owner.free = false;
-				if (this.previousHeightedCell == obj) {
-					this.previousHeightedCell = null;
-				}
+
+				// //Move player to new location and set current tile to white
+				// currentLoc = obj;
+
+				// this.moveToPosition(obj.owner.xPos, obj.owner.yPos);
+				// obj.material.opacity = 0.5;
+				// obj.material.color.setRGB( 1, 1, 1 );
+				
+				// obj.owner.free = false;
+				// if (this.previousHeightedCell == obj) {
+				// 	this.previousHeightedCell = null;
+				// }
+			}
+	},
+
+	colorSelectedTile: function(tile) {
+			//If this is the first move, sent this to be current location
+			if (currentLoc == null) {
+				currentLoc = tile.getTileMesh();
+			}
+			
+			//Set the location of the previous location to light grey
+			currentLoc.material.color.setRGB(0.8,0.8,0.8);
+			
+
+			//Move player to new location and set current tile to white
+			currentLoc = tile.getTileMesh();
+
+			this.moveToPosition(tile.xPos, tile.yPos);
+			tile.getTileMesh().material.opacity = 0.5;
+			tile.getTileMesh().material.color.setRGB( 1, 1, 1 );
+			
+			tile.free = false;
+			if (this.previousHeightedCell == tile.getTileMesh()) {
+				this.previousHeightedCell = null;
 			}
 	},
 

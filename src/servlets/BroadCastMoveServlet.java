@@ -55,8 +55,6 @@ public class BroadCastMoveServlet extends HttpServlet{
 	    Query query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 	   
-    	System.out.println("BroadCastMoveServlet >>>>>>>>>>> player list has size "+ playerList.size());
-
     	for (Entity entity: playerList) {
 			String playername = (String) entity.getProperty("name");
 			if (!playername.equals(fromPlayer)) {
