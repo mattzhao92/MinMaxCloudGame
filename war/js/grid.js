@@ -11,6 +11,7 @@ var GridTile = Class.extend({
 		this.isSelectable = true;
 		this.free = true;
 		this.isMovable = false;
+		this.playerName = "None";
 		this.tileMesh.material.opacity = 0.5;
 		this.color = [Math.random(), Math.random(), Math.random()];
 		this.tileMesh.material.color.setRGB(this.color[0], this.color[1], this.color[2]);
@@ -20,11 +21,21 @@ var GridTile = Class.extend({
 		return this.tileMesh;
 	},
 
-	updateValue: function(newVal) {
-		if (newVal != this.zheight) {
+	updateValue: function(otherName, myName) {
+		console.log('updateValue ' + otherName + ' ' + myName);
+
+		if (otherName ==  myName) {
+			console.log('updateValue 000 ' + otherName + ' ' + myName);
+			this.tileMesh.material.opacity = 0.5;
+			this.tileMesh.material.color.setRGB(1, 1, 1);
+			this.free = false;
+		} else if (otherName == "None") {
+			this.free = true;
+			// do nothing in this case
+		} else {
+
 			this.tileMesh.material.opacity = 0.5;
 			this.tileMesh.material.color.setRGB(0,0,0);
-			this.zheight = newVal;
 			this.free = false;
 		}
 	},
@@ -33,35 +44,6 @@ var GridTile = Class.extend({
 		this.isSelectable = false;
 		this.isMovable = false;
 		this.tileMesh.visible = false;
-	},
-
-	markAsNotSelected: function() {
-		if (this.isMovable) {
-			this.highlight("GREEN");
-		}
-	},
-
-	highlight: function(color) {
-
-		this.tileMesh.visible = true;
-		this.tileMesh.material.opacity = 0.6;
-		var rgb;
-		switch (color) {
-		case "GREEN":
-			rgb = [0.1, 1.0, 0.1];
-			break;
-		case "YELLOW":
-			rgb = [3.0, 3.0, 0];
-			break;
-		case "RED": 
-			rgb = [1.0, 0, 0];
-			break;
-		default:
-			console.log("Invalid color specified");
-		break;
-		}
-
-		this.tileMesh.material.color.setRGB(rgb[0], rgb[1], rgb[2]);
 	},
 
 	setSelectable: function(isSelectable) {
@@ -81,12 +63,6 @@ var GridTile = Class.extend({
 			};
 		}
 		return null;
-	},
-
-	markAsMovable: function() {
-		if (this.isMovable) {
-			this.highlight("GREEN");
-		}
 	}
 });
 
@@ -124,7 +100,7 @@ var GameView = Class.extend({
 		var currentScope = this;
 		this.model = model;
 		this.container = document.getElementById('container');
-		
+
 		this.viewWidth = $(window).width();//1000;// Math.min(container.clientWidth,container.clientHeight);
 		this.viewHeight = $(window).height();//this.viewWidth;
 		console.log(this.container);
@@ -179,13 +155,17 @@ var GameView = Class.extend({
 		}     
 
 		this.scene.add(this.tile3D);
+		this.mouseListenersEnabled = false;
+
 		// set up window listeners
         window.addEventListener('mousemove', function(event) {
-            currentScope.onMouseMove(event);
+        	if (currentScope.mouseListenersEnabled)
+            	currentScope.onMouseMove(event);
         }, false);
 
         window.addEventListener('mousedown', function(event) {
-            currentScope.onMouseDown(event);
+        	if (currentScope.mouseListenersEnabled)
+            	currentScope.onMouseDown(event);
         }, false);
 
 
@@ -201,13 +181,26 @@ var GameView = Class.extend({
 		this.animate();
 	},
 
-	getBoard: function() {
+	setPlayerName: function(name) {
+		this.playerName = name;
+	},
 
+	enableMouseListeners: function() {
+		this.mouseListenersEnabled = true;
+	},
+
+	disableMouseListeners: function() {
+		this.mouseListenersEnabled = false;
+	},
+
+	getBoard: function() {
 		var board = [];
 		for (var i = 0; i < this.tiles.length; i++) {
 			var tile = this.tiles[i];
-			board.push({x: tile.xPos, y:tile.yPos, val:tile.zheight});
+			board.push({x: tile.xPos, y:tile.yPos, val:tile.zheight, playerName: tile.playerName});
 		}
+		console.log(board);
+		debugger;
 		return board;
 	},
 
@@ -221,7 +214,7 @@ var GameView = Class.extend({
 			for (var j = 0; j < this.tiles.length; j++) {
 				var localCell = this.tiles[j];
 				if (remoteCell.x == localCell.xPos && localCell.yPos == remoteCell.y) {
-					localCell.updateValue(remoteCell.val);
+					localCell.updateValue(remoteCell.playerName, this.playerName);
 				}
 			}
 		}
@@ -242,7 +235,8 @@ var GameView = Class.extend({
 
 	moveToPosition: function(newX, newY) {
 		var tile = this.tiles[newX * this.numberSquaresOnXAxis + newY];
-		tile.zheight += 10;
+		tile.playerName = this.playerName;
+		tile.free = false;
 		this.model.clickSquare(newY, newY);
 	},
 
@@ -318,7 +312,6 @@ var GameView = Class.extend({
 				
 				currentLoc.material.color.setRGB(0.8,0.8,0.8);
 				currentLoc = obj;
-				obj.material.color.setRGB(0.0, 1, 0.0);
 				this.moveToPosition(obj.owner.xPos, obj.owner.yPos);
 				obj.material.opacity = 0.5;
 				obj.material.color.setRGB( 1, 1, 1 );

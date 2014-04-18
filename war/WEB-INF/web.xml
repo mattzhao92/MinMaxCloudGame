@@ -2,14 +2,13 @@
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>
     <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
-    <init-param>
+
+      <init-param>
       <param-name>services</param-name>
-      <param-value>com.google.devrel.samples.ttt.spi.BoardV1</param-value>
+      <param-value/>
     </init-param>
-  </servlet>
-  
-  
-  
+   </servlet>
+    
   <servlet>
   	<servlet-name> GetBoardServlet</servlet-name> 
   	<servlet-class> servlets.GetBoardServlet</servlet-class> 
@@ -42,6 +41,27 @@
     <url-pattern>/getRandomMoveServlet</url-pattern>
   </servlet-mapping>
   
+  
+   <servlet>
+  	<servlet-name> JoinGameServlet</servlet-name> 
+  	<servlet-class> servlets.JoinGameServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>JoinGameServlet</servlet-name>
+    <url-pattern>/joinGameServlet</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
+  	<servlet-name> BroadCastMoveServlet </servlet-name> 
+  	<servlet-class> servlets.BroadCastMoveServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>BroadCastMoveServlet</servlet-name>
+    <url-pattern>/broadCastMoveServlet</url-pattern>
+  </servlet-mapping>
   
   
   

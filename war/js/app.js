@@ -61,14 +61,21 @@ var gameView = null;
  * @param {MouseEvent} e Mouse click event.
  */
 flappyMMCJ.model.clickSquare = function(x, y) {
+	
 	if (flappyMMCJ.model.waitingForMove) {
+		gameView.disableMouseListeners();
+
 		flappyMMCJ.model.waitingForMove = false;
 
 		var board = gameView.getBoard();
+
+		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
+
 		var status = flappyMMCJ.model.checkForVictory({'cells': board});
 
+
 		if (status == flappyMMCJ.model.NOT_DONE) {
-			flappyMMCJ.model.getComputerMove(JSON.stringify({'cells': board}));
+			//flappyMMCJ.model.getComputerMove(JSON.stringify({'cells': board}));
 		} else {
 			flappyMMCJ.model.handleFinish(status);
 		}
@@ -89,6 +96,7 @@ flappyMMCJ.model.resetGame = function() {
 	}
 	document.getElementById('victory').innerHTML = '';
 	flappyMMCJ.model.waitingForMove = true;
+	gameView.enableMouseListeners();
 };
 
 /**
@@ -106,6 +114,7 @@ flappyMMCJ.model.getComputerMove = function(boardString) {
 			flappyMMCJ.model.handleFinish(status);
 		} else {
 			flappyMMCJ.model.waitingForMove = true;
+			gameView.enableMouseListeners();
 		}
 	});
 };
@@ -117,6 +126,22 @@ flappyMMCJ.model.getComputerMove = function(boardString) {
 flappyMMCJ.model.sendResultToServer = function(status) {
 	
 };
+
+
+flappyMMCJ.model.broadCastChange = function(board) {
+	var msg = {
+		'playername' : flappyMMCJ.model.playername,
+		'board' : board
+	};
+
+	console.log('broadCastChange');
+	console.log(msg);
+
+	$.post("http://localhost:8888/broadCastMoveServlet", JSON.stringify(msg), function(resp){
+		console.log("broadCastChange callback");
+	});
+};
+
 
 /**
  * Queries for results of previous games.
@@ -189,13 +214,60 @@ flappyMMCJ.model.handleFinish = function(status) {
 	}
 };
 
+flappyMMCJ.socket = {};
 
+flappyMMCJ.socket.onOpened = function () {
+    if (flappyMMCJ.model.initCallback) {
+    	console.log("initCallback");
+    	flappyMMCJ.model.initCallback();
+    }
+};
+
+flappyMMCJ.socket.onMessage = function (msg) {
+
+    var packet = JSON.parse(msg.data);
+
+    if (packet.type == "updateView") {
+    	var content = JSON.parse(packet.content);
+    	console.log("updateView");
+		var board = JSON.parse(packet.content);
+		console.log(board);
+		gameView.updateBoard(board);
+		flappyMMCJ.model.waitingForMove = true;
+		gameView.enableMouseListeners();
+    }
+};
+
+flappyMMCJ.socket.onError = function (err) {
+    //alert("Channel opened!");
+};
+
+flappyMMCJ.socket.onClose = function () {
+    //alert("Channel opened!");
+};
+
+
+flappyMMCJ.model.setupChannel = function(channelToken, initCallback) {
+	flappyMMCJ.model.initCallback = initCallback;
+	var channel = new goog.appengine.Channel(channelToken);
+	console.log(">>>>> channelToken:" + channelToken);
+	debugger;
+    var socket = channel.open();
+    socket.onopen = flappyMMCJ.socket.onOpened;
+    socket.onmessage = flappyMMCJ.socket.onMessage;
+    socket.onerror = flappyMMCJ.socket.onError;
+    socket.onclose = flappyMMCJ.socket.onClose;
+
+    $(window).on('beforeunload', function() {
+    	clearTimeout(socket.pollingTimer_);
+	});
+};
 
 /**
  * Initializes the application.
  */
 flappyMMCJ.model.init = function() {
-	$.get("http://localhost:8888/initGameServlet", function(boardState){
+	$.get("http://localhost:8888/getBoardServlet", function(boardState){
 		console.log("initializing game with board "+ boardState);
 		var board = JSON.parse(boardState);
 
@@ -206,8 +278,6 @@ flappyMMCJ.model.init = function() {
 window['flappyMMCJ.model.init'] = flappyMMCJ.model.init;
 
 $(function() {
-	console.log('set up api key');
-
 	var newScriptElement = document.createElement('script');
 	newScriptElement.type = 'text/javascript';
 	newScriptElement.async = true;

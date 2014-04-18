@@ -38,7 +38,7 @@ public class Board {
 	  int count = 0;
 	  for (int i = 0; i < 4; i++) {
 		  for (int j = 0; j < 4; j++) {
-			  container.add(new Cell(i,j,values[count++]));
+			  container.add(new Cell(i,j,values[count++], "None"));
 		  }
 	  }
 	  state = CellContainer.toJson(container);
