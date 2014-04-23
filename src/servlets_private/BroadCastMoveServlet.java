@@ -1,4 +1,4 @@
-package servlets;
+package servlets_private;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class BroadCastMoveServlet extends HttpServlet{
 				String token = (String) entity.getProperty("token");
 				System.out.println("broadCasting to player: "+playername);
 
-				SocketMessage packet = new SocketMessage("updateView", broadcastmsg.board);
+				SocketMessage packet = new SocketMessage("updateView", broadcastmsg.board, false);
 				ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 				channelService.sendMessage(message);
 				channelService.sendMessage(message);

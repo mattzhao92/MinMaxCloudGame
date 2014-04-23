@@ -1,4 +1,4 @@
-package servlets;
+package servlets_private;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import Json.*;
+import Model.GameModel;
 import Model.PlayerMap;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -37,6 +38,8 @@ public class InitGameServlet extends HttpServlet {
 		syncCache.put("listOfPlayers", new HashMap<String, GameInfo>());
 		syncCache.put("gameStarted", false);
 		
+	    GameModel.storeCurrentBoard(newBoard.getState());
+
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction tx = datastore.beginTransaction();
@@ -45,7 +48,6 @@ public class InitGameServlet extends HttpServlet {
 	    Query query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 
-	    System.out.println("whyyyyyy  >>>>>>>>>>> player list has size "+ playerList.size());
 	    
 	    for (Entity existingEntity : playerList) {
 	    	datastore.delete(existingEntity.getKey());

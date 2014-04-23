@@ -8,59 +8,80 @@
       <param-value/>
     </init-param>
    </servlet>
-    
+   
+  <servlet>
+  	<servlet-name> GameGUIServlet </servlet-name> 
+  	<servlet-class> servlets_public.GameGUIServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>GameGUIServlet</servlet-name>
+    <url-pattern>/gameGUI</url-pattern>
+  </servlet-mapping>
+  
+   
+  <servlet>
+  	<servlet-name> JoinSubGameServlet </servlet-name> 
+  	<servlet-class> servlets_public.JoinSubGameServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>JoinSubGameServlet</servlet-name>
+    <url-pattern>/joinSubGame</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name> TakeTurnServlet </servlet-name> 
+  	<servlet-class> servlets_public.TakeTurnServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>TakeTurnServlet</servlet-name>
+    <url-pattern>/takeTurn</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
   	<servlet-name> GetBoardServlet</servlet-name> 
-  	<servlet-class> servlets.GetBoardServlet</servlet-class> 
+  	<servlet-class> servlets_private.GetBoardServlet</servlet-class> 
   </servlet>
   
   <servlet-mapping>
     <servlet-name>GetBoardServlet</servlet-name>
-    <url-pattern>/getBoardServlet</url-pattern>
+    <url-pattern>/getBoard</url-pattern>
   </servlet-mapping>
   
 
   <servlet>
   	<servlet-name> InitGameServlet</servlet-name> 
-  	<servlet-class> servlets.InitGameServlet</servlet-class> 
+  	<servlet-class> servlets_private.InitGameServlet</servlet-class> 
   </servlet>
   
   <servlet-mapping>
     <servlet-name>InitGameServlet</servlet-name>
-    <url-pattern>/initGameServlet</url-pattern>
+    <url-pattern>/initGame</url-pattern>
   </servlet-mapping>
   
   
   <servlet>
   	<servlet-name> GetRandomMoveServlet</servlet-name> 
-  	<servlet-class> servlets.GetRandomMoveServlet</servlet-class> 
+  	<servlet-class> servlets_private.GetRandomMoveServlet</servlet-class> 
   </servlet>
   
   <servlet-mapping>
     <servlet-name>GetRandomMoveServlet</servlet-name>
-    <url-pattern>/getRandomMoveServlet</url-pattern>
+    <url-pattern>/getRandomMove</url-pattern>
   </servlet-mapping>
   
-  
-   <servlet>
-  	<servlet-name> JoinGameServlet</servlet-name> 
-  	<servlet-class> servlets.JoinGameServlet</servlet-class> 
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>JoinGameServlet</servlet-name>
-    <url-pattern>/joinGameServlet</url-pattern>
-  </servlet-mapping>
-  
+
   
   <servlet>
   	<servlet-name> BroadCastMoveServlet </servlet-name> 
-  	<servlet-class> servlets.BroadCastMoveServlet</servlet-class> 
+  	<servlet-class> servlets_private.BroadCastMoveServlet</servlet-class> 
   </servlet>
   
   <servlet-mapping>
     <servlet-name>BroadCastMoveServlet</servlet-name>
-    <url-pattern>/broadCastMoveServlet</url-pattern>
+    <url-pattern>/broadCastMove</url-pattern>
   </servlet-mapping>
   
   

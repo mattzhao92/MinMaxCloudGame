@@ -233,7 +233,12 @@ flappyMMCJ.socket.onMessage = function (msg) {
 		var board = JSON.parse(packet.content);
 		console.log(board);
 		gameView.updateBoard(board);
-		flappyMMCJ.model.waitingForMove = true;
+        
+        if (content.lockScreen) {
+		    flappyMMCJ.model.waitingForMove = false;
+        } else {
+		    flappyMMCJ.model.waitingForMove = true;
+        }
 		gameView.enableMouseListeners();
     }
 };

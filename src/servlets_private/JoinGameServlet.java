@@ -1,4 +1,4 @@
-package servlets;
+package servlets_private;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -39,8 +39,8 @@ public class JoinGameServlet  extends HttpServlet{
 
 		boolean gameStarted = false; //= (boolean) syncCache.get("gameStarted");
 		if (gameStarted) {
-			JoinGameServletResponse jsonresp = new JoinGameServletResponse("error", "game has already started");
-			resp.getWriter().println(gson.toJson(jsonresp, JoinGameServletResponse.class));
+			StatusResponse jsonresp = new StatusResponse("error", "game has already started");
+			resp.getWriter().println(gson.toJson(jsonresp, StatusResponse.class));
 		} else {
 			//HashMap<String, GameInfo> players = (HashMap<String, GameInfo>) syncCache.get("listOfPlayers");
 
@@ -76,8 +76,8 @@ public class JoinGameServlet  extends HttpServlet{
 			}
 			tx.commit();
 			
-			JoinGameServletResponse jsonresp = new JoinGameServletResponse("success", gameInfo.toJson());
-			resp.getWriter().println(gson.toJson(jsonresp, JoinGameServletResponse.class));
+			StatusResponse jsonresp = new StatusResponse("success", gameInfo.toJson());
+			resp.getWriter().println(gson.toJson(jsonresp, StatusResponse.class));
 		}
 	}
 

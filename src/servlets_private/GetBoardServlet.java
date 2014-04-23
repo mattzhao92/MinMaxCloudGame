@@ -1,4 +1,4 @@
-package servlets;
+package servlets_private;
 
 import java.io.IOException;
 

@@ -1,12 +1,13 @@
 package Json;
 
-public class JoinGameServletResponse {
+public class StatusResponse {
 
 	public String status;
 	public String msg;
 	
-	public JoinGameServletResponse(String statusIn, String msgIn) {
+	public StatusResponse(String statusIn, String msgIn) {
 		this.status = statusIn;
 		this.msg = msgIn;
 	}
+	
 }
