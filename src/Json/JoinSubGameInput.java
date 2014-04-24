@@ -7,6 +7,7 @@ public class JoinSubGameInput {
 	public String playerName;
 	public boolean isAI;
 	public String AIUrl; //same with playerServer URL
+	public String gameURL;
 	public String token;
 	
 	

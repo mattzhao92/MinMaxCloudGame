@@ -52,10 +52,12 @@ public class JoinSubGameServlet extends HttpServlet {
 		String playerName = request.playerName;
 		boolean isAI = request.isAI;
 		String AIUrl = request.AIUrl;
+		String gameUrl = request.gameURL;
 		
 		// generate a channel id/token for the player
 		String channelKey = playerID + random.nextDouble() * 100;
 		String token = channelService.createChannel(channelKey);
+		request.token = token;
 		
 		// storing <playerName, his token> into database
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -72,6 +74,7 @@ public class JoinSubGameServlet extends HttpServlet {
 			newPlayer.setProperty("playerID", playerID);
 			newPlayer.setProperty("token", token);
 			newPlayer.setProperty("AIUrl", AIUrl);
+			newPlayer.setProperty("gameURL", gameUrl);
 			datastore.put(newPlayer);
 		} catch (Exception e) {
 			errorOccured = true;
@@ -85,7 +88,8 @@ public class JoinSubGameServlet extends HttpServlet {
 			resp.getWriter().println(gson.toJson(jsonresp, StatusResponse.class));
 
 		} else {
-			resp.getWriter().println("http://localhost:8888/gameGUI");
+			// changeme
+			resp.getWriter().println("http://localhost:8888/gameGUI?data=" + URLEncoder.encode(gson.toJson(request, JoinSubGameInput.class), "UTF-8"));
 		}
 	}
 }

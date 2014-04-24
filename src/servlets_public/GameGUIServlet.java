@@ -56,7 +56,7 @@ public class GameGUIServlet extends HttpServlet{
 		String indexhtml = getStringFromInputStream(context.getResourceAsStream("/WEB-INF/index.html"));
 		indexhtml = indexhtml.replace("\"REPLACE_PLAYER_NAME\"", "\""+request.playerName+"\"");
 		indexhtml = indexhtml.replace("\"REPLACE_TOKEN\"", "\""+request.token+"\"");
-		indexhtml = indexhtml.replace("\"REPLACE_ENABLE_MOUSE\"", "true");
+		indexhtml = indexhtml.replace("\"REPLACE_ENABLE_MOUSE\"", "false");
 		resp.getWriter().println(indexhtml);
 	}
 }

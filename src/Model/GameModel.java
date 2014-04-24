@@ -17,7 +17,8 @@ public class GameModel {
 		Entity newBoard = null;
 		try {
 			newBoard = new Entity("Board", boardKey);
-			newBoard.setProperty("board", board);
+			com.google.appengine.api.datastore.Text text = new com.google.appengine.api.datastore.Text(board);
+			newBoard.setProperty("board", text);
 			datastore.put(newBoard);
 		} catch (Exception e) {
 			e.printStackTrace();

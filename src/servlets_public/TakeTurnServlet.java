@@ -18,24 +18,37 @@ import Json.TakeTurnServletInput;
 import Model.GameModel;
 
 import com.google.appengine.api.channel.ChannelMessage;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Text;
 
 public class TakeTurnServlet extends HttpServlet{
 	private Gson gson = new Gson();
 	
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) 
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		
 		System.out.println("TakeTurnServlet");
+//		
+//		BufferedReader reade11r = new BufferedReader(new InputStreamReader(req.getInputStream()));
+//		 
+//		
+//			String sCurrentLine;
+//	
+//		while ((sCurrentLine = reade11r.readLine()) != null) {
+//			System.out.println(sCurrentLine);
+//		}
 
+		
 		Gson gson = new Gson();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		TakeTurnServletInput request = gson.fromJson(reader, TakeTurnServletInput.class);
 	
 		
-		Long playerID = Long.parseLong(request.playerID);
-		Long currScore = Long.parseLong(request.currentScore);
+		Long playerID = request.playerID;
+		Long currScore = request.currentScore;
 		
 		// get current state of the board
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -51,7 +64,7 @@ public class TakeTurnServlet extends HttpServlet{
 			return;
 	    }
 	    
-	    String board = (String) boardList.get(0).getProperty("board");
+	    String board = ((Text) boardList.get(0).getProperty("board")).getValue();
 		
 		// get the channel id corresponding to that player, if that player cannot be found
 	    // return a packet with status "fail"
@@ -78,6 +91,8 @@ public class TakeTurnServlet extends HttpServlet{
 		SocketMessage packet = new SocketMessage("updateView", board, true);
 		ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 		
+		ChannelService service = ChannelServiceFactory.getChannelService();
+		service.sendMessage(message);
 //		TakeTurn tf = new TakeTurn(playerID, currScore + 1);
 //		TurnFinishedPost tfp = new TurnFinishedPost();
 //		String result = tfp.run(tf);

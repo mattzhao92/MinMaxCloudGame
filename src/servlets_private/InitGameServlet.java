@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import request.ExceptionStringify;
 import Json.*;
 import Model.GameModel;
 import Model.PlayerMap;
@@ -28,33 +29,46 @@ import com.google.devrel.samples.ttt.PMF;
 
 public class InitGameServlet extends HttpServlet {
 	private static final long serialVersionUID = -7935086544921717020L;
-	private MemcacheService syncCache = (MemcacheService) MemcacheServiceFactory.getMemcacheService();
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 
-		Board newBoard = new Board();
-		syncCache.put("boardState", newBoard.getState());
-		syncCache.put("listOfPlayers", new HashMap<String, GameInfo>());
-		syncCache.put("gameStarted", false);
-		
-	    GameModel.storeCurrentBoard(newBoard.getState());
-
-		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		
 		Transaction tx = datastore.beginTransaction();
+		//deleting existing boardState
+		
+	    Query query = new Query("Board", GameModel.boardKey);
+	    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+	   
+    	for (Entity entity: boardList) {
+			datastore.delete(entity.getKey());
+    	}
+		tx.commit();
+		
+    	// creating a new board and store it in the database
+		Board newBoard = new Board();
+		
+		GameModel.storeCurrentBoard(newBoard.getState());
+		
+		 
+	    // resetting gameStarted boolean
+		tx = datastore.beginTransaction();
+		Key gameStartedKey = KeyFactory.createKey("GameStarted", "MyGameStarted");
+		Entity gameStart =  new Entity("GameStarted", gameStartedKey);	
+		gameStart.setProperty("gameStarted", false);
+		datastore.put(gameStart);
+		tx.commit();
+		
+		// deleting existing players
+		tx = datastore.beginTransaction();
 	    Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-
-	    Query query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
+	    query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-
-	    
 	    for (Entity existingEntity : playerList) {
 	    	datastore.delete(existingEntity.getKey());
 	    }
-	   		
 	    tx.commit();
-		
 		resp.getWriter().println(newBoard.getState());
 	}
 }

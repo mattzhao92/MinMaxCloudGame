@@ -105,7 +105,7 @@ flappyMMCJ.model.resetGame = function() {
  */
 flappyMMCJ.model.getComputerMove = function(boardString) {
 
-	$.post("http://localhost:8888/getRandomMoveServlet", boardString, function(boardState){
+	$.post("http://localhost:8887/getRandomMove", boardString, function(boardState){
 		console.log("getComputerMove: "+boardState);
 		var board = JSON.parse(boardState);
 		gameView.updateBoard(board);
@@ -137,7 +137,7 @@ flappyMMCJ.model.broadCastChange = function(board) {
 	console.log('broadCastChange');
 	console.log(msg);
 
-	$.post("http://localhost:8888/broadCastMoveServlet", JSON.stringify(msg), function(resp){
+	$.post("http://localhost:8888/broadCastMove", JSON.stringify(msg), function(resp){
 		console.log("broadCastChange callback");
 	});
 };
@@ -272,7 +272,8 @@ flappyMMCJ.model.setupChannel = function(channelToken, initCallback) {
  * Initializes the application.
  */
 flappyMMCJ.model.init = function() {
-	$.get("http://localhost:8888/getBoardServlet", function(boardState){
+	//changme
+	$.get("http://localhost:8888/getBoard", function(boardState){
 		console.log("initializing game with board "+ boardState);
 		var board = JSON.parse(boardState);
 
