@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import Json.JoinSubGameInput;
+import Json.JoinSubGameMessage;
 
 import com.google.gson.Gson;
 
@@ -50,7 +50,7 @@ public class GameGUIServlet extends HttpServlet{
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		String jsonString = URLDecoder.decode(req.getParameter("data"), "UTF-8");
-		JoinSubGameInput request = gson.fromJson(jsonString, JoinSubGameInput.class);
+		JoinSubGameMessage request = gson.fromJson(jsonString, JoinSubGameMessage.class);
 	    ServletContext context = getServletContext();
 
 		String indexhtml = getStringFromInputStream(context.getResourceAsStream("/WEB-INF/index.html"));

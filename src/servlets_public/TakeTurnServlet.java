@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import post.TurnFinishedPost;
-import request.TakeTurn;
-import Json.JoinSubGameInput;
 import Json.SocketMessage;
 import Json.StatusResponse;
 import Json.TakeTurnServletInput;
@@ -25,21 +22,12 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.Text;
 
 public class TakeTurnServlet extends HttpServlet{
-	private Gson gson = new Gson();
+	private static final long serialVersionUID = 4570152921495514409L;
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		
 		System.out.println("TakeTurnServlet");
-//		
-//		BufferedReader reade11r = new BufferedReader(new InputStreamReader(req.getInputStream()));
-//		 
-//		
-//			String sCurrentLine;
-//	
-//		while ((sCurrentLine = reade11r.readLine()) != null) {
-//			System.out.println(sCurrentLine);
-//		}
 
 		
 		Gson gson = new Gson();
@@ -71,10 +59,12 @@ public class TakeTurnServlet extends HttpServlet{
 	    String token = null;
 	    
 	    Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-	    query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
+	    query = new Query("Player", playerKey);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 	   
+	    System.out.println("myPlayerID "+ playerID);
     	for (Entity entity: playerList) {
+    		System.out.println("otherPlayerID "+ (Long) entity.getProperty("playerID"));
 			Long otherPlayerID = (Long) entity.getProperty("playerID");
 			if (playerID.equals(otherPlayerID)) {
 				token = (String) entity.getProperty("token");
@@ -82,6 +72,7 @@ public class TakeTurnServlet extends HttpServlet{
     	}
     	
     	if (token == null) {
+    		System.out.println("token is null");
     		StatusResponse status = new StatusResponse("fail","player does not exist in the database");
 			resp.getWriter().println(gson.toJson(status, StatusResponse.class));
 			return;
@@ -91,14 +82,32 @@ public class TakeTurnServlet extends HttpServlet{
 		SocketMessage packet = new SocketMessage("updateView", board, true);
 		ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 		
+		// store last player that has taken a turn
+		Transaction tx = datastore.beginTransaction();
+
+	    Key lastTurnKey = KeyFactory.createKey("LastTurn", "MyLastTurn");
+
+	    query = new Query("lastTurn", lastTurnKey);
+	    List<Entity> turnList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+	    for (Entity deleteMe : turnList) {
+	    	datastore.delete(deleteMe.getKey());
+	    }
+	    
+	    Entity lastTurn;
+		try {
+			lastTurn = new Entity("lastTurn", lastTurnKey);
+			lastTurn.setProperty("playerID", playerID);
+			datastore.put(lastTurn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		tx.commit();
+
+		
+		// sending a updateview packet to that player
+		System.out.println("sending to client a updateview packet, tokenId: "+token);
 		ChannelService service = ChannelServiceFactory.getChannelService();
 		service.sendMessage(message);
-//		TakeTurn tf = new TakeTurn(playerID, currScore + 1);
-//		TurnFinishedPost tfp = new TurnFinishedPost();
-//		String result = tfp.run(tf);
-//		
-//		// At this point, we can send back a packet with status "ok"
-//		resp.getWriter().println(result);
 		
 	}
 }

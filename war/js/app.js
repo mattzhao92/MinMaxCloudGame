@@ -2,6 +2,9 @@ var flappyMMCJ = {}
 /** TicTacToe namespace for this sample. */
 flappyMMCJ.model = flappyMMCJ.model || {};
 
+flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
+flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+
 /**
  * Status for an unfinished game.
  * @type {number}
@@ -70,6 +73,7 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 		var board = gameView.getBoard();
 
 		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
+		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}));
 
 		var status = flappyMMCJ.model.checkForVictory({'cells': board});
 
@@ -81,6 +85,8 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 		}
 	}
 };
+
+
 
 /**
  * Resets the game board.
@@ -105,18 +111,18 @@ flappyMMCJ.model.resetGame = function() {
  */
 flappyMMCJ.model.getComputerMove = function(boardString) {
 
-	$.post("http://localhost:8887/getRandomMove", boardString, function(boardState){
-		console.log("getComputerMove: "+boardState);
-		var board = JSON.parse(boardState);
-		gameView.updateBoard(board);
-		var status = flappyMMCJ.model.checkForVictory(board);
-		if (status != flappyMMCJ.model.NOT_DONE) {
-			flappyMMCJ.model.handleFinish(status);
-		} else {
-			flappyMMCJ.model.waitingForMove = true;
-			gameView.enableMouseListeners();
-		}
-	});
+//	$.post("http://localhost:8887/getRandomMove", boardString, function(boardState){
+//		console.log("getComputerMove: "+boardState);
+//		var board = JSON.parse(boardState);
+//		gameView.updateBoard(board);
+//		var status = flappyMMCJ.model.checkForVictory(board);
+//		if (status != flappyMMCJ.model.NOT_DONE) {
+//			flappyMMCJ.model.handleFinish(status);
+//		} else {
+//			flappyMMCJ.model.waitingForMove = true;
+//			gameView.enableMouseListeners();
+//		}
+//	});
 };
 
 /**
@@ -125,6 +131,20 @@ flappyMMCJ.model.getComputerMove = function(boardString) {
  */
 flappyMMCJ.model.sendResultToServer = function(status) {
 	
+};
+
+
+flappyMMCJ.model.onTakeTurnFinished = function(board) {
+	var msg = {
+		'board' : board
+	};
+
+	console.log('takeTurnFinished');
+	console.log(msg);
+
+	$.post(flappyMMCJ.gameServer + "/takeTurnFinished", JSON.stringify(msg), function(resp){
+		console.log("takeTurnFinished callback");
+	});
 };
 
 
@@ -137,7 +157,7 @@ flappyMMCJ.model.broadCastChange = function(board) {
 	console.log('broadCastChange');
 	console.log(msg);
 
-	$.post("http://localhost:8888/broadCastMove", JSON.stringify(msg), function(resp){
+	$.post(flappyMMCJ.gameServer + "/broadCastMove", JSON.stringify(msg), function(resp){
 		console.log("broadCastChange callback");
 	});
 };
@@ -273,7 +293,7 @@ flappyMMCJ.model.setupChannel = function(channelToken, initCallback) {
  */
 flappyMMCJ.model.init = function() {
 	//changme
-	$.get("http://localhost:8888/getBoard", function(boardState){
+	$.get(flappyMMCJ.gameServer + "/getBoard", function(boardState){
 		console.log("initializing game with board "+ boardState);
 		var board = JSON.parse(boardState);
 

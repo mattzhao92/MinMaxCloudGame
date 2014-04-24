@@ -39,7 +39,7 @@ public class BroadCastMoveServlet extends HttpServlet{
 			throws IOException{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 
-		BroadCastServletInput broadcastmsg = gson.fromJson(reader, BroadCastServletInput.class);
+		BroadCastMessage broadcastmsg = gson.fromJson(reader, BroadCastMessage.class);
 		System.out.println("broadcastmsg "+ broadcastmsg.playername + " " + broadcastmsg.board);
 
 		String fromPlayer = broadcastmsg.playername;

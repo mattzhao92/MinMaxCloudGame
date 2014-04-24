@@ -63,8 +63,8 @@ public class InitGameServlet extends HttpServlet {
 		// deleting existing players
 		tx = datastore.beginTransaction();
 	    Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-	    query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
-	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+	    query = new Query("Player", playerKey);
+	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
 	    for (Entity existingEntity : playerList) {
 	    	datastore.delete(existingEntity.getKey());
 	    }

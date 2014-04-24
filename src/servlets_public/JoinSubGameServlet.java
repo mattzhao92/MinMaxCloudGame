@@ -22,7 +22,8 @@ import com.google.gson.Gson;
 
 import Json.GameInfo;
 import Json.StatusResponse;
-import Json.JoinSubGameInput;
+import Json.JoinSubGameMessage;
+import Model.GameModel;
 
 public class JoinSubGameServlet extends HttpServlet {
 
@@ -35,27 +36,17 @@ public class JoinSubGameServlet extends HttpServlet {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		System.out.println("JoinSubGameServlet");
 		
-//		JoinSubGameInput temp = new JoinSubGameInput();
-//		temp.AIUrl = "http://AIString";
-//		temp.isAI = false;
-//		temp.playerID = "KyleID";
-//		temp.playerName = "Kyle";
-//		temp.token = "kyleToken";
-//		if (true) {
-//			resp.getWriter().println("http://localhost:8888/gameGUI?data=" + URLEncoder.encode(gson.toJson(temp, JoinSubGameInput.class), "UTF-8"));
-//			return;
-//		}
 		// parse the input packet
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
-		JoinSubGameInput request = gson.fromJson(reader, JoinSubGameInput.class);
-		String playerID = request.playerID;
+		JoinSubGameMessage request = gson.fromJson(reader, JoinSubGameMessage.class);
+		Long playerID = request.playerID;
 		String playerName = request.playerName;
 		boolean isAI = request.isAI;
 		String AIUrl = request.AIUrl;
 		String gameUrl = request.gameURL;
 		
 		// generate a channel id/token for the player
-		String channelKey = playerID + random.nextDouble() * 100;
+		String channelKey = ""+playerID + random.nextDouble() * 100;
 		String token = channelService.createChannel(channelKey);
 		request.token = token;
 		
@@ -89,7 +80,7 @@ public class JoinSubGameServlet extends HttpServlet {
 
 		} else {
 			// changeme
-			resp.getWriter().println("http://localhost:8888/gameGUI?data=" + URLEncoder.encode(gson.toJson(request, JoinSubGameInput.class), "UTF-8"));
+			resp.getWriter().println(GameModel.gameServerPath+"/gameGUI?data=" + URLEncoder.encode(gson.toJson(request, JoinSubGameMessage.class), "UTF-8"));
 		}
 	}
 }

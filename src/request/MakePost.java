@@ -47,9 +47,9 @@ public class MakePost {
 		}
 	}
 
-	public String execute(Object obj) throws Exception {
+	public String execute(String data) throws Exception {
 		HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
-		request.setPayload(g.toJson(obj).toString().getBytes());
+		request.setPayload(data.getBytes());
 		return new String(fetcher.fetch(request).getContent());
 	}
 }

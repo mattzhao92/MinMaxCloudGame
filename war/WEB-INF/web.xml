@@ -41,6 +41,18 @@
   </servlet-mapping>
   
   <servlet>
+  	<servlet-name> TakeFinishedServlet </servlet-name> 
+  	<servlet-class> servlets_private.TakeFinishedServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>TakeFinishedServlet</servlet-name>
+    <url-pattern>/takeTurnFinished</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  <servlet>
   	<servlet-name> GetBoardServlet</servlet-name> 
   	<servlet-class> servlets_private.GetBoardServlet</servlet-class> 
   </servlet>
