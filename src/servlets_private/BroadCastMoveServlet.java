@@ -46,17 +46,16 @@ public class BroadCastMoveServlet extends HttpServlet{
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
-		Transaction tx = datastore.beginTransaction();
 	    Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
 
 	    // Run an ancestor query to ensure we see the most up-to-date
 	    // view of the Greetings belonging to the selected Guestbook.
 	  
-	    Query query = new Query("Player", playerKey).addSort("name", Query.SortDirection.DESCENDING);
+	    Query query = new Query("Player", playerKey);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 	   
     	for (Entity entity: playerList) {
-			String playername = (String) entity.getProperty("name");
+			String playername = (String) entity.getProperty("playerName");
 			if (!playername.equals(fromPlayer)) {
 				String token = (String) entity.getProperty("token");
 				System.out.println("broadCasting to player: "+playername);
@@ -64,10 +63,8 @@ public class BroadCastMoveServlet extends HttpServlet{
 				SocketMessage packet = new SocketMessage("updateView", broadcastmsg.board, false);
 				ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 				channelService.sendMessage(message);
-				channelService.sendMessage(message);
+				//channelService.sendMessage(message);
 			}
-    	}
-		tx.commit();
-		
+    	}		
 	}
 }
