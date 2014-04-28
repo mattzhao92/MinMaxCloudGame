@@ -262,7 +262,25 @@ flappyMMCJ.socket.onMessage = function (msg) {
 		gameView.enableMouseListeners();
     }
     if (packet.type == "redirect") {
-    	
+    	var content = JSON.parse(packet.content);
+    	if (content.status == "ok") {
+    		var request = {
+    				'playerName' : content.playerName,
+    				'isAI' : content.isAI,
+    				'playerID' : content.playerId,
+    				'inboundingPortID' : content.inboundPortalID,
+    				'AIUrl' : content.AIUrl
+    		};
+
+			$.post(content.gameURL+'/joinSubGame', JSON.stringify(request),
+    			function(data) {
+					var packet = JSON.parse(data);
+					if (packet.status == "ok") {
+						window.location.replace(packet.redirect);
+					}
+    			}
+			);
+    	}
     }
 };
 
