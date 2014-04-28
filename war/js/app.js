@@ -73,7 +73,7 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 		var board = gameView.getBoard();
 
 		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
-		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}));
+		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board, 'x':x, 'y':y}));
 
 		var status = flappyMMCJ.model.checkForVictory({'cells': board});
 
@@ -260,6 +260,9 @@ flappyMMCJ.socket.onMessage = function (msg) {
 		    flappyMMCJ.model.waitingForMove = true;
         }
 		gameView.enableMouseListeners();
+    }
+    if (packet.type == "redirect") {
+    	
     }
 };
 
