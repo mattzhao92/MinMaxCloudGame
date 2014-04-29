@@ -2,7 +2,8 @@ var flappyMMCJ = {}
 /** TicTacToe namespace for this sample. */
 flappyMMCJ.model = flappyMMCJ.model || {};
 
-flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
+//flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
+flappyMMCJ.TCServer = 'http://localhost:8887';
 flappyMMCJ.gameServer = 'http://localhost:8888';
 
 /**
@@ -263,6 +264,8 @@ flappyMMCJ.socket.onMessage = function (msg) {
     }
     if (packet.type == "redirect") {
     	var content = JSON.parse(packet.content);
+    	console.log("redirecting to a new game");
+    	console.log(content);
     	if (content.status == "ok") {
     		var request = {
     				'playerName' : content.playerName,

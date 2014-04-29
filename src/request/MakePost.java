@@ -16,6 +16,8 @@ package request;
 
 import javax.servlet.http.HttpServletResponse;
 
+import Model.ICallback;
+
 import com.google.appengine.api.urlfetch.*;
 import com.google.gson.Gson;
 import com.google.*;
@@ -47,9 +49,14 @@ public class MakePost {
 		}
 	}
 
-	public String execute(String data) throws Exception {
+	public String execute(String data, ICallback callback) throws Exception {
 		HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
 		request.setPayload(data.getBytes());
-		return new String(fetcher.fetch(request).getContent());
+		String repsonse =  new String(fetcher.fetch(request).getContent());
+		System.out.println("Response "  + repsonse);
+		if (callback != null) {
+			callback.execute(repsonse);
+		}
+		return repsonse;
 	}
 }

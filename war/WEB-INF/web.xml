@@ -84,7 +84,6 @@
     <url-pattern>/getRandomMove</url-pattern>
   </servlet-mapping>
   
-
   
   <servlet>
   	<servlet-name> BroadCastMoveServlet </servlet-name> 
@@ -96,6 +95,19 @@
     <url-pattern>/broadCastMove</url-pattern>
   </servlet-mapping>
   
+  
+  
+   <servlet>
+  	<servlet-name> AdminControlServlet </servlet-name> 
+  	<servlet-class> servlets_public.AdminControlServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>AdminControlServlet</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
+  
+
   
   
   <servlet-mapping>

@@ -1,0 +1,101 @@
+<!DOCTYPE html >
+
+<html>
+<head>
+    <title>TurnControl Console</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>    
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="./css/signin.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="selectLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="selectLabel">Select a SubGame</h4>
+                </div>
+                <div class="modal-body" id="model-body-content">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Select</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="selectLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="selectLabel">Encountered an error... </h4>
+                </div>
+                <div class="modal-body" id="model-body-errorcontent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+      <form class="form-signin" role="form" action="javascript:registerGameHandler()">
+        <h2 class="form-signin-heading">Register With TC</h2>
+        <input type="text" class="form-control" id = "TCServerUrl" placeholder="http://localhost:8887" required autofocus>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Join</button>
+      </form>
+
+    </div> <!-- /container -->
+</body>
+
+
+<script type="text/javascript">
+		var gameServerUrl = 'http://localhost:8888';
+        
+        function registerGameHandler() {
+
+			  // change me
+              var requestPath = document.getElementById('TCServerUrl').value;
+              //C1
+              requestPath += '/test2?method=registerGame&data={\'url\':\'http://localhost:8888\',\'portals\':[{\'isOutbound\':\'true\'},{\'isOutbound\':\'false\'}]}';
+
+              $.get(requestPath, '{}', function(data) {
+              		data = JSON.parse(data);
+                	console.log(data[0] +" " + data[1]);
+                	var outboundPortNumber = data[0];
+                	var inboundPortNumber  = data[1];
+					
+					
+					var request = {
+						'outboundPortNumber' : outboundPortNumber,
+						'inboundPortNumber'  : inboundPortNumber
+					};
+					
+					$.post(gameServerUrl + 'savePortalIDs', JSON.stringify(request), function (data) {
+					   consoel.log("savePortalIDs");
+					});
+					
+
+              });
+        }
+</script>
+</html>

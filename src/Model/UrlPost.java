@@ -18,7 +18,7 @@ public class UrlPost {
 	public String run(MethodWrapper mw, String url){
 		MakePost mp = new MakePost(url);
 		try {
-			return mp.execute(g.toJson(mw).toString());
+			return mp.execute(g.toJson(mw).toString(), null);
 	    } 
 		catch (Exception exception) {
 			exception.printStackTrace();
@@ -27,10 +27,10 @@ public class UrlPost {
 	}
 	
 	
-	public boolean sendPost(String data, String url) {
+	public boolean sendPost(String data, String url, ICallback callback) {
 		MakePost mp = new MakePost(url);
 		try {
-			if (mp.execute(data) != null) {
+			if (mp.execute(data,callback) != null) {
 				return true;
 			}
 	    } 

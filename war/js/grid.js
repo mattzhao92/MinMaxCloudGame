@@ -209,7 +209,7 @@ var GameView = Class.extend({
 	},
 
 	disableMouseListeners: function() {
-		this.mouseListenersEnabled = true;
+		this.mouseListenersEnabled = false;
 	},
 
 	/**
