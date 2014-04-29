@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import request.PortalRedirect;
 import request.PortalRequest;
 import request.TakeTurn;
+import Json.PortalRedirectToClient;
 import Json.SocketMessage;
 import Json.StatusResponse;
 import Json.TakeTurnFinishedInput;
@@ -50,6 +51,8 @@ public class PortalRedirectServlet extends HttpServlet {
 
 	    // Run an ancestor query to ensure we see the most up-to-date
 	    // view of the Greetings belonging to the selected Guestbook.
+	    
+	    
 	  
 	    Query query = new Query("Player", playerKey);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
@@ -58,9 +61,15 @@ public class PortalRedirectServlet extends HttpServlet {
 			Long playerId = (Long) entity.getProperty("playerID");
 			if (playerId == request.playerID) {
 				String token = (String) entity.getProperty("token");
+				String playerName = (String) entity.getProperty("playerName");
+				//TODO add isAI to Player table in db
+				String aiUrl = (String)entity.getProperty("AIUrl");
+				boolean isAI = true;
+				if (aiUrl == null) isAI = false;
+				PortalRedirectToClient prtc = new PortalRedirectToClient(request.status, request.playerID,
+						 request.gameURL, request.inboundPortalID, playerName, isAI, aiUrl);
 
-
-				String data = gson.toJson(request, PortalRedirect.class);
+				String data = gson.toJson(prtc, PortalRedirectToClient.class);
 				SocketMessage packet = new SocketMessage("redirect", data, false);
 				ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 				channelService.sendMessage(message);

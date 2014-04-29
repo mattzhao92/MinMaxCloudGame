@@ -47,18 +47,23 @@ public class TakeFinishedServlet extends HttpServlet{
 	    List<Entity> turnList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
 	    
 	    System.out.println("lastTurn List "+ turnList.size());
-	    if (turnList.size() == 1){
-	    	Entity lastTurn = turnList.get(0);
-	    	playerID = (Long) lastTurn.getProperty("playerID");
-	    } else {
-	    	return;
-	    }
+	    System.out.println("x,y: " + request.x + ", " + request.y);
+	    //TODO Change me
+	    //if (turnList.size() == 1){
+	    Entity lastTurn = turnList.get(0);
+	    playerID = (Long) lastTurn.getProperty("playerID");
+	    //} else {
+	    //	System.out.println("About to return");
+	    //	return;
+	   // }
 	    
-	    if (request.x == 3 && request.y == 2) {
+	    if (request.x == 0 && request.y == 0) {
+	    	System.out.println("1111111111111111");
 	    	UrlPost postUtil = new UrlPost();
-	    	postUtil.sendPost(gson.toJson(new PortalRequest(0, playerID), PortalRequest.class), GameModel.turnControlPath + "/getGameURLFromPortal");
+	    	postUtil.sendPost(gson.toJson(new PortalRequest(GameModel.getOutboundID(), playerID), PortalRequest.class), GameModel.turnControlPath + "/getGameURLFromPortal");
 	    }
 	    else {
+	    	System.out.println("222222222222222");
 	    	TakeTurn tf = new TakeTurn(playerID, currScore);
 	    	UrlPost postUtil = new UrlPost();
 	    	postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
@@ -68,5 +73,6 @@ public class TakeFinishedServlet extends HttpServlet{
 		StatusResponse response = new StatusResponse("ok", "sent turn finished to TC");
 		resp.getWriter().println(gson.toJson(response, StatusResponse.class));
 	}
+	
 
 }

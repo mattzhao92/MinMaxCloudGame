@@ -11,10 +11,10 @@ public class GameModel {
 	public static Key boardKey = KeyFactory.createKey("BoardKey", "MyBoard");
 
 	//public static String turnControlPath = "http://localhost:8887";
-	//public static String gameServerPath = "http://localhost:8888";
+	public static String gameServerPath = "http://localhost:8888";
 	
 	public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
-	public static String gameServerPath = "https://app405cloudgame.appspot.com";
+	//public static String gameServerPath = "https://app405cloudgame.appspot.com";
 	public static void storeCurrentBoard(String board) {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction tx = datastore.beginTransaction();
@@ -28,5 +28,13 @@ public class GameModel {
 			e.printStackTrace();
 		}
 		tx.commit();
+	}
+	
+	public static int getInboundID() {
+		return 0;
+	}
+	
+	public static int getOutboundID() {
+		return 1;
 	}
 }

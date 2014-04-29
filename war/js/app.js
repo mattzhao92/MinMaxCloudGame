@@ -3,7 +3,7 @@ var flappyMMCJ = {}
 flappyMMCJ.model = flappyMMCJ.model || {};
 
 flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
-flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+flappyMMCJ.gameServer = 'http://localhost:8888';
 
 /**
  * Status for an unfinished game.
