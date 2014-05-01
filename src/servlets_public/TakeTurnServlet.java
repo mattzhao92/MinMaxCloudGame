@@ -9,10 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import servlets_private.TakeFinishedServlet;
+import Json.GetMoveInput;
 import Json.SocketMessage;
 import Json.StatusResponse;
+import Json.TakeTurnFinishedInput;
 import Json.TakeTurnServletInput;
 import Model.GameModel;
+import Model.UrlPost;
 
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
@@ -67,8 +71,25 @@ public class TakeTurnServlet extends HttpServlet{
     		System.out.println("otherPlayerID "+ (Long) entity.getProperty("playerID"));
 			Long otherPlayerID = (Long) entity.getProperty("playerID");
 			if (playerID.equals(otherPlayerID)) {
-				token = (String) entity.getProperty("token");
+				if((Boolean)entity.getProperty("isAI")){
+					UrlPost postUtil = new UrlPost();
+					GetMoveInput gmi = new GetMoveInput();
+					gmi.playerID = playerID;
+					gmi.gameURL = "test";
+					gmi.treeDepth = 0;
+					gmi.validMoves = GameModel.getValidMovesForPlayer(playerID, board);
+					String data = postUtil.sendCallbackPost(gson.toJson(gmi), (String)entity.getProperty("AIUrl"));
+					GameModel.storeCurrentBoard(data);
+					TakeTurnFinishedInput ttfi = new TakeTurnFinishedInput();
+					ttfi.board = data;
+					TakeFinishedServlet tfs = new TakeFinishedServlet();
+					tfs.doModPost(ttfi, req, resp);
+				}
+				else
+					token = (String) entity.getProperty("token");
 			}
+			
+			
     	}
     	
     	if (token == null) {

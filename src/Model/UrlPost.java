@@ -39,4 +39,18 @@ public class UrlPost {
 	    }	
 		return false;
 	}
+	
+
+	public String sendCallbackPost(String data, String url) {
+		MakePost mp = new MakePost(url);
+		try {
+			if (mp.execute(data) != null) {
+				return mp.execute(data);
+			}
+	    } 
+		catch (Exception exception) {
+			exception.printStackTrace();
+	    }	
+		return "bad callback";
+	}
 }

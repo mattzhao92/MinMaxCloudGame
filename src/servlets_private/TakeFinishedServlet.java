@@ -31,14 +31,18 @@ public class TakeFinishedServlet extends HttpServlet{
 	private static final long serialVersionUID = 7486734051193470255L;
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+	Gson gson = new Gson();
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
-		
 		System.out.println("TakeFinishedServlet");
-		Gson gson = new Gson();
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		TakeTurnFinishedInput request = gson.fromJson(reader, TakeTurnFinishedInput.class);
-		
+		doModPost(request, req, resp);
+	}
+	
+	public void doModPost(TakeTurnFinishedInput request, HttpServletRequest req, HttpServletResponse resp) 
+			throws IOException{
 		
 		// save the board 
 		Transaction tx = datastore.beginTransaction();
