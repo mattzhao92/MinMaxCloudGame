@@ -75,7 +75,7 @@ public class TakeTurnServlet extends HttpServlet{
 					UrlPost postUtil = new UrlPost();
 					GetMoveInput gmi = new GetMoveInput();
 					gmi.playerID = playerID;
-					gmi.gameURL = "test";
+					gmi.gameURL = "https://inlaid-agility-567.appspot.com";
 					gmi.treeDepth = 0;
 					gmi.validMoves = GameModel.getValidMovesForPlayer(playerID, board);
 					String data = postUtil.sendCallbackPost(gson.toJson(gmi), (String)entity.getProperty("AIUrl"));
