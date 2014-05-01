@@ -96,6 +96,36 @@
     <url-pattern>/broadCastMove</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+  	<servlet-name>ApplyNextMoveServlet</servlet-name> 
+  	<servlet-class>servlets_public.ApplyNextMoveServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ApplyNextMoveServlet</servlet-name>
+    <url-pattern>/applyNextMove</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>GetPayoffServlet</servlet-name> 
+  	<servlet-class>servlets_public.GetPayoffServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>GetPayoffServlet</servlet-name>
+    <url-pattern>/getPayoff</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name> BroadCastMoveServlet </servlet-name> 
+  	<servlet-class> servlets_private.BroadCastMoveServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>BroadCastMoveServlet</servlet-name>
+    <url-pattern>/broadCastMove</url-pattern>
+  </servlet-mapping>
+  
   
   
   <servlet-mapping>
