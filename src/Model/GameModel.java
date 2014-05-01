@@ -17,7 +17,7 @@ import com.google.devrel.samples.ttt.Cell;
 import com.google.devrel.samples.ttt.CellContainer;
 
 public class GameModel {
-	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	public static Key boardKey = KeyFactory.createKey("BoardKey", "MyBoard");
 
 	//public static String turnControlPath = "http://localhost:8887";
@@ -41,13 +41,13 @@ public class GameModel {
 		tx.commit();
 	}
 	
-	public boolean bad(int num){
+	public static boolean bad(int num){
         if(num == 0)
             return true;
         return false;
     }
 	
-	  public boolean checkIfStuck(int cells[][], int r, int c){
+	  public static boolean checkIfStuck(int cells[][], int r, int c){
 	        if(r == 0 && c == 0){
 	            if(bad(cells[r+1][c]) && bad(cells[r][c+1]))
 	                return true;
@@ -93,7 +93,7 @@ public class GameModel {
 	        return false;
 	    }
 	    
-	    protected boolean isValidMove(int[][] cells, int oldRow, int oldCol, int newRow, int newCol){
+	    protected static boolean isValidMove(int[][] cells, int oldRow, int oldCol, int newRow, int newCol){
 	        if(cells[newRow][newCol] == 0)
 	            return false;
 	        //System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
@@ -112,7 +112,7 @@ public class GameModel {
 	    }
 	
 	    
-	public int[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
+	public static int[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
 		int[][] cellMatrix = new int[3][3];
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
@@ -122,7 +122,7 @@ public class GameModel {
 		return cellMatrix;
 	}
 	
-	public ArrayList<String> getValidMovesForPlayer(Long playerID, String board) {
+	public static ArrayList<String> getValidMovesForPlayer(Long playerID, String board) {
 		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
 	    Query query = new Query("Player", playerKey);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
