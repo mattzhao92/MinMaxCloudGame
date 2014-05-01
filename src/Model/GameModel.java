@@ -1,15 +1,23 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
+import com.google.devrel.samples.ttt.Board;
+import com.google.devrel.samples.ttt.Cell;
+import com.google.devrel.samples.ttt.CellContainer;
 
 public class GameModel {
+	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	public static Key boardKey = KeyFactory.createKey("BoardKey", "MyBoard");
 
 	//public static String turnControlPath = "http://localhost:8887";
@@ -33,8 +41,123 @@ public class GameModel {
 		tx.commit();
 	}
 	
-	public static ArrayList<String> getValidMovesForPlayer(int playerId, String board) {
+	public boolean bad(int num){
+        if(num == 0)
+            return true;
+        return false;
+    }
+	
+	  public boolean checkIfStuck(int cells[][], int r, int c){
+	        if(r == 0 && c == 0){
+	            if(bad(cells[r+1][c]) && bad(cells[r][c+1]))
+	                return true;
+	        }
+	        if(r == cells.length - 1 && c == 0){
+	            if(bad(cells[r-1][c]) &&  bad(cells[r][c+1]))
+	                return true;
+	        }
+	        if(r == 0 && c == cells[r].length - 1){
+	            if(bad(cells[r][c-1]) && bad(cells[r+1][c]))
+	                return true;
+	        }
+	        if(r == cells.length - 1 && c == cells[r].length - 1){
+	            if(bad(cells[r][c-1]) && bad(cells[r-1][c]))
+	                return true;
+	        }
+	        
+	        if(r > 0 && r < cells.length - 1 && c == 0){
+	            if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c+1]))
+	                return true;
+	        }
+	        
+	        if(r > 0 && r < cells.length - 1 && c == cells[r].length - 1){
+	            if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]))
+	                return true;
+	        }
+	        
+	        if(r == 0 && c > 0 && c < cells[r].length - 1){
+	            if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r+1][c])){
+	                return true;
+	            }
+	        }
+	        
+	        if(r == cells.length - 1 && c > 0 && c < cells[r].length - 1){
+	            if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r-1][c]))
+	                return true;
+	        }
+	        
+	        if(r > 0 && r < cells.length - 1 && c > 0 && c < cells[r].length - 1){
+	            if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]) && bad(cells[r][c+1]))
+	                return true;
+	        }
+	        return false;
+	    }
+	    
+	    protected boolean isValidMove(int[][] cells, int oldRow, int oldCol, int newRow, int newCol){
+	        if(cells[newRow][newCol] == 0)
+	            return false;
+	        //System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
+	        if(checkIfStuck(cells, oldRow, oldCol))
+	            return true;
+	        
+	        
+	        int xDiff = Math.abs(newRow - oldRow);
+	        int yDiff = Math.abs(newCol - oldCol);
+	        
+	        if (yDiff + xDiff == 1) {
+	            return true;
+	        }
+	        
+	        return false;
+	    }
+	
+	    
+	public int[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
+		int[][] cellMatrix = new int[3][3];
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				cellMatrix[i][j] = cells.get(i*j).val;
+			}
+		}
+		return cellMatrix;
+	}
+	
+	public ArrayList<String> getValidMovesForPlayer(Long playerID, String board) {
+		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
+	    Query query = new Query("Player", playerKey);
+	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+	    String playerName = null;
+	    for (Entity existingEntity : playerList) {
+	    	if(((Long)existingEntity.getProperty("playerID")).equals(playerID)){
+	    		playerName = (String)existingEntity.getProperty("playerName");
+	    	}
+	    }
+	    if(playerName == null)
+	    	return new ArrayList<String>();
+	    CellContainer cellContainer = CellContainer.fromJson(board);
+		ArrayList<Cell> cells = cellContainer.cells;
 		
-		return null;
+		Cell currPos = new Cell();
+		for (Cell cell : cells ) {
+			if (cell.playerName.equals(playerName)){
+				currPos = cell;
+			}
+		}
+		
+		int[][] cellsMatrix = convertFromArrayListToMatrix(cells);
+		ArrayList<String> validMoves = new ArrayList<String>();
+		for (Cell cell : cells ) {
+			if(isValidMove(cellsMatrix, currPos.x, currPos.y, cell.x, cell.y)){
+				ArrayList<Cell> newBoard = cells;
+				for(Cell subCell : newBoard){
+					if(subCell.x == cell.x && subCell.y == cell.y){
+						subCell.playerName = playerName;
+					}
+				}
+				validMoves.add(CellContainer.toJson(new CellContainer(newBoard)));
+			}
+		}
+		
+		return validMoves;
 	}
 }
