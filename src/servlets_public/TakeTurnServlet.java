@@ -84,6 +84,7 @@ public class TakeTurnServlet extends HttpServlet{
 					ttfi.board = data;
 					TakeFinishedServlet tfs = new TakeFinishedServlet();
 					tfs.doModPost(ttfi, req, resp);
+					return;
 				}
 				else
 					token = (String) entity.getProperty("token");
