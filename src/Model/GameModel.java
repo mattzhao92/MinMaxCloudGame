@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.ArrayList;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -15,6 +17,7 @@ public class GameModel {
 	
 	public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
 	public static String gameServerPath = "https://app405cloudgame.appspot.com";
+	
 	public static void storeCurrentBoard(String board) {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction tx = datastore.beginTransaction();
@@ -28,5 +31,10 @@ public class GameModel {
 			e.printStackTrace();
 		}
 		tx.commit();
+	}
+	
+	public static ArrayList<String> getValidMovesForPlayer(int playerId, String board) {
+		
+		return null;
 	}
 }
