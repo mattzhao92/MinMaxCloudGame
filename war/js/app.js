@@ -2,8 +2,8 @@ var flappyMMCJ = {}
 /** TicTacToe namespace for this sample. */
 flappyMMCJ.model = flappyMMCJ.model || {};
 
-flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
-flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+flappyMMCJ.TCServer = 'http://localhost:8887';
+flappyMMCJ.gameServer = 'http://localhost:8886';
 
 /**
  * Status for an unfinished game.

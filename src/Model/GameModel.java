@@ -19,12 +19,14 @@ import com.google.devrel.samples.ttt.CellContainer;
 public class GameModel {
 	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	public static Key boardKey = KeyFactory.createKey("BoardKey", "MyBoard");
-
+	public static String turnControlPath = "http://localhost:8887";
+	public static String gameServerPath = "http://localhost:8886";
+	
 	//public static String turnControlPath = "http://localhost:8887";
 	//public static String gameServerPath = "http://localhost:8888";
 	
-	public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
-	public static String gameServerPath = "https://app405cloudgame.appspot.com";
+	//public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
+	//public static String gameServerPath = "https://app405cloudgame.appspot.com";
 	
 	public static void storeCurrentBoard(String board) {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
