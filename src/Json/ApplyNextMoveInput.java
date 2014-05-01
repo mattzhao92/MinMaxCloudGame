@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 public class ApplyNextMoveInput {
 	public int nextPlayerID;
-	public ArrayList<String> ValidMoves;
+	public String currentBoard;
 	public int TreeDepth;	
 }
