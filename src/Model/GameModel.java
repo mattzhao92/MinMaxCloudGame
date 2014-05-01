@@ -41,13 +41,13 @@ public class GameModel {
 		tx.commit();
 	}
 	
-	public static boolean bad(int num){
-        if(num == 0)
+	public static boolean bad(String theirPlayerName){
+        if(theirPlayerName.equals("None"))
             return true;
         return false;
     }
 	
-	  public static boolean checkIfStuck(int cells[][], int r, int c){
+	  public static boolean checkIfStuck(String cells[][], int r, int c){
 	        if(r == 0 && c == 0){
 	            if(bad(cells[r+1][c]) && bad(cells[r][c+1]))
 	                return true;
@@ -93,8 +93,8 @@ public class GameModel {
 	        return false;
 	    }
 	    
-	    protected static boolean isValidMove(int[][] cells, int oldRow, int oldCol, int newRow, int newCol){
-	        if(cells[newRow][newCol] == 0)
+	    protected static boolean isValidMove(String[][] cells, int oldRow, int oldCol, int newRow, int newCol){
+	        if(cells[newRow][newCol].equals("None"))
 	            return false;
 	        //System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
 	        if(checkIfStuck(cells, oldRow, oldCol))
@@ -112,11 +112,11 @@ public class GameModel {
 	    }
 	
 	    
-	public static int[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
-		int[][] cellMatrix = new int[3][3];
+	public static String[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
+		String[][] cellMatrix = new String[3][3];
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
-				cellMatrix[i][j] = cells.get(i*j).val;
+				cellMatrix[i][j] = cells.get(i*j).playerName;
 			}
 		}
 		return cellMatrix;
@@ -144,7 +144,7 @@ public class GameModel {
 			}
 		}
 		
-		int[][] cellsMatrix = convertFromArrayListToMatrix(cells);
+		String[][] cellsMatrix = convertFromArrayListToMatrix(cells);
 		ArrayList<String> validMoves = new ArrayList<String>();
 		for (Cell cell : cells ) {
 			if(isValidMove(cellsMatrix, currPos.x, currPos.y, cell.x, cell.y)){
