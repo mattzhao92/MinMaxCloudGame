@@ -28,7 +28,8 @@ public class GetPayoffServlet extends HttpServlet{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		GetPayoffInput request = gson.fromJson(reader, GetPayoffInput.class);
 		GetPayoffOutput gpo = new GetPayoffOutput();
-		gpo.payoff = 5;
+		int payoff = GameModel.getPayoff(request.playerID, request.board);
+		gpo.payoff = payoff;
 		resp.getWriter().println(gson.toJson(gpo));
 	}
 }

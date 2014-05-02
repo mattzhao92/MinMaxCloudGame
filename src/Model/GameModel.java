@@ -122,6 +122,35 @@ public class GameModel {
 		return cellMatrix;
 	}
 	
+	public static int getPayoff(Long playerID, String board){
+		int ret = 0;
+		
+		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
+	    Query query = new Query("Player", playerKey);
+	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+	    String playerName = null;
+	    for (Entity existingEntity : playerList) {
+	    	if(((Long)existingEntity.getProperty("playerID")).equals(playerID)){
+	    		playerName = (String)existingEntity.getProperty("playerName");
+	    	}
+	    }
+	    if(playerName == null)
+	    	return 0;
+	    Gson gson = new Gson();
+	    System.out.println("getValidMovesForPlayer " + board);
+		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
+		ArrayList<Cell> cells = cellContainer.cells;
+		
+		Cell currPos = new Cell();
+		for (Cell cell : cells ) {
+			if (cell.playerName.equals(playerName)){
+				ret+= cell.val;
+			}
+		}
+		
+		return ret;
+	}
+	
 	public static ArrayList<String> getValidMovesForPlayer(Long playerID, String board) {
 		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
 	    Query query = new Query("Player", playerKey);
