@@ -81,6 +81,12 @@ public class MakeAIMoveServlet extends HttpServlet{
 			service.sendMessage(message);
 			//channelService.sendMessage(message);
 		}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		postUtil.sendPost(gson.toJson(ttfi), GameModel.gameServerPath+"/takeTurnFinished");
 	}	
 }

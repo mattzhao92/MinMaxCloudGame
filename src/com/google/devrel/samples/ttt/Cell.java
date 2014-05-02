@@ -18,5 +18,9 @@ public class Cell implements Serializable{
 		  this.val = val;
 		  this.playerName = playerNameIn;
 	  }
+	  
+	  public Cell clone(){
+		  return new Cell(x, y, val, playerName);
+	  }
 }
 	

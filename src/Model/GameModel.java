@@ -1,8 +1,11 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import request.ExceptionStringify;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -123,8 +126,9 @@ public class GameModel {
 	}
 	
 	public static int getPayoff(Long playerID, String board){
+		System.out.println("in inner getPayoff: " + playerID + " | board: " + board);
 		int ret = 0;
-		
+		try{
 		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
 	    Query query = new Query("Player", playerKey);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
@@ -142,12 +146,18 @@ public class GameModel {
 		ArrayList<Cell> cells = cellContainer.cells;
 		
 		Cell currPos = new Cell();
+		System.out.println("player name: " + playerName);
 		for (Cell cell : cells ) {
 			if (cell.playerName.equals(playerName)){
 				ret+= cell.val;
 			}
 		}
-		
+		System.out.println("returning w/: " + ret);
+		}
+		catch(Exception e){
+			ExceptionStringify es = new ExceptionStringify(e);
+			System.out.println(es.run());
+		}
 		return ret;
 	}
 	
@@ -178,7 +188,10 @@ public class GameModel {
 		ArrayList<String> validMoves = new ArrayList<String>();
 		for (Cell cell : cells ) {
 			if(cell.playerName.equals("None")){
-				ArrayList<Cell> newBoard = cells;
+				ArrayList<Cell> newBoard = new ArrayList<Cell>();
+				for(Cell c : cells){
+					newBoard.add(c.clone());
+				}
 				for(Cell subCell : newBoard){
 					if(subCell.x == cell.x && subCell.y == cell.y){
 						subCell.playerName = playerName;
