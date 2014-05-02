@@ -126,6 +126,27 @@
     <url-pattern>/broadCastMove</url-pattern>
   </servlet-mapping>
   
+     <servlet>
+  	<servlet-name> SavePortalIDServlet </servlet-name> 
+  	<servlet-class> servlets_private.SavePortalIDServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>SavePortalIDServlet</servlet-name>
+    <url-pattern>/savePortalID</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+   <servlet>
+  	<servlet-name> AdminControlServlet </servlet-name> 
+  	<servlet-class> servlets_public.AdminControlServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>AdminControlServlet</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
   
   
   <servlet-mapping>

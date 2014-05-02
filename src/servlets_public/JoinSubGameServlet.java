@@ -78,6 +78,7 @@ public class JoinSubGameServlet extends HttpServlet {
 			newPlayer.setProperty("playerID", playerID);
 			newPlayer.setProperty("token", token);
 			newPlayer.setProperty("AIUrl", AIUrl);
+			newPlayer.setProperty("isAI", isAI);
 			newPlayer.setProperty("gameURL", gameUrl);
 			datastore.put(newPlayer);
 		} catch (Exception e) {

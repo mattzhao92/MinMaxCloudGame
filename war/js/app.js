@@ -2,8 +2,11 @@ var flappyMMCJ = {}
 /** TicTacToe namespace for this sample. */
 flappyMMCJ.model = flappyMMCJ.model || {};
 
-flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
-flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+//flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
+//flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+
+flappyMMCJ.TCServer = 'http://localhost:8887';
+flappyMMCJ.gameServer = 'http://localhost:8886';
 
 /**
  * Status for an unfinished game.
@@ -73,7 +76,8 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 		var board = gameView.getBoard();
 
 		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
-		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}));
+		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board, 'x':x, 'y':y}));
+
 
 		var status = flappyMMCJ.model.checkForVictory({'cells': board});
 
@@ -261,7 +265,48 @@ flappyMMCJ.socket.onMessage = function (msg) {
         }
 		gameView.enableMouseListeners();
     }
+    if (packet.type == "redirect") {
+    	var content = JSON.parse(packet.content);
+    	console.log("redirecting to a new game");
+    	console.log(content);
+    	if (content.status == "ok") {
+    		var request = {
+    				'playerName' : content.playerName,
+    				'isAI' : content.isAI,
+    				'playerID' : content.playerId,
+    				'inboundingPortID' : content.inboundPortalID,
+    				'AIUrl' : content.AIUrl
+    		};
+
+			$.post(content.gameURL+'/joinSubGame', JSON.stringify(request),
+    			function(data) {
+					var packet = JSON.parse(data);
+					if (packet.status == "ok") {
+						window.location.replace(packet.redirect);
+					}
+    			}
+			);
+    	}
+    }
+    
+    if (packet.type == "portalMove") {
+    	var content = JSON.parse(packet.content);
+    	console.log("portalMove");
+    	console.log(content);
+    	flappyMMCJ.redirect(content.redirectURL, content.redirectURLData)
+    }
 };
+
+
+flappyMMCJ.redirect = function(URL, data) {
+    debugger;
+    if (data != "" && data != null) {
+      window.location.replace(URL + "?" + data);
+    } else {
+      window.location.replace(URL);
+    }
+
+  };
 
 flappyMMCJ.socket.onError = function (err) {
     //alert("Channel opened!");

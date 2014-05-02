@@ -97,8 +97,11 @@ public class TakeTurnServlet extends HttpServlet{
 					GameModel.storeCurrentBoard(data);
 					TakeTurnFinishedInput ttfi = new TakeTurnFinishedInput();
 					ttfi.board = data;
-					TakeFinishedServlet tfs = new TakeFinishedServlet();
-					tfs.doModPost(ttfi, req, resp);
+					ttfi.x = 1000;
+					ttfi.y = 1000;
+					
+					postUtil.sendPost(gson.toJson(ttfi), GameModel.gameServerPath+"/takeTurnFinished");
+					//TakeFinishedServlet tfs = new TakeFinishedServlet();
 					return;
 				}
 				else

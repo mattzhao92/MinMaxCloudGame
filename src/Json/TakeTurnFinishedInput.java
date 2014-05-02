@@ -10,4 +10,6 @@ public class TakeTurnFinishedInput {
 	 * The board for the turn taken
 	 */
 	public String board;
+	public int x;
+	public int y;
 }
