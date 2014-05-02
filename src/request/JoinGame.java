@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class JoinGame implements Serializable {
 
+	/**
+	 * Serial ID generated automatically by eclipse 
+	 */
+	private static final long serialVersionUID = -9188330103163596845L;
 	private Long playerID;
 	private String gameURL;
 	

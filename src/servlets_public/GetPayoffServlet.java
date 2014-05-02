@@ -3,19 +3,15 @@ package servlets_public;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
-import Json.ApplyNextMoveInput;
-import Json.ApplyNextMoveResponse;
 import Json.GetPayoffInput;
 import Json.GetPayoffOutput;
-import Model.GameModel;
+
+import com.google.gson.Gson;
 
 /**
  * Servlet that provides the payoff for a board input

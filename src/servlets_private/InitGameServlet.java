@@ -1,18 +1,13 @@
 package servlets_private;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import request.ExceptionStringify;
-import Json.*;
 import Model.GameModel;
-import Model.PlayerMap;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -21,11 +16,8 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.devrel.samples.ttt.Board;
-import com.google.devrel.samples.ttt.PMF;
 
 /**
  * Servlet that initializes the game

@@ -1,7 +1,5 @@
 package Model;
 
-import javax.servlet.http.HttpServletResponse;
-
 import request.MakePost;
 import request.MethodWrapper;
 

@@ -14,16 +14,14 @@
 
 package request;
 
-import javax.servlet.http.HttpServletResponse;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import com.google.appengine.api.urlfetch.*;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.URLFetchService;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.gson.Gson;
-import com.google.*;
-
-import java.net.*;
-import java.util.concurrent.Future;
-
-import javax.servlet.http.*;
 
 /**
  * 

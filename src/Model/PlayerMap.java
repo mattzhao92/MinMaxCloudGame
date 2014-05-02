@@ -1,14 +1,10 @@
 package Model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.IdGeneratorStrategy;
 
 import Json.GameInfo;
 
