@@ -7,7 +7,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import com.google.gson.Gson;
 
 @PersistenceCapable
+/**
+ * I don't even know what this is. - carolyn
+ *
+ */
 public class GameInfo implements Serializable{
+	
+	/**
+	 * Serial ID generated automatically by eclipse 
+	 */
+	private static final long serialVersionUID = 8953562726722132314L;
 	public String token;
 	public Boolean enableMouse;
 	
