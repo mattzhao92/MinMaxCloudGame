@@ -15,11 +15,23 @@ import Json.JoinSubGameMessage;
 
 import com.google.gson.Gson;
 
+/**
+ * Servlet that provides the GUI for the game
+ *
+ */
 public class GameGUIServlet extends HttpServlet{
 
+	/**
+	 * Serial ID generated automatically by eclipse 
+	 */
 	private static final long serialVersionUID = -5695796009771973102L;
 	private Gson gson = new Gson();
 	
+	/**
+	 * Reads the input stream into a string
+	 * @param is
+	 * @return
+	 */
 	private static String getStringFromInputStream(InputStream is) {
 		 
 		BufferedReader br = null;
@@ -47,6 +59,9 @@ public class GameGUIServlet extends HttpServlet{
 		return sb.toString();
 	}
 	
+	/**
+	 * Handles a get request and responds with the HTML of the game GUI
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		String jsonString = URLDecoder.decode(req.getParameter("data"), "UTF-8");

@@ -25,12 +25,25 @@ import Json.StatusResponse;
 import Json.JoinSubGameMessage;
 import Model.GameModel;
 
+/**
+ * Servlet that allows a player to join a sub game
+ *
+ */
 public class JoinSubGameServlet extends HttpServlet {
 
+	/**
+	 * Serial ID generated automatically by eclipse 
+	 */
+	private static final long serialVersionUID = -8974201704590761219L;
+	
 	private ChannelService channelService = ChannelServiceFactory.getChannelService();
 	private Random random = new Random();
 	private Gson gson = new Gson();
 
+	/**
+	 * Handler for a post request that allows the player to join a subgame
+	 * and responds with the url to the game GUI
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		resp.addHeader("Access-Control-Allow-Origin", "*");
@@ -50,7 +63,7 @@ public class JoinSubGameServlet extends HttpServlet {
 		String token = channelService.createChannel(channelKey);
 		request.token = token;
 		
-		// storing <playerName, his token> into database
+		// store player information into the database
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		GameInfo gameInfo = new GameInfo(token, false);
 		
@@ -73,6 +86,7 @@ public class JoinSubGameServlet extends HttpServlet {
 		}
 		tx.commit();
 	
+		//respond with error or URL to game GUI
 		StatusResponse jsonresp;
 		if (errorOccured) {
 			jsonresp = new StatusResponse("fail", "exception occured when storing player");

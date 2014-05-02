@@ -23,7 +23,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
-import com.google.devrel.samples.ttt.Board;
 import com.google.gson.Gson;
 
 /**
