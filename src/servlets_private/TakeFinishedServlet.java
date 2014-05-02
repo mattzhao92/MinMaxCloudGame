@@ -52,6 +52,7 @@ public class TakeFinishedServlet extends HttpServlet{
 		String token = null;
 		boolean isAI = false;
 		String AIURL = "";
+		String playerName = "";
 		System.out.println("myPlayerID " + user);
 		for (Entity entity : playerList) {
 			System.out.println("otherPlayerID "
@@ -59,6 +60,7 @@ public class TakeFinishedServlet extends HttpServlet{
 			Long otherPlayerID = (Long) entity.getProperty("playerID");
 			if (user.equals(otherPlayerID)) {
 				System.out.println("I match");
+				playerName = (String) entity.getProperty("playerName");
 				isAI = (boolean) entity.getProperty("isAI");
 				AIURL = (String) entity.getProperty("AIURL");
 				token = (String) entity.getProperty("token");
@@ -66,7 +68,6 @@ public class TakeFinishedServlet extends HttpServlet{
 		}
 
 		if (AIURL == null) AIURL = "";
-		System.out.println("found the token for user " + user + ": " + token);
 
 		
 		Key newIDsKey = KeyFactory.createKey("PortalList", "MyPortalList");
@@ -78,14 +79,15 @@ public class TakeFinishedServlet extends HttpServlet{
 		if (portalList.size() > 0) {
 			
 			System.out.println(portalList.get(0).getProperty("inboundPortNumber"));
+			System.out.println(portalList.get(0).getProperty("outboundPortNumber"));
 			
 			String portalID = String.valueOf(portalList.get(0)
-					.getProperty("inboundPortNumber"));
+					.getProperty("outboundPortNumber"));
 			
 			Map<String, String> state = new HashMap<String, String>();
 			state.put("redirectURL", GameModel.turnControlPath
 					+ "/redirectToPortal");
-			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+AIURL+"&playerID="+user);
+			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+AIURL+"&playerName=\""+playerName+"\"&playerID="+user);
 			
 			SocketMessage packet = new SocketMessage("portalMove",gson.toJson(state), false);
 			ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
