@@ -60,7 +60,7 @@
 
       <form class="form-signin" role="form" action="javascript:registerGameHandler()">
         <h2 class="form-signin-heading">Register With TC</h2>
-        <input type="text" class="form-control" id = "TCServerUrl" placeholder="http://localhost:8887" required autofocus>
+        <input type="text" class="form-control" id = "TCServerUrl" placeholder="http://localhost:8888" required autofocus>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Join</button>
       </form>
 
@@ -69,16 +69,17 @@
 
 
 <script type="text/javascript">
-		var gameServerUrl = 'http://localhost:8888';
+		var gameServerUrl = 'http://localhost:8887';
         
         function registerGameHandler() {
 
 			  // change me
               var requestPath = document.getElementById('TCServerUrl').value;
               //C1
-              requestPath += '/test2?method=registerGame&data={\'url\':\'http://localhost:8888\',\'portals\':[{\'isOutbound\':\'true\'},{\'isOutbound\':\'false\'}]}';
+              requestPath += '/test2?method=registerGame&data={\'url\':\'http://localhost:8887\',\'portals\':[{\'isOutbound\':\'true\'},{\'isOutbound\':\'false\'}]}';
 
               $.get(requestPath, '{}', function(data) {
+              		console.log("registerGame response " +data);
               		data = JSON.parse(data);
                 	console.log(data[0] +" " + data[1]);
                 	var outboundPortNumber = data[0];
@@ -90,8 +91,8 @@
 						'inboundPortNumber'  : inboundPortNumber
 					};
 					
-					$.post(gameServerUrl + 'savePortalIDs', JSON.stringify(request), function (data) {
-					   consoel.log("savePortalIDs");
+					$.post(gameServerUrl + '/savePortalID', JSON.stringify(request), function (data) {
+					   console.log("savePortalIDs");
 					});
 					
 

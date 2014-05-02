@@ -3,21 +3,19 @@ package servlets_private;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import request.PortalRedirect;
-import request.PortalRequest;
 import request.TakeTurn;
-import Json.PortalRedirectToClient;
 import Json.SocketMessage;
 import Json.StatusResponse;
 import Json.TakeTurnFinishedInput;
 import Model.GameModel;
-import Model.ICallback;
 import Model.UrlPost;
 
 import com.google.appengine.api.channel.ChannelMessage;
@@ -30,14 +28,69 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Text;
 import com.google.gson.Gson;
 
 public class TakeFinishedServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 7486734051193470255L;
+	private Gson gson = new Gson();
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+	
+	private void redirectBrowserToPortal(Long user) {
+		ChannelService channelService = ChannelServiceFactory
+				.getChannelService();
+		// String channelKey = getChannelKey(user);
+
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
+		Query query = new Query("Player", playerKey);
+		List<Entity> playerList = datastore.prepare(query).asList(
+				FetchOptions.Builder.withLimit(5));
+
+		String token = null;
+		System.out.println("myPlayerID " + user);
+		for (Entity entity : playerList) {
+			System.out.println("otherPlayerID "
+					+ (Long) entity.getProperty("playerID"));
+			Long otherPlayerID = (Long) entity.getProperty("playerID");
+			if (user.equals(otherPlayerID)) {
+				System.out.println("I match");
+				token = (String) entity.getProperty("token");
+			}
+		}
+
+		System.out.println("found the token for user " + user + ": " + token);
+
+		
+		Key newIDsKey = KeyFactory.createKey("PortalList", "MyPortalList");
+	    query = new Query("Portal", newIDsKey);
+	    List<Entity> portalList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+	    
+		
+		System.out.println("redirectBrowserToPortal "+ portalList.size());
+		if (portalList.size() > 0) {
+			
+			System.out.println(portalList.get(0).getProperty("inboundPortNumber"));
+			
+			String portalID = String.valueOf(portalList.get(0)
+					.getProperty("inboundPortNumber"));
+			
+			Map<String, String> state = new HashMap<String, String>();
+			state.put("redirectURL", GameModel.turnControlPath
+					+ "/redirectToPortal");
+			state.put("redirectURLData", "portalID=" + portalID);
+			
+			SocketMessage packet = new SocketMessage("portalMove",gson.toJson(state), false);
+			ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
+			channelService.sendMessage(message);
+		
+		}
+	}
+
+	
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 
@@ -68,44 +121,7 @@ public class TakeFinishedServlet extends HttpServlet{
 
 		if (request.x == 0 && request.y == 0) {
 			System.out.println("1111111111111111");
-			final ChannelService channelService = ChannelServiceFactory.getChannelService();
-			ICallback callback = new ICallback() {
-				@Override
-				public void execute(String response) {
-					// parse to packet to be forwarded
-					PortalRedirect request = gson.fromJson(response, PortalRedirect.class);
-
-					
-					Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-
-					Query query = new Query("Player", playerKey);
-					List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-
-					for (Entity entity: playerList) {
-						Long playerId = (Long) entity.getProperty("playerID");
-						if (playerId == playerID) {
-							String token = (String) entity.getProperty("token");
-							String playerName = (String) entity.getProperty("playerName");
-							
-							//TODO add isAI to Player table in db
-							String aiUrl = (String)entity.getProperty("AIUrl");
-							boolean isAI = true;
-							if (aiUrl == null) isAI = false;
-							PortalRedirectToClient prtc = new PortalRedirectToClient("ok", playerID,
-									request.gameURL, request.inboundPortalID, playerName, isAI, aiUrl);
-
-							System.out.println("TakeFinishedServlet sending reidrect packets");
-							String data = gson.toJson(prtc, PortalRedirectToClient.class);
-							SocketMessage packet = new SocketMessage("redirect", data, false);
-							ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
-							channelService.sendMessage(message);
-						}
-					}
-
-				}
-			};
-			postUtil.sendPost(gson.toJson(new PortalRequest(GameModel.getOutboundID(), playerID), PortalRequest.class), GameModel.turnControlPath + "/getGameURLFromPortal",callback);
-
+			redirectBrowserToPortal(playerID);
 		} else {
 			TakeTurn tf = new TakeTurn(playerID, currScore);
 			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished", null);

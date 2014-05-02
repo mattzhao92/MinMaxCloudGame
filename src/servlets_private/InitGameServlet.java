@@ -69,6 +69,17 @@ public class InitGameServlet extends HttpServlet {
 	    	datastore.delete(existingEntity.getKey());
 	    }
 	    tx.commit();
+	    
+		// deleting existing portals
+		tx = datastore.beginTransaction();
+		Key portalKey = KeyFactory.createKey("PortalList", "MyPortalList");
+		query = new Query("Portal", portalKey);
+		List<Entity> portalList = datastore.prepare(query).asList(
+				FetchOptions.Builder.withLimit(500));
+		for (Entity existingEntity : portalList) {
+			datastore.delete(existingEntity.getKey());
+		}
+		tx.commit();
 		resp.getWriter().println(newBoard.getState());
 	}
 }

@@ -3,8 +3,8 @@ var flappyMMCJ = {}
 flappyMMCJ.model = flappyMMCJ.model || {};
 
 //flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
-flappyMMCJ.TCServer = 'http://localhost:8887';
-flappyMMCJ.gameServer = 'http://localhost:8888';
+flappyMMCJ.TCServer = 'http://localhost:8888';
+flappyMMCJ.gameServer = 'http://localhost:8887';
 
 /**
  * Status for an unfinished game.
@@ -285,7 +285,25 @@ flappyMMCJ.socket.onMessage = function (msg) {
 			);
     	}
     }
+    
+    if (packet.type == "portalMove") {
+    	var content = JSON.parse(packet.content);
+    	console.log("portalMove");
+    	console.log(content);
+    	flappyMMCJ.redirect(content.redirectURL, content.redirectURLData)
+    }
 };
+
+
+flappyMMCJ.redirect = function(URL, data) {
+    debugger;
+    if (data != "" && data != null) {
+      window.location.replace(URL + "?" + data);
+    } else {
+      window.location.replace(URL);
+    }
+
+  };
 
 flappyMMCJ.socket.onError = function (err) {
     //alert("Channel opened!");

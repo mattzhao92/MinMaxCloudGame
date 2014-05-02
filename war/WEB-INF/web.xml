@@ -19,6 +19,16 @@
     <url-pattern>/gameGUI</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+  	<servlet-name> SavePortalIDServlet </servlet-name> 
+  	<servlet-class> servlets_private.SavePortalIDServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>SavePortalIDServlet</servlet-name>
+    <url-pattern>/savePortalID</url-pattern>
+  </servlet-mapping>
+  
    
   <servlet>
   	<servlet-name> JoinSubGameServlet </servlet-name> 
