@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class GetMoveInput {
 	public Long playerID;
-	public ArrayList<String> validMoves;
-	public int treeDepth;
-	public String gameURL;
+	public ArrayList<String> ValidMoves;
+	public int TreeDepth;
+	public String GameURL;
 	
 }

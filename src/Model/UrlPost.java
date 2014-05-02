@@ -18,7 +18,7 @@ public class UrlPost {
 	public String run(MethodWrapper mw, String url){
 		MakePost mp = new MakePost(url);
 		try {
-			return mp.execute(g.toJson(mw).toString());
+			return mp.execute(g.toJson(mw).toString(), false);
 	    } 
 		catch (Exception exception) {
 			exception.printStackTrace();
@@ -26,11 +26,21 @@ public class UrlPost {
 		return "no return";
 	}
 	
+	public void sendPostAync(String data, String url) {
+		MakePost mp = new MakePost(url);
+		try {
+			mp.execute(data, true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public boolean sendPost(String data, String url) {
 		MakePost mp = new MakePost(url);
 		try {
-			if (mp.execute(data) != null) {
+			if (mp.execute(data, false) != null) {
 				return true;
 			}
 	    } 
@@ -44,13 +54,13 @@ public class UrlPost {
 	public String sendCallbackPost(String data, String url) {
 		MakePost mp = new MakePost(url);
 		try {
-			if (mp.execute(data) != null) {
-				return mp.execute(data);
+			if (mp.execute(data, false) != null) {
+				return mp.execute(data, false);
 			}
 	    } 
 		catch (Exception exception) {
 			exception.printStackTrace();
 	    }	
 		return "bad callback";
-	}
+	}	
 }

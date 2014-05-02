@@ -45,14 +45,6 @@ public class TakeFinishedServlet extends HttpServlet{
 			throws IOException{
 		
 		// save the board 
-		Transaction tx = datastore.beginTransaction();
-	    Query query = new Query("Board", GameModel.boardKey);
-	    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-	   
-    	for (Entity entity: boardList) {
-			datastore.delete(entity.getKey());
-    	}
-		tx.commit();
 		
     	// creating a new board and store it in the database
 		GameModel.storeCurrentBoard(request.board);
@@ -62,7 +54,7 @@ public class TakeFinishedServlet extends HttpServlet{
 		Long currScore = 100L;
 	    Key lastTurnKey = KeyFactory.createKey("LastTurn", "MyLastTurn");
 	 
-	    query = new Query("lastTurn", lastTurnKey);
+	    Query query = new Query("lastTurn", lastTurnKey);
 	    List<Entity> turnList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
 	    
 	    System.out.println("lastTurn List "+ turnList.size());
@@ -75,8 +67,11 @@ public class TakeFinishedServlet extends HttpServlet{
 
 		TakeTurn tf = new TakeTurn(playerID, currScore);
 		UrlPost postUtil = new UrlPost();
-		postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
+		System.out.println("11111111111111111>>>>>>>>>>>>>>>>>>>>>>>");
 		
+		postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
+		System.out.println("22222222222222222>>>>>>>>>>>>>>>>>>>>>>>");
+
 		
 		
 		// At this point, we can send back a packet with status "ok"

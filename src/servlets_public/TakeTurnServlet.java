@@ -3,6 +3,8 @@ package servlets_public;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import servlets_private.TakeFinishedServlet;
 import Json.GetMoveInput;
+import Json.MakeAIMoveInput;
 import Json.SocketMessage;
 import Json.StatusResponse;
 import Json.TakeTurnFinishedInput;
@@ -31,7 +34,8 @@ public class TakeTurnServlet extends HttpServlet{
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		
-		System.out.println("TakeTurnServlet");
+		
+		System.out.println("TakeTurnServlet " + req.getRequestURI());
 
 		
 		Gson gson = new Gson();
@@ -72,18 +76,13 @@ public class TakeTurnServlet extends HttpServlet{
 			Long otherPlayerID = (Long) entity.getProperty("playerID");
 			if (playerID.equals(otherPlayerID)) {
 				if((Boolean)entity.getProperty("isAI")){
+					MakeAIMoveInput mami = new MakeAIMoveInput();
+					mami.AIURL = (String)entity.getProperty("AIUrl");
+					mami.board = board;
+					mami.playerID = playerID;
 					UrlPost postUtil = new UrlPost();
-					GetMoveInput gmi = new GetMoveInput();
-					gmi.playerID = playerID;
-					gmi.gameURL = "test";
-					gmi.treeDepth = 0;
-					gmi.validMoves = GameModel.getValidMovesForPlayer(playerID, board);
-					String data = postUtil.sendCallbackPost(gson.toJson(gmi), (String)entity.getProperty("AIUrl"));
-					GameModel.storeCurrentBoard(data);
-					TakeTurnFinishedInput ttfi = new TakeTurnFinishedInput();
-					ttfi.board = data;
-					TakeFinishedServlet tfs = new TakeFinishedServlet();
-					tfs.doModPost(ttfi, req, resp);
+					postUtil.sendPost(gson.toJson(mami), GameModel.gameServerPath + "/makeAIMove");
+					return;
 				}
 				else
 					token = (String) entity.getProperty("token");

@@ -21,6 +21,16 @@
   
    
   <servlet>
+  	<servlet-name>MakeAIMoveServlet</servlet-name> 
+  	<servlet-class>servlets_public.MakeAIMoveServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>MakeAIMoveServlet</servlet-name>
+    <url-pattern>/makeAIMove</url-pattern>
+  </servlet-mapping> 
+  
+  <servlet>
   	<servlet-name> JoinSubGameServlet </servlet-name> 
   	<servlet-class> servlets_public.JoinSubGameServlet</servlet-class> 
   </servlet>

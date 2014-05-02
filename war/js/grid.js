@@ -196,12 +196,14 @@ var GameView = Class.extend({
          }, false );
 
 		// start animations
+        this.board = board;
 		this.animate();
 	},
 
 
 	setPlayerName: function(name) {
 		this.playerName = name;
+		  this.updateBoard(this.board);
 	},
 
 	enableMouseListeners: function() {

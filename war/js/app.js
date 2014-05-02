@@ -68,6 +68,7 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 	if (flappyMMCJ.model.waitingForMove) {
 		gameView.disableMouseListeners();
 
+		debugger;
 		flappyMMCJ.model.waitingForMove = false;
 
 		var board = gameView.getBoard();
@@ -135,6 +136,7 @@ flappyMMCJ.model.sendResultToServer = function(status) {
 
 
 flappyMMCJ.model.onTakeTurnFinished = function(board) {
+	debugger;
 	var msg = {
 		'board' : board
 	};

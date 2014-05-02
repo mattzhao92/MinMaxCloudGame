@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.http.HttpServlet;
@@ -15,9 +16,14 @@ import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
+import com.google.devrel.samples.ttt.Cell;
+import com.google.devrel.samples.ttt.CellContainer;
 import com.google.gson.Gson;
 
 import Json.GameInfo;
@@ -75,6 +81,35 @@ public class JoinSubGameServlet extends HttpServlet {
 		}
 		tx.commit();
 	
+		tx = datastore.beginTransaction();
+	    Query query = new Query("Board", GameModel.boardKey);
+	    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+	    
+	    if (boardList == null || boardList.size() != 1) {
+	    	String msg = "We dont have a board "+ boardList.size();
+			StatusResponse status = new StatusResponse("fail",msg);
+			resp.getWriter().println(gson.toJson(status, StatusResponse.class));
+			System.err.println(msg);
+			return;
+	    }
+	    
+	    String board = ((Text) boardList.get(0).getProperty("board")).getValue();
+	    CellContainer container = gson.fromJson(board, CellContainer.class);
+	    
+	    for (int i = 0; i < container.cells.size(); i++) {
+	    	Cell cell =  container.cells.get(i);
+	    	if (cell.playerName.equals("None")) {
+	    		cell.playerName = playerName;
+	    		break;
+	    	}
+	    }
+	    
+	    datastore.delete(boardList.get(0).getKey());
+		tx.commit();
+		String newBoard = CellContainer.toJson(container);
+		GameModel.storeCurrentBoard(newBoard);
+	    
+		
 		StatusResponse jsonresp;
 		if (errorOccured) {
 			jsonresp = new StatusResponse("fail", "exception occured when storing player");

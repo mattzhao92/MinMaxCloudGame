@@ -25,7 +25,9 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.devrel.samples.ttt.Board;
+import com.google.devrel.samples.ttt.CellContainer;
 import com.google.devrel.samples.ttt.PMF;
+import com.google.gson.Gson;
 
 public class InitGameServlet extends HttpServlet {
 	private static final long serialVersionUID = -7935086544921717020L;

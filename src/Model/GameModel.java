@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.devrel.samples.ttt.Board;
 import com.google.devrel.samples.ttt.Cell;
 import com.google.devrel.samples.ttt.CellContainer;
+import com.google.gson.Gson;
 
 public class GameModel {
 	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -32,7 +33,15 @@ public class GameModel {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction tx = datastore.beginTransaction();
 		Entity newBoard = null;
+		
 		try {
+		    Query query = new Query("Board", GameModel.boardKey);
+		    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+		    
+		    for (Entity e : boardList) {
+		    	datastore.delete(e.getKey());
+		    }
+			
 			newBoard = new Entity("Board", boardKey);
 			com.google.appengine.api.datastore.Text text = new com.google.appengine.api.datastore.Text(board);
 			newBoard.setProperty("board", text);
@@ -95,29 +104,18 @@ public class GameModel {
 	        return false;
 	    }
 	    
-	    protected static boolean isValidMove(String[][] cells, int oldRow, int oldCol, int newRow, int newCol){
+	    protected static boolean isValidMove(String[][] cells, int newRow, int newCol){
 	        if(cells[newRow][newCol].equals("None"))
-	            return false;
-	        //System.err.println("xDiff is: " + xDiff + " and yDiff is: " + yDiff);
-	        if(checkIfStuck(cells, oldRow, oldCol))
 	            return true;
-	        
-	        
-	        int xDiff = Math.abs(newRow - oldRow);
-	        int yDiff = Math.abs(newCol - oldCol);
-	        
-	        if (yDiff + xDiff == 1) {
-	            return true;
-	        }
 	        
 	        return false;
 	    }
 	
 	    
 	public static String[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
-		String[][] cellMatrix = new String[3][3];
-		for(int i = 0; i < 3; i++){
-			for(int j = 0; j < 3; j++){
+		String[][] cellMatrix = new String[4][4];
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 4; j++){
 				cellMatrix[i][j] = cells.get(i*j).playerName;
 			}
 		}
@@ -136,7 +134,9 @@ public class GameModel {
 	    }
 	    if(playerName == null)
 	    	return new ArrayList<String>();
-	    CellContainer cellContainer = CellContainer.fromJson(board);
+	    Gson gson = new Gson();
+	    System.out.println("getValidMovesForPlayer " + board);
+		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
 		ArrayList<Cell> cells = cellContainer.cells;
 		
 		Cell currPos = new Cell();
@@ -146,10 +146,9 @@ public class GameModel {
 			}
 		}
 		
-		String[][] cellsMatrix = convertFromArrayListToMatrix(cells);
 		ArrayList<String> validMoves = new ArrayList<String>();
 		for (Cell cell : cells ) {
-			if(isValidMove(cellsMatrix, currPos.x, currPos.y, cell.x, cell.y)){
+			if(cell.playerName.equals("None")){
 				ArrayList<Cell> newBoard = cells;
 				for(Cell subCell : newBoard){
 					if(subCell.x == cell.x && subCell.y == cell.y){

@@ -25,7 +25,7 @@ public class ApplyNextMoveServlet extends HttpServlet{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		ApplyNextMoveInput request = gson.fromJson(reader, ApplyNextMoveInput.class);
 		ArrayList<String> boardsNextLevel = GameModel.getValidMovesForPlayer(request.nextPlayerID, request.currentBoard);
-		ApplyNextMoveResponse response = new ApplyNextMoveResponse(boardsNextLevel, request.TreeDepth);
+		ApplyNextMoveResponse response = new ApplyNextMoveResponse(boardsNextLevel);
 		resp.getWriter().println(gson.toJson(response, ApplyNextMoveResponse.class));
 	}
 }

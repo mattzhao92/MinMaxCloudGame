@@ -47,8 +47,10 @@ public class MakePost {
 		}
 	}
 
-	public String execute(String data) throws Exception {
+	public String execute(String data, boolean async) throws Exception {
 		HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
+		//request.getFetchOptions().setDeadline(60d);
+		request.getFetchOptions().setDeadline(5d);
 		request.setPayload(data.getBytes());
 		return new String(fetcher.fetch(request).getContent());
 	}
