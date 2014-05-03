@@ -48,12 +48,12 @@ public class MakeAIMoveServlet extends HttpServlet{
 		gmi.playerID = request.playerID;
 		gmi.GameURL = "http://localhost:8886";
 		gmi.TreeDepth = 1;
-		System.out.println(">>>>>>>>>>>>> board" + request.board);
+		//System.out.println(">>>>>>>>>>>>> board" + request.board);
 		gmi.ValidMoves = GameModel.getValidMovesForPlayer(request.playerID, request.board);
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>"+gson.toJson(gmi));
+		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>"+gson.toJson(gmi));
 
 		String data = postUtil.sendCallbackPost(gson.toJson(gmi), request.AIURL+"/getMove");
-		System.out.println(">>>>>>>>>> data "+ data);
+		//System.out.println(">>>>>>>>>> data "+ data);
 
 		GameModel.storeCurrentBoard(data);
 		TakeTurnFinishedInput ttfi = new TakeTurnFinishedInput();
@@ -74,7 +74,7 @@ public class MakeAIMoveServlet extends HttpServlet{
 		for (Entity entity: playerList) {
 			String playername = (String) entity.getProperty("playerName");
 			String token = (String) entity.getProperty("token");
-			System.out.println("broadCasting to player: "+playername);
+			//System.out.println("broadCasting to player: "+playername);
 
 			SocketMessage packet = new SocketMessage("updateView", data, false);
 			ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));

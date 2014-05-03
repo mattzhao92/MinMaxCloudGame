@@ -35,7 +35,7 @@ public class CellContainer {
 	
 	public static String toJson(CellContainer container) {
 		Gson gson = new Gson();
-		System.out.println(">>>remove "+gson.toJson(container, CellContainer.class));
+		//System.out.println(">>>remove "+gson.toJson(container, CellContainer.class));
 		return gson.toJson(container, CellContainer.class);
 	}
 	

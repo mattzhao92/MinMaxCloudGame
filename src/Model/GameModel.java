@@ -126,7 +126,7 @@ public class GameModel {
 	}
 	
 	public static int getPayoff(Long playerID, String board){
-		System.out.println("in inner getPayoff: " + playerID + " | board: " + board);
+		//System.out.println("in inner getPayoff: " + playerID + " | board: " + board);
 		int ret = 0;
 		try{
 		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
@@ -141,22 +141,22 @@ public class GameModel {
 	    if(playerName == null)
 	    	return 0;
 	    Gson gson = new Gson();
-	    System.out.println("getValidMovesForPlayer " + board);
+	    //System.out.println("getValidMovesForPlayer " + board);
 		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
 		ArrayList<Cell> cells = cellContainer.cells;
 		
 		Cell currPos = new Cell();
-		System.out.println("player name: " + playerName);
+		//System.out.println("player name: " + playerName);
 		for (Cell cell : cells ) {
 			if (cell.playerName.equals(playerName)){
 				ret+= cell.val;
 			}
 		}
-		System.out.println("returning w/: " + ret);
+		//System.out.println("returning w/: " + ret);
 		}
 		catch(Exception e){
 			ExceptionStringify es = new ExceptionStringify(e);
-			System.out.println(es.run());
+			//System.out.println(es.run());
 		}
 		return ret;
 	}
@@ -174,7 +174,7 @@ public class GameModel {
 	    if(playerName == null)
 	    	return new ArrayList<String>();
 	    Gson gson = new Gson();
-	    System.out.println("getValidMovesForPlayer " + board);
+	    //System.out.println("getValidMovesForPlayer " + board);
 		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
 		ArrayList<Cell> cells = cellContainer.cells;
 		

@@ -61,7 +61,7 @@ public class TakeTurnServlet extends HttpServlet{
 	    }
 	    
 	    String board = ((Text) boardList.get(0).getProperty("board")).getValue();
-		
+		System.out.println("board: " + board);
 		// get the channel id corresponding to that player, if that player cannot be found
 	    // return a packet with status "fail"
 	    String token = null;
@@ -72,10 +72,32 @@ public class TakeTurnServlet extends HttpServlet{
 	   
 	    System.out.println("myPlayerID "+ playerID);
     	for (Entity entity: playerList) {
-    		System.out.println("otherPlayerID "+ (Long) entity.getProperty("playerID"));
+    		//System.out.println("otherPlayerID "+ (Long) entity.getProperty("playerID"));
 			Long otherPlayerID = (Long) entity.getProperty("playerID");
 			if (playerID.equals(otherPlayerID)) {
 				if((Boolean)entity.getProperty("isAI")){
+					System.out.println("is AI");
+					Transaction tx = datastore.beginTransaction();
+
+				    Key lastTurnKey = KeyFactory.createKey("LastTurn", "MyLastTurn");
+
+				    query = new Query("lastTurn", lastTurnKey);
+				    List<Entity> turnList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+				    for (Entity deleteMe : turnList) {
+				    	datastore.delete(deleteMe.getKey());
+				    }
+				    
+				    Entity lastTurn;
+					try {
+						lastTurn = new Entity("lastTurn", lastTurnKey);
+						lastTurn.setProperty("playerID", playerID);
+						datastore.put(lastTurn);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					tx.commit();
+
+					
 					MakeAIMoveInput mami = new MakeAIMoveInput();
 					mami.AIURL = (String)entity.getProperty("AIUrl");
 					mami.board = board;
@@ -84,15 +106,17 @@ public class TakeTurnServlet extends HttpServlet{
 					postUtil.sendPost(gson.toJson(mami), GameModel.gameServerPath + "/makeAIMove");
 					return;
 				}
-				else
+				else{
+					System.out.println("is Human");
 					token = (String) entity.getProperty("token");
+				}
 			}
 			
 			
     	}
     	
     	if (token == null) {
-    		System.out.println("token is null");
+    		//System.out.println("token is null");
     		StatusResponse status = new StatusResponse("fail","player does not exist in the database");
 			resp.getWriter().println(gson.toJson(status, StatusResponse.class));
 			return;
@@ -125,7 +149,7 @@ public class TakeTurnServlet extends HttpServlet{
 
 		
 		// sending a updateview packet to that player
-		System.out.println("sending to client a updateview packet, tokenId: "+token);
+		//System.out.println("sending to client a updateview packet, tokenId: "+token);
 		ChannelService service = ChannelServiceFactory.getChannelService();
 		service.sendMessage(message);
 		

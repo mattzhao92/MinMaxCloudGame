@@ -30,10 +30,10 @@ public class GetBoardServlet extends HttpServlet{
 	    Key boardKey = GameModel.boardKey;
 	    Query query = new Query("Board", boardKey);
 	    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-	    System.out.println("GetBoardServlet: board list size "+boardList.size());
+	    //System.out.println("GetBoardServlet: board list size "+boardList.size());
 	    if (boardList.size() == 1) {
 	    	String board = ((Text) boardList.get(0).getProperty("board")).getValue();
-	    	System.out.println("GetBoardServlet: returning board "+board);
+	    	//System.out.println("GetBoardServlet: returning board "+board);
 	    	resp.getWriter().println(board);
 	    } else {
 	    	resp.getWriter().println("");

@@ -40,7 +40,7 @@ public class JoinSubGameServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		System.out.println("JoinSubGameServlet");
+		//System.out.println("JoinSubGameServlet");
 		
 		// parse the input packet
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
@@ -73,7 +73,7 @@ public class JoinSubGameServlet extends HttpServlet {
 			newPlayer.setProperty("isAI", isAI);
 			newPlayer.setProperty("AIUrl", AIUrl);
 			newPlayer.setProperty("gameURL", gameUrl);
-			System.out.println("JoinSubGame isAI "+ isAI);
+			//System.out.println("JoinSubGame isAI "+ isAI);
 			datastore.put(newPlayer);
 		} catch (Exception e) {
 			errorOccured = true;

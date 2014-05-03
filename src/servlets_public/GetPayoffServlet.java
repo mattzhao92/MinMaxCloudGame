@@ -23,13 +23,13 @@ public class GetPayoffServlet extends HttpServlet{
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
-		System.out.println("in get payoff test");
+		//System.out.println("in get payoff test");
 		// parse the input packet
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		GetPayoffInput request = gson.fromJson(reader, GetPayoffInput.class);
 		GetPayoffOutput gpo = new GetPayoffOutput();
 		int payoff = GameModel.getPayoff(request.nextPlayerID, request.currentBoard);
-		System.out.println("payoff: " + payoff);
+		//System.out.println("payoff: " + payoff);
 		gpo.number = payoff;
 		resp.getWriter().println(gson.toJson(gpo));
 	}

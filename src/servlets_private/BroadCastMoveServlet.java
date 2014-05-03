@@ -40,7 +40,7 @@ public class BroadCastMoveServlet extends HttpServlet{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 
 		BroadCastMessage broadcastmsg = gson.fromJson(reader, BroadCastMessage.class);
-		System.out.println("broadcastmsg "+ broadcastmsg.playername + " " + broadcastmsg.board);
+		//System.out.println("broadcastmsg "+ broadcastmsg.playername + " " + broadcastmsg.board);
 
 		String fromPlayer = broadcastmsg.playername;
 
@@ -58,7 +58,7 @@ public class BroadCastMoveServlet extends HttpServlet{
 			String playername = (String) entity.getProperty("playerName");
 			if (!playername.equals(fromPlayer)) {
 				String token = (String) entity.getProperty("token");
-				System.out.println("broadCasting to player: "+playername);
+				//System.out.println("broadCasting to player: "+playername);
 
 				SocketMessage packet = new SocketMessage("updateView", broadcastmsg.board, false);
 				ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));

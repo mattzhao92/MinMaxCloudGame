@@ -34,7 +34,7 @@ public class TakeFinishedServlet extends HttpServlet{
 	Gson gson = new Gson();
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
-		System.out.println("TakeFinishedServlet");
+		//System.out.println("TakeFinishedServlet");
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		TakeTurnFinishedInput request = gson.fromJson(reader, TakeTurnFinishedInput.class);
@@ -57,7 +57,7 @@ public class TakeFinishedServlet extends HttpServlet{
 	    Query query = new Query("lastTurn", lastTurnKey);
 	    List<Entity> turnList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
 	    
-	    System.out.println("lastTurn List "+ turnList.size());
+	    //System.out.println("lastTurn List "+ turnList.size());
 	    if (turnList.size() == 1){
 	    	Entity lastTurn = turnList.get(0);
 	    	playerID = (Long) lastTurn.getProperty("playerID");
@@ -67,10 +67,10 @@ public class TakeFinishedServlet extends HttpServlet{
 
 		TakeTurn tf = new TakeTurn(playerID, currScore);
 		UrlPost postUtil = new UrlPost();
-		System.out.println("11111111111111111>>>>>>>>>>>>>>>>>>>>>>>");
+		//System.out.println("11111111111111111>>>>>>>>>>>>>>>>>>>>>>>");
 		
 		postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
-		System.out.println("22222222222222222>>>>>>>>>>>>>>>>>>>>>>>");
+		//System.out.println("22222222222222222>>>>>>>>>>>>>>>>>>>>>>>");
 
 		
 		
