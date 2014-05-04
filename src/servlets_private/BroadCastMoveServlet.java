@@ -40,7 +40,7 @@ public class BroadCastMoveServlet extends HttpServlet{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 
 		BroadCastMessage broadcastmsg = gson.fromJson(reader, BroadCastMessage.class);
-		//System.out.println("broadcastmsg "+ broadcastmsg.playername + " " + broadcastmsg.board);
+		System.out.println("broadcastmsg "+ broadcastmsg.playername + " " + broadcastmsg.board);
 
 		String fromPlayer = broadcastmsg.playername;
 

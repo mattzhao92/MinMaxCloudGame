@@ -45,7 +45,7 @@ public class TakeFinishedServlet extends HttpServlet{
 			throws IOException{
 		
 		// save the board 
-		
+		System.out.println("request board: " + request.board);
     	// creating a new board and store it in the database
 		GameModel.storeCurrentBoard(request.board);
 	

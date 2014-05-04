@@ -124,6 +124,7 @@ public class TakeTurnServlet extends HttpServlet{
 	    
 	    // send him the current board along with a message saying hey, you can move now
 		SocketMessage packet = new SocketMessage("updateView", board, true);
+		System.out.println("board being sent to updateview:" + board);
 		ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 		
 		// store last player that has taken a turn

@@ -72,7 +72,7 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 		flappyMMCJ.model.waitingForMove = false;
 
 		var board = gameView.getBoard();
-
+		console.log("clicked square, board: " + JSON.stringify(board));
 		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
 		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}));
 
@@ -253,7 +253,7 @@ flappyMMCJ.socket.onMessage = function (msg) {
     	var content = JSON.parse(packet.content);
     	console.log("updateView");
 		var board = JSON.parse(packet.content);
-		console.log(board);
+		console.log("updateView board: " + JSON.stringify(board));
 		gameView.updateBoard(board);
         
         if (content.lockScreen) {

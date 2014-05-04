@@ -34,6 +34,7 @@ var GridTile = Class.extend({
 			this.tileMesh.material.opacity = 0.5;
 			this.tileMesh.material.color.setRGB(1, 1, 1);
 			this.free = false;
+			this.playerName = myName;
 		} else if (otherName == "None") {
 			this.free = true;
 			// do nothing in this case
@@ -42,6 +43,7 @@ var GridTile = Class.extend({
 			this.tileMesh.material.opacity = 0.5;
 			this.tileMesh.material.color.setRGB(0,0,0);
 			this.free = false;
+			this.playerName = otherName;
 		}
 	},
 
@@ -241,7 +243,9 @@ var GameView = Class.extend({
 			for (var j = 0; j < this.tiles.length; j++) {
 				var localCell = this.tiles[j];
 				if (remoteCell.x == localCell.xPos && localCell.yPos == remoteCell.y) {
+					console.log("remote cell name: " + remoteCell.playerName + " | this playername: " + this.playerName);
 					localCell.updateValue(remoteCell.playerName, this.playerName);
+					console.log("local cell updated?: " + localCell.playerName);
 				}
 			}
 		}
