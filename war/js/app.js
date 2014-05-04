@@ -2,6 +2,9 @@ var flappyMMCJ = {}
 /** TicTacToe namespace for this sample. */
 flappyMMCJ.model = flappyMMCJ.model || {};
 
+//flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
+//flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+
 flappyMMCJ.TCServer = 'http://localhost:8887';
 flappyMMCJ.gameServer = 'http://localhost:8886';
 
@@ -68,13 +71,12 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 	if (flappyMMCJ.model.waitingForMove) {
 		gameView.disableMouseListeners();
 
-		debugger;
 		flappyMMCJ.model.waitingForMove = false;
 
 		var board = gameView.getBoard();
-		console.log("clicked square, board: " + JSON.stringify(board));
+		
 		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
-		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}));
+		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}),x,y);
 
 		var status = flappyMMCJ.model.checkForVictory({'cells': board});
 
@@ -135,15 +137,14 @@ flappyMMCJ.model.sendResultToServer = function(status) {
 };
 
 
-flappyMMCJ.model.onTakeTurnFinished = function(board) {
-	debugger;
+flappyMMCJ.model.onTakeTurnFinished = function(board, x, y) {
 	var msg = {
-		'board' : board
+		'board' : board,
+		'x': x,
+		'y': y
 	};
 
 	console.log('takeTurnFinished');
-	console.log(msg);
-
 	$.post(flappyMMCJ.gameServer + "/takeTurnFinished", JSON.stringify(msg), function(resp){
 		console.log("takeTurnFinished callback");
 	});
@@ -157,7 +158,6 @@ flappyMMCJ.model.broadCastChange = function(board) {
 	};
 
 	console.log('broadCastChange');
-	console.log(msg);
 
 	$.post(flappyMMCJ.gameServer + "/broadCastMove", JSON.stringify(msg), function(resp){
 		console.log("broadCastChange callback");
@@ -253,7 +253,6 @@ flappyMMCJ.socket.onMessage = function (msg) {
     	var content = JSON.parse(packet.content);
     	console.log("updateView");
 		var board = JSON.parse(packet.content);
-		console.log("updateView board: " + JSON.stringify(board));
 		gameView.updateBoard(board);
         
         if (content.lockScreen) {
@@ -263,7 +262,47 @@ flappyMMCJ.socket.onMessage = function (msg) {
         }
 		gameView.enableMouseListeners();
     }
+    if (packet.type == "redirect") {
+    	var content = JSON.parse(packet.content);
+    	console.log("redirecting to a new game");
+    	console.log(content);
+    	if (content.status == "ok") {
+    		var request = {
+    				'playerName' : content.playerName,
+    				'isAI' : content.isAI,
+    				'playerID' : content.playerId,
+    				'inboundingPortID' : content.inboundPortalID,
+    				'AIUrl' : content.AIUrl
+    		};
+
+			$.post(content.gameURL+'/joinSubGame', JSON.stringify(request),
+    			function(data) {
+					var packet = JSON.parse(data);
+					if (packet.status == "ok") {
+						window.location.replace(packet.redirect);
+					}
+    			}
+			);
+    	}
+    }
+    
+    if (packet.type == "portalMove") {
+    	var content = JSON.parse(packet.content);
+    	console.log("portalMove");
+    	console.log(content);
+    	flappyMMCJ.redirect(content.redirectURL, content.redirectURLData)
+    }
 };
+
+
+flappyMMCJ.redirect = function(URL, data) {
+    if (data != "" && data != null) {
+      window.location.replace(URL + "?" + data);
+    } else {
+      window.location.replace(URL);
+    }
+
+  };
 
 flappyMMCJ.socket.onError = function (err) {
     //alert("Channel opened!");
@@ -277,8 +316,6 @@ flappyMMCJ.socket.onClose = function () {
 flappyMMCJ.model.setupChannel = function(channelToken, initCallback) {
 	flappyMMCJ.model.initCallback = initCallback;
 	var channel = new goog.appengine.Channel(channelToken);
-	console.log(">>>>> channelToken:" + channelToken);
-	debugger;
     var socket = channel.open();
     socket.onopen = flappyMMCJ.socket.onOpened;
     socket.onmessage = flappyMMCJ.socket.onMessage;
