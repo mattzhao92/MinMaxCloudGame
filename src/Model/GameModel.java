@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import request.ExceptionStringify;
@@ -199,13 +200,22 @@ public class GameModel {
 		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
 		ArrayList<Cell> cells = cellContainer.cells;
 		
-		Cell currPos = new Cell();
 		//System.out.println("player name: " + playerName);
+		HashMap<String, Integer> payoffs = new HashMap<String, Integer>();
 		for (Cell cell : cells ) {
 			if (cell.playerName.equals(playerName)){
 				ret+= cell.val;
 			}
+			else if(!cell.playerName.equals("None")){
+				payoffs.put(cell.playerName, payoffs.get(cell.playerName) + cell.val);
+			}
 		}
+		int max = -1;
+		for(Integer val : payoffs.values()){
+			if(val > max)
+				max = val;
+		}
+		ret = ret - max;
 		//System.out.println("returning w/: " + ret);
 		}
 		catch(Exception e){
