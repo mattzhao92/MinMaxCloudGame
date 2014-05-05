@@ -158,8 +158,15 @@
     <url-pattern>/savePortalID</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+  	<servlet-name>GetScoreForPortalServlet</servlet-name> 
+  	<servlet-class> servlets_public.GetScoreForPortalServlet</servlet-class> 
+  </servlet>
   
-   
+  <servlet-mapping>
+    <servlet-name>GetScoreForPortalServlet</servlet-name>
+    <url-pattern>/getScoreForPortal</url-pattern>
+  </servlet-mapping>
   
   
   <servlet-mapping>
@@ -172,13 +179,4 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
-  <!-- Root application must use HTTPS -->
-  <security-constraint>
-    <web-resource-collection>
-      <url-pattern>/</url-pattern>
-    </web-resource-collection>
-    <user-data-constraint>
-      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-    </user-data-constraint>
-  </security-constraint>  
 </web-app>
