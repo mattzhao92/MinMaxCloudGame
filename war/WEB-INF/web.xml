@@ -21,6 +21,16 @@
   
    
   <servlet>
+  	<servlet-name>MakeAIMoveServlet</servlet-name> 
+  	<servlet-class>servlets_public.MakeAIMoveServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>MakeAIMoveServlet</servlet-name>
+    <url-pattern>/makeAIMove</url-pattern>
+  </servlet-mapping> 
+  
+  <servlet>
   	<servlet-name> JoinSubGameServlet </servlet-name> 
   	<servlet-class> servlets_public.JoinSubGameServlet</servlet-class> 
   </servlet>
@@ -126,17 +136,6 @@
     <url-pattern>/broadCastMove</url-pattern>
   </servlet-mapping>
   
-     <servlet>
-  	<servlet-name> SavePortalIDServlet </servlet-name> 
-  	<servlet-class> servlets_private.SavePortalIDServlet</servlet-class> 
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>SavePortalIDServlet</servlet-name>
-    <url-pattern>/savePortalID</url-pattern>
-  </servlet-mapping>
-  
-  
   
    <servlet>
   	<servlet-name> AdminControlServlet </servlet-name> 
@@ -147,6 +146,20 @@
     <servlet-name>AdminControlServlet</servlet-name>
     <url-pattern>/admin</url-pattern>
   </servlet-mapping>
+  
+  
+   <servlet>
+  	<servlet-name> SavePortalIDServlet </servlet-name> 
+  	<servlet-class> servlets_private.SavePortalIDServlet</servlet-class> 
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>SavePortalIDServlet</servlet-name>
+    <url-pattern>/savePortalID</url-pattern>
+  </servlet-mapping>
+  
+  
+   
   
   
   <servlet-mapping>

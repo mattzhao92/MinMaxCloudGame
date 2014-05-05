@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import Json.GetPayoffInput;
 import Json.GetPayoffOutput;
+import Model.GameModel;
 
 import com.google.gson.Gson;
 
@@ -28,11 +29,13 @@ public class GetPayoffServlet extends HttpServlet{
 			throws IOException{
 		
 		// parse the input packet
+		// parse the input packet
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
-		
 		GetPayoffInput request = gson.fromJson(reader, GetPayoffInput.class);
 		GetPayoffOutput gpo = new GetPayoffOutput();
-		gpo.payoff = 5;
+		int payoff = GameModel.getPayoff(request.nextPlayerID, request.currentBoard);
+		//System.out.println("payoff: " + payoff);
+		gpo.number = payoff;
 		resp.getWriter().println(gson.toJson(gpo));
 	}
 }

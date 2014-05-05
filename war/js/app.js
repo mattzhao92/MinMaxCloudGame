@@ -74,9 +74,12 @@ flappyMMCJ.model.clickSquare = function(x, y) {
 		flappyMMCJ.model.waitingForMove = false;
 
 		var board = gameView.getBoard();
-
+		console.log(">>>>>>>>> getBoard ");
+		console.log(JSON.stringify({'cells': board}));
+		
 		flappyMMCJ.model.broadCastChange(JSON.stringify({'cells': board}));
-		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board, 'x':x, 'y':y}));
+		console.log("x: "+x +" y: "+y);
+		flappyMMCJ.model.onTakeTurnFinished(JSON.stringify({'cells': board}),x,y);
 
 
 		var status = flappyMMCJ.model.checkForVictory({'cells': board});
@@ -138,9 +141,11 @@ flappyMMCJ.model.sendResultToServer = function(status) {
 };
 
 
-flappyMMCJ.model.onTakeTurnFinished = function(board) {
+flappyMMCJ.model.onTakeTurnFinished = function(board, x, y) {
 	var msg = {
-		'board' : board
+		'board' : board,
+		'x': x,
+		'y': y
 	};
 
 	console.log('takeTurnFinished');
@@ -255,15 +260,16 @@ flappyMMCJ.socket.onMessage = function (msg) {
     	var content = JSON.parse(packet.content);
     	console.log("updateView");
 		var board = JSON.parse(packet.content);
-		console.log(board);
+		console.log(packet.content);
 		gameView.updateBoard(board);
         
         if (content.lockScreen) {
+			gameView.disableMouseListeners();
 		    flappyMMCJ.model.waitingForMove = false;
         } else {
+        	gameView.enableMouseListeners();
 		    flappyMMCJ.model.waitingForMove = true;
         }
-		gameView.enableMouseListeners();
     }
     if (packet.type == "redirect") {
     	var content = JSON.parse(packet.content);
@@ -321,7 +327,6 @@ flappyMMCJ.model.setupChannel = function(channelToken, initCallback) {
 	flappyMMCJ.model.initCallback = initCallback;
 	var channel = new goog.appengine.Channel(channelToken);
 	console.log(">>>>> channelToken:" + channelToken);
-	debugger;
     var socket = channel.open();
     socket.onopen = flappyMMCJ.socket.onOpened;
     socket.onmessage = flappyMMCJ.socket.onMessage;

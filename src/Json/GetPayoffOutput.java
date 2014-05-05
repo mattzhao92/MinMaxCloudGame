@@ -10,5 +10,5 @@ public class GetPayoffOutput {
 	/**
 	 * The response payoff
 	 */
-	public int payoff;
+	public int number;
 }

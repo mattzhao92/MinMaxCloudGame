@@ -16,16 +16,16 @@ public class GetMoveInput {
 	/**
 	 * List of valid moves for the player
 	 */
-	public ArrayList<String> validMoves;
+	public ArrayList<String> ValidMoves;
 
 	/**
 	 * The current depth of the min max computation tree
 	 */
-	public int treeDepth;
+	public int TreeDepth;
 
 	/**
 	 * the URL of the game
 	 */
-	public String gameURL;
+	public String GameURL;
 
 }

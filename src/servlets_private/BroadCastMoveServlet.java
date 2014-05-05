@@ -63,7 +63,7 @@ public class BroadCastMoveServlet extends HttpServlet{
 				String token = (String) entity.getProperty("token");
 				System.out.println("broadCasting to player: "+playername);
 
-				SocketMessage packet = new SocketMessage("updateView", broadcastmsg.board, false);
+				SocketMessage packet = new SocketMessage("updateView", broadcastmsg.board, true);
 				ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 				channelService.sendMessage(message);
 			}

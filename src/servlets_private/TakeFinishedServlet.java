@@ -28,6 +28,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.gson.Gson;
 
 public class TakeFinishedServlet extends HttpServlet{
@@ -62,7 +63,7 @@ public class TakeFinishedServlet extends HttpServlet{
 				System.out.println("I match");
 				playerName = (String) entity.getProperty("playerName");
 				isAI = (boolean) entity.getProperty("isAI");
-				AIURL = (String) entity.getProperty("AIURL");
+				AIURL = (String) entity.getProperty("AIUrl");
 				token = (String) entity.getProperty("token");
 			}
 		}
@@ -87,15 +88,23 @@ public class TakeFinishedServlet extends HttpServlet{
 			Map<String, String> state = new HashMap<String, String>();
 			state.put("redirectURL", GameModel.turnControlPath
 					+ "/redirectToPortal");
-			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+AIURL+"&playerName=\""+playerName+"\"&playerID="+user);
+			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+"\""+AIURL+"\""+"&playerName=\""+playerName+"\"&playerID="+user);
 			
 			SocketMessage packet = new SocketMessage("portalMove",gson.toJson(state), false);
 			ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 			channelService.sendMessage(message);
 		
 		}
+		
+		for (Entity entity : playerList) {
+			Long otherPlayerID = (Long) entity.getProperty("playerID");
+			if (user.equals(otherPlayerID)) {
+				datastore.delete(entity.getKey());
+			}
+		}
 	}
 
+	
 	
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
@@ -106,6 +115,9 @@ public class TakeFinishedServlet extends HttpServlet{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		TakeTurnFinishedInput request = gson.fromJson(reader, TakeTurnFinishedInput.class);
 
+		GameModel.storeCurrentBoard(request.board);
+		
+		
 		final Long playerID;
 		final Long currScore = 0L;
 		Key lastTurnKey = KeyFactory.createKey("LastTurn", "MyLastTurn");
@@ -126,13 +138,33 @@ public class TakeFinishedServlet extends HttpServlet{
 		
 		final UrlPost postUtil = new UrlPost();
 
-		if (request.x == 0 && request.y == 0) {
-			System.out.println("1111111111111111");
+		if (request.x == 0 && (request.y == 0 || request.y == 1)) {
+			System.out.println(">>>>> 1111111111111111");
+			Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
+			query = new Query("Player", playerKey);
+			List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+
+			System.out.println("myPlayerID "+ playerID);
+
+			//find the player entity that matches the playerID in the request
+//			for (Entity entity: playerList) {
+//				System.out.println("here1 >>>>> "+entity.getProperty("playerID").toString());
+//				System.out.println("here2 >>>>> "+playerID.toString());
+//				if((entity.getProperty("playerID").toString()).equals(playerID.toString())) {
+//					System.out.println("here 333");
+//					datastore.delete(entity.getKey());
+//				}
+//			}
+			
+			TakeTurn tf = new TakeTurn(playerID, currScore);
+			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
+			
 			redirectBrowserToPortal(playerID);
 		} else {
 			TakeTurn tf = new TakeTurn(playerID, currScore);
 			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
 		}
+		
 		// At this point, we can send back a packet with status "ok"
 		StatusResponse response = new StatusResponse("ok", "sent turn finished to TC");
 		resp.getWriter().println(gson.toJson(response, StatusResponse.class));

@@ -9,10 +9,10 @@ public class GetPayoffInput {
 	/**
 	 * playerID making the request
 	 */
-	public Long playerID;
+	public Long nextPlayerID;
 	
 	/**
 	 * board to get the payoff value for
 	 */
-	public String board;
+	public String currentBoard;
 }

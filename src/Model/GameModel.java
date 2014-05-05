@@ -3,6 +3,8 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
+import request.ExceptionStringify;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -10,9 +12,11 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.devrel.samples.ttt.Cell;
 import com.google.devrel.samples.ttt.CellContainer;
+import com.google.gson.Gson;
 
 /**
  * The Game Model class
@@ -38,7 +42,15 @@ public class GameModel {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction tx = datastore.beginTransaction();
 		Entity newBoard = null;
+		
 		try {
+		    Query query = new Query("Board", GameModel.boardKey);
+		    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+		    
+		    for (Entity e : boardList) {
+		    	datastore.delete(e.getKey());
+		    }
+			
 			newBoard = new Entity("Board", boardKey);
 			com.google.appengine.api.datastore.Text text = new com.google.appengine.api.datastore.Text(board);
 			newBoard.setProperty("board", text);
@@ -48,6 +60,28 @@ public class GameModel {
 		}
 		tx.commit();
 	}
+	
+	/**
+	 * get the string representing the board from the datastore
+	 * As a "Board", boardKey entity
+	 * @param board
+	 */
+	public static String getCurrentBoard() {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key boardKey = GameModel.boardKey;
+		Query query = new Query("Board", boardKey);
+		List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+
+		//Send the board to resp
+		System.out.println("getCurrentBoard: board list size "+boardList.size());
+		if (boardList.size() == 1) {
+			String board = ((Text) boardList.get(0).getProperty("board")).getValue();
+			System.out.println("getCurrentBoard: returning board "+board);
+			return board;
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Convenience method
@@ -56,11 +90,11 @@ public class GameModel {
 	 * @return
 	 */
 	public static boolean bad(String theirPlayerName){
-		if(theirPlayerName.equals("None"))
-			return true;
-		return false;
-	}
-
+        if(theirPlayerName.equals("None"))
+            return true;
+        return false;
+    }
+	
 	/**
 	 * Checks if a player at row 'r' and col 'c' has any valid adjacent moves
 	 * @param cells
@@ -69,65 +103,50 @@ public class GameModel {
 	 * @return
 	 */
 	public static boolean checkIfStuck(String cells[][], int r, int c){
-		
-		//Check if stuck in upper left corner
-		if(r == 0 && c == 0){
-			if(bad(cells[r+1][c]) && bad(cells[r][c+1]))
-				return true;
-		}
-		
-		//Check if stuck in bottom left corner
-		if(r == cells.length - 1 && c == 0){
-			if(bad(cells[r-1][c]) &&  bad(cells[r][c+1]))
-				return true;
-		}
-		
-		//Check if stuck in top right corner
-		if(r == 0 && c == cells[r].length - 1){
-			if(bad(cells[r][c-1]) && bad(cells[r+1][c]))
-				return true;
-		}
-		
-		//Check if stuck in bottom right corner
-		if(r == cells.length - 1 && c == cells[r].length - 1){
-			if(bad(cells[r][c-1]) && bad(cells[r-1][c]))
-				return true;
-		}
-
-		//Check if stuck in left-most column but not in corner
-		if(r > 0 && r < cells.length - 1 && c == 0){
-			if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c+1]))
-				return true;
-		}
-
-		//Check if stuck in right-most column but not in corner
-		if(r > 0 && r < cells.length - 1 && c == cells[r].length - 1){
-			if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]))
-				return true;
-		}
-		
-		//Check if stuck in top row but not in corner
-		if(r == 0 && c > 0 && c < cells[r].length - 1){
-			if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r+1][c])){
-				return true;
-			}
-		}
-
-		//Check if stuck in bottom row but not in corner
-		if(r == cells.length - 1 && c > 0 && c < cells[r].length - 1){
-			if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r-1][c]))
-				return true;
-		}
-
-		//Check if we're stuck somewhere in the middle
-		if(r > 0 && r < cells.length - 1 && c > 0 && c < cells[r].length - 1){
-			if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]) && bad(cells[r][c+1]))
-				return true;
-		}
-		
-		//We must not be stuck
-		return false;
-	}
+        if(r == 0 && c == 0){
+            if(bad(cells[r+1][c]) && bad(cells[r][c+1]))
+                return true;
+        }
+        if(r == cells.length - 1 && c == 0){
+            if(bad(cells[r-1][c]) &&  bad(cells[r][c+1]))
+                return true;
+        }
+        if(r == 0 && c == cells[r].length - 1){
+            if(bad(cells[r][c-1]) && bad(cells[r+1][c]))
+                return true;
+        }
+        if(r == cells.length - 1 && c == cells[r].length - 1){
+            if(bad(cells[r][c-1]) && bad(cells[r-1][c]))
+                return true;
+        }
+        
+        if(r > 0 && r < cells.length - 1 && c == 0){
+            if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c+1]))
+                return true;
+        }
+        
+        if(r > 0 && r < cells.length - 1 && c == cells[r].length - 1){
+            if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]))
+                return true;
+        }
+        
+        if(r == 0 && c > 0 && c < cells[r].length - 1){
+            if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r+1][c])){
+                return true;
+            }
+        }
+        
+        if(r == cells.length - 1 && c > 0 && c < cells[r].length - 1){
+            if(bad(cells[r][c-1]) && bad(cells[r][c+1]) && bad(cells[r-1][c]))
+                return true;
+        }
+        
+        if(r > 0 && r < cells.length - 1 && c > 0 && c < cells[r].length - 1){
+            if(bad(cells[r-1][c]) && bad(cells[r+1][c]) && bad(cells[r][c-1]) && bad(cells[r][c+1]))
+                return true;
+        }
+        return false;
+    }
 
 	/**
 	 * Check if a given move is valid based on a player's current location
@@ -138,26 +157,12 @@ public class GameModel {
 	 * @param newCol	the column of the proposed move
 	 * @return
 	 */
-	protected static boolean isValidMove(String[][] cells, int oldRow, int oldCol, int newRow, int newCol){
-		
-		//Check if proposed move location is available
-		if(cells[newRow][newCol].equals("None"))
-			return false;
-		
-		//If player is stuck, any move is valid
-		if(checkIfStuck(cells, oldRow, oldCol))
-			return true;
-
-		//Check if move is adjacent to current location
-		int xDiff = Math.abs(newRow - oldRow);
-		int yDiff = Math.abs(newCol - oldCol);
-		
-		if (yDiff + xDiff == 1) {
-			return true;
-		}
-
-		return false;
-	}
+    protected static boolean isValidMove(String[][] cells, int newRow, int newCol){
+        if(cells[newRow][newCol].equals("None"))
+            return true;
+        
+        return false;
+    }
 
 	/**
 	 * Converts from an ArrayList of Cell objects to a two dimensional string matrix
@@ -165,15 +170,51 @@ public class GameModel {
 	 * @return
 	 */
 	public static String[][] convertFromArrayListToMatrix(ArrayList<Cell> cells){
-		String[][] cellMatrix = new String[3][3];
-		for(int i = 0; i < 3; i++){
-			for(int j = 0; j < 3; j++){
+		String[][] cellMatrix = new String[4][4];
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 4; j++){
 				cellMatrix[i][j] = cells.get(i*j).playerName;
 			}
 		}
 		return cellMatrix;
 	}
 
+	public static int getPayoff(Long playerID, String board){
+		//System.out.println("in inner getPayoff: " + playerID + " | board: " + board);
+		int ret = 0;
+		try{
+		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
+	    Query query = new Query("Player", playerKey);
+	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+	    String playerName = null;
+	    for (Entity existingEntity : playerList) {
+	    	if(((Long)existingEntity.getProperty("playerID")).equals(playerID)){
+	    		playerName = (String)existingEntity.getProperty("playerName");
+	    	}
+	    }
+	    if(playerName == null)
+	    	return 0;
+	    Gson gson = new Gson();
+	    //System.out.println("getValidMovesForPlayer " + board);
+		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
+		ArrayList<Cell> cells = cellContainer.cells;
+		
+		Cell currPos = new Cell();
+		//System.out.println("player name: " + playerName);
+		for (Cell cell : cells ) {
+			if (cell.playerName.equals(playerName)){
+				ret+= cell.val;
+			}
+		}
+		//System.out.println("returning w/: " + ret);
+		}
+		catch(Exception e){
+			ExceptionStringify es = new ExceptionStringify(e);
+			//System.out.println(es.run());
+		}
+		return ret;
+	}
+	
 	/**
 	 * Get a list of all valid moves on the board for a specific player
 	 * @param playerID
@@ -181,44 +222,36 @@ public class GameModel {
 	 * @return
 	 */
 	public static ArrayList<String> getValidMovesForPlayer(Long playerID, String board) {
-		
-		//Get the list of players from the datastore 
 		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-		Query query = new Query("Player", playerKey);
-		List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
-		
-		//Find the playerName associated with the paramater playerID
-		String playerName = null;
-		for (Entity existingEntity : playerList) {
-			if(((Long)existingEntity.getProperty("playerID")).equals(playerID)){
-				playerName = (String)existingEntity.getProperty("playerName");
-			}
-		}
-		
-		//If no playerName found, no valid moves to return
-		if(playerName == null)
-			return new ArrayList<String>();
-		
-		
-		CellContainer cellContainer = CellContainer.fromJson(board);
+	    Query query = new Query("Player", playerKey);
+	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(500));
+	    String playerName = null;
+	    for (Entity existingEntity : playerList) {
+	    	if(((Long)existingEntity.getProperty("playerID")).equals(playerID)){
+	    		playerName = (String)existingEntity.getProperty("playerName");
+	    	}
+	    }
+	    if(playerName == null)
+	    	return new ArrayList<String>();
+	    Gson gson = new Gson();
+	    //System.out.println("getValidMovesForPlayer " + board);
+		CellContainer cellContainer = gson.fromJson(board, CellContainer.class);
 		ArrayList<Cell> cells = cellContainer.cells;
-
-		//Find the current position of the player
+		
 		Cell currPos = new Cell();
 		for (Cell cell : cells ) {
 			if (cell.playerName.equals(playerName)){
 				currPos = cell;
 			}
 		}
-
-		//Find all valid move options for the player
-		String[][] cellsMatrix = convertFromArrayListToMatrix(cells);
-		ArrayList<String> validMoves = new ArrayList<String>();
 		
+		ArrayList<String> validMoves = new ArrayList<String>();
 		for (Cell cell : cells ) {
-			if(isValidMove(cellsMatrix, currPos.x, currPos.y, cell.x, cell.y)){
-				//If this cell is a valid move, create a new board to represent that move
-				ArrayList<Cell> newBoard = cells;
+			if(cell.playerName.equals("None")){
+				ArrayList<Cell> newBoard = new ArrayList<Cell>();
+				for(Cell c : cells){
+					newBoard.add(c.clone());
+				}
 				for(Cell subCell : newBoard){
 					if(subCell.x == cell.x && subCell.y == cell.y){
 						subCell.playerName = playerName;
@@ -227,7 +260,7 @@ public class GameModel {
 				validMoves.add(CellContainer.toJson(new CellContainer(newBoard)));
 			}
 		}
-
+		
 		return validMoves;
 	}
 }

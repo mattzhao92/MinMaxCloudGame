@@ -30,18 +30,26 @@ var GridTile = Class.extend({
 	 * Updates the value of this tile
 	 */
 	updateValue: function(otherName, myName) {
+		console.log("updateValue >>>>> " + myName +" xPos "+ this.xPos + " " + this.yPos);
 		if (otherName ==  myName) {
 			this.tileMesh.material.opacity = 0.5;
 			this.tileMesh.material.color.setRGB(1, 1, 1);
 			this.free = false;
+			this.playerName = myName;
+			console.log("             11111111111 " + this.playerName +" xPos "+ this.xPos + " " + this.yPos);
+
 		} else if (otherName == "None") {
+			console.log("             222222222222 " + this.playerName +" xPos "+ this.xPos + " " + this.yPos);
+			
 			this.free = true;
 			// do nothing in this case
 		} else {
-
+			this.playerName = otherName;
 			this.tileMesh.material.opacity = 0.5;
 			this.tileMesh.material.color.setRGB(0,0,0);
 			this.free = false;
+			console.log("             33333333333333 " + this.playerName +" xPos "+ this.xPos + " " + this.yPos);
+
 		}
 	},
 
@@ -116,6 +124,8 @@ var GameView = Class.extend({
 
 		var currentScope = this;
 		this.model = model;
+		this.board = board;
+		
 		this.container = document.getElementById('container');
 
 		this.viewWidth = $(window).width();//1000;// Math.min(container.clientWidth,container.clientHeight);
@@ -202,6 +212,9 @@ var GameView = Class.extend({
 
 	setPlayerName: function(name) {
 		this.playerName = name;
+		if (this.board) {
+			this.updateBoard(this.board);
+		}
 	},
 
 	enableMouseListeners: function() {
@@ -243,7 +256,6 @@ var GameView = Class.extend({
 				}
 			}
 		}
-
 	},
 
 	onKeyDown: function(e) {
@@ -262,7 +274,7 @@ var GameView = Class.extend({
 		var tile = this.tiles[newX * this.numberSquaresOnXAxis + newY];
 		tile.playerName = this.playerName;
 		tile.free = false;
-		this.model.clickSquare(newY, newY);
+		this.model.clickSquare(newX, newY);
 	},
 	
 	moveCurrentPosition: function(deltaX, deltaY) {
@@ -310,19 +322,24 @@ var GameView = Class.extend({
 				if (cube.owner != null && cube.owner.player == null)
 					cube.material.opacity = 0.5;
 			});
-			
-			if (this.previousHeightedCell != null) {
-				var oldColor = this.previousHeightedCell.owner.color;
-				this.previousHeightedCell.material.color.setRGB(oldColor[0],oldColor[1],oldColor[2]);
-			}
 
 			if (intersects.length > 0) {
 				var intersection = intersects[ 0 ],
 				obj = intersection.object;
+				
+				console.log("onMouseMove "+ obj.owner.playerName);
+				console.log("onMouseMove "+ obj.owner.free);
 				if (!obj.owner.free) return;
+				
+				if (this.previousHeightedCell != null) {
+					var oldColor = this.previousHeightedCell.owner.color;
+					this.previousHeightedCell.material.color.setRGB(oldColor[0],oldColor[1],oldColor[2]);
+				}
+				
 				this.previousHeightedCell = obj;
 				obj.material.color.setRGB(0.0, 1, 0.0);
 
+				
 				//obj.material.opacity = 0.5;
 				//obj.material.color.setRGB( 1.0 - 0 / intersects.length, 0, 0 );
 			}
