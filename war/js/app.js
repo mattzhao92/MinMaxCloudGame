@@ -5,8 +5,8 @@ flappyMMCJ.model = flappyMMCJ.model || {};
 //flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
 //flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
 
-flappyMMCJ.TCServer = 'http://localhost:8887';
-flappyMMCJ.gameServer = 'http://localhost:8886';
+flappyMMCJ.TCServer = 'https://1-dot-turncontrol.appspot.com';
+flappyMMCJ.gameServer = 'https://1-dot-gameserver4052.appspot.com';
 
 /**
  * Status for an unfinished game.
@@ -118,7 +118,7 @@ flappyMMCJ.model.resetGame = function() {
  */
 flappyMMCJ.model.getComputerMove = function(boardString) {
 
-//	$.post("http://localhost:8887/getRandomMove", boardString, function(boardState){
+//	$.post("https://1-dot-turncontrol.appspot.com/getRandomMove", boardString, function(boardState){
 //		console.log("getComputerMove: "+boardState);
 //		var board = JSON.parse(boardState);
 //		gameView.updateBoard(board);

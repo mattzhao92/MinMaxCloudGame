@@ -68,7 +68,7 @@ public class TakeFinishedServlet extends HttpServlet{
 			}
 		}
 
-		if (AIURL == null) AIURL = "";
+		//if (AIURL == null) AIURL = "";
 
 		
 		Key newIDsKey = KeyFactory.createKey("PortalList", "MyPortalList");
@@ -88,7 +88,8 @@ public class TakeFinishedServlet extends HttpServlet{
 			Map<String, String> state = new HashMap<String, String>();
 			state.put("redirectURL", GameModel.turnControlPath
 					+ "/redirectToPortal");
-			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+"\""+AIURL+"\""+"&playerName=\""+playerName+"\"&playerID="+user);
+			int score = 10;
+			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+"\""+AIURL+"\""+"&playerName=\""+playerName+"\"&playerID="+user+"&gameUrl="+"\""+GameModel.gameServerPath+"\""+"&playerScore="+score);
 			
 			SocketMessage packet = new SocketMessage("portalMove",gson.toJson(state), false);
 			ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
@@ -155,9 +156,6 @@ public class TakeFinishedServlet extends HttpServlet{
 //					datastore.delete(entity.getKey());
 //				}
 //			}
-			
-			TakeTurn tf = new TakeTurn(playerID, currScore);
-			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
 			
 			redirectBrowserToPortal(playerID);
 		} else {

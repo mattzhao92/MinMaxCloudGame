@@ -69,14 +69,14 @@
 
 
 <script type="text/javascript">
-		var gameServerUrl = 'http://localhost:8886';
+		var gameServerUrl = 'https://1-dot-gameserver4052.appspot.com';
         
         function registerGameHandler() {
 
 			  // change me
               var requestPath = document.getElementById('TCServerUrl').value;
               //C1
-              requestPath += '/test2?method=registerGame&data={\'url\':\'http://localhost:8886\',\'portals\':[{\'isOutbound\':\'true\'},{\'isOutbound\':\'false\'}]}';
+              requestPath += '/test2?method=registerGame&data={\'url\':\'https://1-dot-gameserver4052.appspot.com\',\'portals\':[{\'isOutbound\':\'true\'},{\'isOutbound\':\'false\'}]}';
 
               $.get(requestPath, '{}', function(data) {
               		console.log("registerGame response " +data);

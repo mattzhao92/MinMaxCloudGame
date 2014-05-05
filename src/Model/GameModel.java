@@ -26,8 +26,8 @@ public class GameModel {
 	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	public static Key boardKey = KeyFactory.createKey("BoardKey", "MyBoard");
 
-	public static String turnControlPath = "http://localhost:8887";
-	public static String gameServerPath = "http://localhost:8886";
+	public static String turnControlPath = "https://1-dot-turncontrol.appspot.com";
+	public static String gameServerPath = "https://1-dot-gameserver4052.appspot.com";
 
 	//public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
 	//public static String gameServerPath = "https://app405cloudgame.appspot.com";

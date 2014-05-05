@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import request.TakeTurn;
+
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
@@ -32,6 +34,7 @@ import Json.SocketMessage;
 import Json.StatusResponse;
 import Json.JoinSubGameMessage;
 import Model.GameModel;
+import Model.UrlPost;
 
 /**
  * Servlet that allows a player to join a sub game
@@ -146,6 +149,14 @@ public class JoinSubGameServlet extends HttpServlet {
 			ChannelMessage message = new ChannelMessage(token, gson.toJson(packet, SocketMessage.class));
 			channelService.sendMessage(message);
 		}	
+		
+		UrlPost postUtil = new UrlPost();
+		Long currScore = 0L;
+		TakeTurn tf = new TakeTurn(playerID, currScore);
+		String response = postUtil.sendCallbackPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
+
+		System.out.println("taketurnfinished before redirect " + response);
+		
 		
 		//respond with error or URL to game GUI
 		StatusResponse jsonresp;

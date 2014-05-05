@@ -50,7 +50,7 @@ public class MakeAIMoveServlet extends HttpServlet{
 		UrlPost postUtil = new UrlPost();
 		GetMoveInput gmi = new GetMoveInput();
 		gmi.playerID = request.playerID;
-		gmi.GameURL = "http://localhost:8886";
+		gmi.GameURL = "https://1-dot-gameserver4052.appspot.com";
 		gmi.TreeDepth = 1;
 		//System.out.println(">>>>>>>>>>>>> board" + request.board);
 		gmi.ValidMoves = GameModel.getValidMovesForPlayer(request.playerID, request.board);
@@ -112,7 +112,7 @@ public class MakeAIMoveServlet extends HttpServlet{
 		}
 		
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
