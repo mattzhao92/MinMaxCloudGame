@@ -50,15 +50,11 @@ public class MakeAIMoveServlet extends HttpServlet{
 		UrlPost postUtil = new UrlPost();
 		GetMoveInput gmi = new GetMoveInput();
 		gmi.playerID = request.playerID;
-		gmi.GameURL = "https://1-dot-gameserver4052.appspot.com";
+		gmi.GameURL = "https://1-dot-gameserver4051.appspot.com";
 		gmi.TreeDepth = 1;
-		//System.out.println(">>>>>>>>>>>>> board" + request.board);
 		gmi.ValidMoves = GameModel.getValidMovesForPlayer(request.playerID, request.board);
-		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>"+gson.toJson(gmi));
 
 		String data = postUtil.sendCallbackPost(gson.toJson(gmi), request.AIURL+"/getMove");
-		//System.out.println(">>>>>>>>>> data "+ data);
-
 		
 		CellContainer oldBoardContainer = gson.fromJson(GameModel.getCurrentBoard(), CellContainer.class);
 		CellContainer newBoardContainer = gson.fromJson(data, CellContainer.class);

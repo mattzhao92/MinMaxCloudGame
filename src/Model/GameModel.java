@@ -31,7 +31,7 @@ public class GameModel {
 
     
 	public static String turnControlPath = "https://1-dot-turncontrol.appspot.com";
-	public static String gameServerPath = "https://1-dot-gameserver4052.appspot.com";
+	public static String gameServerPath = "https://1-dot-gameserver4051.appspot.com";
 
 	//public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
 	//public static String gameServerPath = "https://app405cloudgame.appspot.com";

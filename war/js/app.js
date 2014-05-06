@@ -6,7 +6,7 @@ flappyMMCJ.model = flappyMMCJ.model || {};
 //flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
 
 flappyMMCJ.TCServer = 'https://1-dot-turncontrol.appspot.com';
-flappyMMCJ.gameServer = 'https://1-dot-gameserver4052.appspot.com';
+flappyMMCJ.gameServer = 'https://1-dot-gameserver4051.appspot.com';
 
 /**
  * Status for an unfinished game.

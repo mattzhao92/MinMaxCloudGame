@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,7 @@ public class JoinSubGameServlet extends HttpServlet {
 	 * Serial ID generated automatically by eclipse 
 	 */
 	private static final long serialVersionUID = -8974201704590761219L;
+    public static final Logger log = Logger.getLogger(JoinSubGameServlet.class.getName());
 
 	private ChannelService channelService = ChannelServiceFactory.getChannelService();
 	private Random random = new Random();
@@ -68,7 +70,9 @@ public class JoinSubGameServlet extends HttpServlet {
 		boolean isAI = request.isAI;
 		String AIUrl = request.AIUrl;
 		String gameUrl = request.gameURL;
-		int score = request.playerScore;
+		long score = request.playerScore;
+		
+		log.info("player has a score " + score);
 
 		// generate a channel id/token for the player
 		String channelKey = ""+playerID + random.nextDouble() * 100;
@@ -153,10 +157,8 @@ public class JoinSubGameServlet extends HttpServlet {
 		}	
 		
 		UrlPost postUtil = new UrlPost();
-		Long currScore = 0L;
-		TakeTurn tf = new TakeTurn(playerID, currScore);
+		TakeTurn tf = new TakeTurn(playerID, score);
 		String response = postUtil.sendCallbackPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
-
 		System.out.println("taketurnfinished before redirect " + response);
 		
 		

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +39,11 @@ public class TakeFinishedServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 7486734051193470255L;
 	private Gson gson = new Gson();
+    public static final Logger log = Logger.getLogger(TakeFinishedServlet.class.getName());
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 	
-	private void redirectBrowserToPortal(Long user, int score) {
+	private void redirectBrowserToPortal(Long user, long score) {
 		ChannelService channelService = ChannelServiceFactory
 				.getChannelService();
 		// String channelKey = getChannelKey(user);
@@ -117,8 +119,9 @@ public class TakeFinishedServlet extends HttpServlet{
 		for(int i = 0; i < oldBoardCells.size(); i++){
 			Cell oldCell = oldBoardCells.get(i);
 			Cell newCell = newBoardCells.get(i);
-			if(oldCell.playerName.equals("None") && newCell.playerName.equals("None")){
+			if(oldCell.playerName.equals("None") && !newCell.playerName.equals("None")){
 				ret = newCell.val;
+				break;
 			}
 		}
 		
@@ -167,21 +170,24 @@ public class TakeFinishedServlet extends HttpServlet{
 		List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 
 		System.out.println("myPlayerID "+ playerID);
-		int score = 0;
+		long score = 0;
 		//find the player entity that matches the playerID in the request
 		for (Entity entity: playerList) {
 			if((entity.getProperty("playerID").toString()).equals(playerID.toString())) {
-				score = (int)entity.getProperty("int") + diff;
+				score = (long)entity.getProperty("score") + diff;
 			}
 		}
 		
+		
 		if (request.x == 0 && (request.y == 0 || request.y == 1)) {
 			System.out.println(">>>>> 1111111111111111");
-
+			log.info("redirectBrowserToPortal score " + score);
 			
 			redirectBrowserToPortal(playerID, score);
 		} else {
-			TakeTurn tf = new TakeTurn(playerID, new Long(score));
+			log.info("turnFinished score " + score);
+
+			TakeTurn tf = new TakeTurn(playerID, score);
 			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
 		}
 		
