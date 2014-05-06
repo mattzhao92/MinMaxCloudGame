@@ -3,6 +3,7 @@ package servlets_private;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
+import com.google.devrel.samples.ttt.Cell;
+import com.google.devrel.samples.ttt.CellContainer;
 import com.google.gson.Gson;
 
 public class TakeFinishedServlet extends HttpServlet{
@@ -38,7 +41,7 @@ public class TakeFinishedServlet extends HttpServlet{
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 	
-	private void redirectBrowserToPortal(Long user) {
+	private void redirectBrowserToPortal(Long user, int score) {
 		ChannelService channelService = ChannelServiceFactory
 				.getChannelService();
 		// String channelKey = getChannelKey(user);
@@ -88,7 +91,7 @@ public class TakeFinishedServlet extends HttpServlet{
 			Map<String, String> state = new HashMap<String, String>();
 			state.put("redirectURL", GameModel.turnControlPath
 					+ "/redirectToPortal");
-			int score = 10;
+			
 			state.put("redirectURLData", "portalID=" + portalID+"&isAI="+isAI +"&AIURL="+"\""+AIURL+"\""+"&playerName=\""+playerName+"\"&playerID="+user+"&gameUrl="+"\""+GameModel.gameServerPath+"\""+"&playerScore="+score);
 			
 			SocketMessage packet = new SocketMessage("portalMove",gson.toJson(state), false);
@@ -105,7 +108,22 @@ public class TakeFinishedServlet extends HttpServlet{
 		}
 	}
 
-	
+	public int computeDifference(String oldBoard, String newBoard, Long playerID){
+		int ret = 0;
+		CellContainer oldBoardContainer = gson.fromJson(oldBoard, CellContainer.class);
+		ArrayList<Cell> oldBoardCells = oldBoardContainer.cells;
+		CellContainer newBoardContainer = gson.fromJson(newBoard, CellContainer.class);
+		ArrayList<Cell> newBoardCells = newBoardContainer.cells;
+		for(int i = 0; i < oldBoardCells.size(); i++){
+			Cell oldCell = oldBoardCells.get(i);
+			Cell newCell = newBoardCells.get(i);
+			if(oldCell.playerName.equals("None") && newCell.playerName.equals("None")){
+				ret = newCell.val;
+			}
+		}
+		
+		return ret;
+	}
 	
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
@@ -115,8 +133,6 @@ public class TakeFinishedServlet extends HttpServlet{
 		final Gson gson = new Gson();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		TakeTurnFinishedInput request = gson.fromJson(reader, TakeTurnFinishedInput.class);
-
-		GameModel.storeCurrentBoard(request.board);
 		
 		
 		final Long playerID;
@@ -137,29 +153,35 @@ public class TakeFinishedServlet extends HttpServlet{
 			return;
 		}
 		
+		String oldBoard = GameModel.getCurrentBoard();
+		int diff = computeDifference(oldBoard, request.board, playerID);
+		GameModel.storeCurrentBoard(request.board);
+		
+		
+
+		
 		final UrlPost postUtil = new UrlPost();
 
+		Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
+		query = new Query("Player", playerKey);
+		List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
+
+		System.out.println("myPlayerID "+ playerID);
+		int score = 0;
+		//find the player entity that matches the playerID in the request
+		for (Entity entity: playerList) {
+			if((entity.getProperty("playerID").toString()).equals(playerID.toString())) {
+				score = (int)entity.getProperty("int") + diff;
+			}
+		}
+		
 		if (request.x == 0 && (request.y == 0 || request.y == 1)) {
 			System.out.println(">>>>> 1111111111111111");
-			Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-			query = new Query("Player", playerKey);
-			List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 
-			System.out.println("myPlayerID "+ playerID);
-
-			//find the player entity that matches the playerID in the request
-//			for (Entity entity: playerList) {
-//				System.out.println("here1 >>>>> "+entity.getProperty("playerID").toString());
-//				System.out.println("here2 >>>>> "+playerID.toString());
-//				if((entity.getProperty("playerID").toString()).equals(playerID.toString())) {
-//					System.out.println("here 333");
-//					datastore.delete(entity.getKey());
-//				}
-//			}
 			
-			redirectBrowserToPortal(playerID);
+			redirectBrowserToPortal(playerID, score);
 		} else {
-			TakeTurn tf = new TakeTurn(playerID, currScore);
+			TakeTurn tf = new TakeTurn(playerID, new Long(score));
 			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
 		}
 		

@@ -74,6 +74,10 @@ public class TakeTurnServlet extends HttpServlet{
     		//System.out.println("otherPlayerID "+ (Long) entity.getProperty("playerID"));
 			Long otherPlayerID = (Long) entity.getProperty("playerID");
 			if (playerID.equals(otherPlayerID)) {
+				Entity newEntity = entity;
+				newEntity.setProperty("score", currScore);
+				datastore.delete(entity.getKey());
+				datastore.put(newEntity);
 				if((Boolean)entity.getProperty("isAI")){
 					System.out.println("is AI");
 					Transaction tx = datastore.beginTransaction();
@@ -110,8 +114,6 @@ public class TakeTurnServlet extends HttpServlet{
 					token = (String) entity.getProperty("token");
 				}
 			}
-			
-			
     	}
     	
     	if (token == null) {
@@ -151,6 +153,5 @@ public class TakeTurnServlet extends HttpServlet{
 		//System.out.println("sending to client a updateview packet, tokenId: "+token);
 		ChannelService service = ChannelServiceFactory.getChannelService();
 		service.sendMessage(message);
-		
 	}
 }

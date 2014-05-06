@@ -34,6 +34,11 @@ public class JoinSubGameMessage {
 	public String gameURL;
 	
 	/**
+	 * score
+	 */
+	public int playerScore;
+	
+	/**
 	 * the player's token
 	 */
 	public String token;
