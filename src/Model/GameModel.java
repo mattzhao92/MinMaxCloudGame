@@ -229,7 +229,7 @@ public class GameModel {
 						
 						log.info("GameModel: GetScoreForPortalServlet portalID " + portalID + " playerID " + playerID);
 
-						String portalMoveScoreStr = httpUtil.sendGet("?portalID="+portalID +"&playerID="+playerID, GameModel.gameServerPath+"/getScoreForPortal");
+						String portalMoveScoreStr = httpUtil.sendGet("?portalID="+portalID +"&playerID="+playerID, GameModel.turnControlPath+"/getScoreForPortal");
 						log.info("GameModel: portalMoveScoreStr is "+portalMoveScoreStr);
 						int portalMoveScore = Integer.parseInt(portalMoveScoreStr);
 						value = portalMoveScore;

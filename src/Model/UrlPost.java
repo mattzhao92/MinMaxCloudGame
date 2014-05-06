@@ -54,17 +54,17 @@ public class UrlPost {
 	}
 
 	public String sendCallbackPost(String data, String url) {
-		MakePost mp = new MakePost(url);
-		try {
-			String response = mp.execute(data);
-			if (response != null) {
-				return response;
-			}
-		} 
-		catch (Exception exception) {
-			exception.printStackTrace();
-		}	
-		return "bad request";
-
+		while (true) {
+			MakePost mp = new MakePost(url);
+			try {
+				String response = mp.execute(data);
+				if (response != null) {
+					return response;
+				}
+			} 
+			catch (Exception exception) {
+				exception.printStackTrace();
+			}	
+		}
 	}
 }
