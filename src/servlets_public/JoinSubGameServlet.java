@@ -68,6 +68,7 @@ public class JoinSubGameServlet extends HttpServlet {
 		boolean isAI = request.isAI;
 		String AIUrl = request.AIUrl;
 		String gameUrl = request.gameURL;
+		int score = request.playerScore;
 
 		// generate a channel id/token for the player
 		String channelKey = ""+playerID + random.nextDouble() * 100;
@@ -91,6 +92,7 @@ public class JoinSubGameServlet extends HttpServlet {
 			newPlayer.setProperty("isAI", isAI);
 			newPlayer.setProperty("AIUrl", AIUrl);
 			newPlayer.setProperty("gameURL", gameUrl);
+			newPlayer.setProperty("score", score);
 			
 			System.out.println("PlayerName: "+ playerName);
 			System.out.println("PlayerID: "+playerID);
