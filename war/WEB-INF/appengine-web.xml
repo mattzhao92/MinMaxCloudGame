@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>gameserver4052</application>
+  <application>gameserver4051zz81</application>
   <version>1</version>
 
-  <threadsafe>false</threadsafe>
+  <threadsafe>true</threadsafe>
 
-  <!-- Configure java.util.logging -->
+  <!-- Configure java.util.Logging -->
   <system-properties>
-    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+    <property name="java.util.Logging.config.file" value="WEB-INF/Logging.properties"/>
   </system-properties>
 
   <!--

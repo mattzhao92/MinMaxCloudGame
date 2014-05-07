@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.devrel.samples.ttt.Board;
 import com.google.appengine.api.datastore.Text;
 
@@ -43,10 +44,26 @@ public class GetBoardServlet extends HttpServlet{
 
 		//Send the board to resp
 		System.out.println("GetBoardServlet: board list size "+boardList.size());
-		if (boardList.size() == 1) {
-			String board = ((Text) boardList.get(0).getProperty("board")).getValue();
+		if (boardList.size() >= 1) {
+			String board = ((Text) boardList.get(boardList.size()-1).getProperty("board")).getValue();
 			System.out.println("GetBoardServlet: returning board "+board);
 			resp.getWriter().println(board);
+			
+			// delete all the other boards
+			Entity lastBoard = boardList.get(boardList.size()-1);
+			
+			Transaction tx = datastore.beginTransaction();
+			try {
+				for (Entity e : boardList) {
+					datastore.delete(e.getKey());
+				}
+				datastore.put(lastBoard);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			tx.commit();
+			
+			
 		} else {
 			resp.getWriter().println("");
 		}

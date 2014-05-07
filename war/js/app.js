@@ -2,11 +2,11 @@ var flappyMMCJ = {}
 /** TicTacToe namespace for this sample. */
 flappyMMCJ.model = flappyMMCJ.model || {};
 
-//flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555.appspot.com';
-//flappyMMCJ.gameServer = 'https://app405cloudgame.appspot.com';
+//flappyMMCJ.TCServer = 'https://1-dot-striped-buckeye-555zz81.appspot.com';
+//flappyMMCJ.gameServer = 'https://app405cloudgamezz81.appspot.com';
 
-flappyMMCJ.TCServer = 'https://1-dot-turncontrol.appspot.com';
-flappyMMCJ.gameServer = 'https://1-dot-gameserver4052.appspot.com';
+flappyMMCJ.TCServer = 'http://localhost:8887';
+flappyMMCJ.gameServer = 'http://localhost:8886';
 
 /**
  * Status for an unfinished game.
@@ -118,7 +118,7 @@ flappyMMCJ.model.resetGame = function() {
  */
 flappyMMCJ.model.getComputerMove = function(boardString) {
 
-//	$.post("https://1-dot-turncontrol.appspot.com/getRandomMove", boardString, function(boardState){
+//	$.post("http://localhost:8887/getRandomMove", boardString, function(boardState){
 //		console.log("getComputerMove: "+boardState);
 //		var board = JSON.parse(boardState);
 //		gameView.updateBoard(board);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,9 +37,13 @@ import Model.GameModel;
 import Model.UrlPost;
 
 public class MakeAIMoveServlet extends HttpServlet{
+	
+    public static final Logger log = Logger.getLogger(MakeAIMoveServlet.class.getName());
+
 	private static final long serialVersionUID = -977766106447860017L;
 	private Gson gson = new Gson();
 
+	static int counter = 0;
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) 
 			throws IOException{
 
@@ -50,7 +55,7 @@ public class MakeAIMoveServlet extends HttpServlet{
 		UrlPost postUtil = new UrlPost();
 		GetMoveInput gmi = new GetMoveInput();
 		gmi.playerID = request.playerID;
-		gmi.GameURL = "https://1-dot-gameserver4052.appspot.com";
+		gmi.GameURL = "http://localhost:8886";
 		gmi.TreeDepth = 1;
 		//System.out.println(">>>>>>>>>>>>> board" + request.board);
 		gmi.ValidMoves = GameModel.getValidMovesForPlayer(request.playerID, request.board);
@@ -58,6 +63,7 @@ public class MakeAIMoveServlet extends HttpServlet{
 
 		String data = postUtil.sendCallbackPost(gson.toJson(gmi), request.AIURL+"/getMove");
 		//System.out.println(">>>>>>>>>> data "+ data);
+		System.out.println("getmove response "+(counter++) +" "+ data);
 
 		
 		CellContainer oldBoardContainer = gson.fromJson(GameModel.getCurrentBoard(), CellContainer.class);
@@ -79,6 +85,8 @@ public class MakeAIMoveServlet extends HttpServlet{
 				}
 			}
 		}
+		
+		
 
 		
 		GameModel.storeCurrentBoard(data);
@@ -94,6 +102,8 @@ public class MakeAIMoveServlet extends HttpServlet{
 
 		// Run an ancestor query to ensure we see the most up-to-date
 		// view of the Greetings belonging to the selected Guestbook.
+
+		////Log.info("quering playerlist ");
 
 		Query query = new Query("Player", playerKey);
 		List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
@@ -111,13 +121,19 @@ public class MakeAIMoveServlet extends HttpServlet{
 			//channelService.sendMessage(message);
 		}
 		
+		
+		//Log.info("sending taketurnfinsihed ");
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		postUtil.sendPost(gson.toJson(ttfi), GameModel.gameServerPath+"/takeTurnFinished");
+
+		postUtil.sendCallbackPost(gson.toJson(ttfi), GameModel.gameServerPath+"/takeTurnFinished");
+
+		////Log.info("finished sending taketurnfinsihed ");
+
 	}	
 }
 

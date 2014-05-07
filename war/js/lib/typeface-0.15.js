@@ -48,7 +48,7 @@ var _typeface_js = {
 		face.loaded = true;
 	},
 
-	log: function(message) {
+	Log: function(message) {
 		
 		if (this.quiet) {
 			return;
@@ -288,7 +288,7 @@ var _typeface_js = {
 			if (style.fontWeight != 'normal') fontDescription += ' ' + style.fontWeight;
 			if (style.fontStyle != 'normal') fontDescription += ' ' + style.fontStyle;
 		
-			this.log("couldn't find typeface font: " + fontDescription + ' for text "' + textExcerpt + '"');
+			this.Log("couldn't find typeface font: " + fontDescription + ' for text "' + textExcerpt + '"');
 			return;
 		}
 	
@@ -475,7 +475,7 @@ var _typeface_js = {
 				var glyph = face.glyphs[char];
 
 				if (!glyph) {
-					//this.log.error("glyph not defined: " + char);
+					//this.Log.error("glyph not defined: " + char);
 					return this.renderGlyph(ctx, face, this.fallbackCharacter, style);
 				}
 
@@ -593,7 +593,7 @@ var _typeface_js = {
 				var glyph = face.glyphs[char];
 
 				if (!glyph) {
-					this.log("glyph not defined: " + char);
+					this.Log("glyph not defined: " + char);
 					this.renderGlyph(shape, face, this.fallbackCharacter, offsetX, style);
 					return;
 				}

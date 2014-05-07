@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mortbay.log.Log;
+
 import request.TakeTurn;
 import Json.SocketMessage;
 import Json.StatusResponse;
@@ -41,7 +43,7 @@ public class TakeFinishedServlet extends HttpServlet{
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 	
-	private void redirectBrowserToPortal(Long user, int score) {
+	private void redirectBrowserToPortal(Long user, long score) {
 		ChannelService channelService = ChannelServiceFactory
 				.getChannelService();
 		// String channelKey = getChannelKey(user);
@@ -167,22 +169,24 @@ public class TakeFinishedServlet extends HttpServlet{
 		List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 
 		System.out.println("myPlayerID "+ playerID);
-		int score = 0;
+		long score = 0;
 		//find the player entity that matches the playerID in the request
 		for (Entity entity: playerList) {
 			if((entity.getProperty("playerID").toString()).equals(playerID.toString())) {
-				score = (int)entity.getProperty("int") + diff;
+				score = (long)entity.getProperty("score") + diff;
 			}
 		}
 		
-		if (request.x == 0 && (request.y == 0 || request.y == 1)) {
+		if (false && request.x == 0 && (request.y == 0)) {
 			System.out.println(">>>>> 1111111111111111");
 
 			
 			redirectBrowserToPortal(playerID, score);
 		} else {
 			TakeTurn tf = new TakeTurn(playerID, new Long(score));
-			postUtil.sendPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
+			//Log.info("sending to TC turnfinished packet");
+			postUtil.sendCallbackPost(gson.toJson(tf, TakeTurn.class), GameModel.turnControlPath +"/turnFinished");
+			//Log.info("finish sending to TC turnfinished packet");
 		}
 		
 		// At this point, we can send back a packet with status "ok"

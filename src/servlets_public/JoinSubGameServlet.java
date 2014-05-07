@@ -108,36 +108,23 @@ public class JoinSubGameServlet extends HttpServlet {
 		}
 		tx.commit();
 
-		tx = datastore.beginTransaction();
-		Query query = new Query("Board", GameModel.boardKey);
-		List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 
-		if (boardList == null || boardList.size() != 1) {
-			String msg = "We dont have a board "+ boardList.size();
-			StatusResponse status = new StatusResponse("fail",msg);
-			resp.getWriter().println(gson.toJson(status, StatusResponse.class));
-			System.err.println(msg);
-			return;
-		}
-
-		String board = ((Text) boardList.get(0).getProperty("board")).getValue();
+		String board = GameModel.getCurrentBoard();
 		CellContainer container = gson.fromJson(board, CellContainer.class);
 
 		for (int i = 0; i < container.cells.size(); i++) {
 			Cell cell =  container.cells.get(i);
-			if (cell.playerName.equals("None") && !((cell.x == 0 && cell.y == 0) || (cell.x == 0 && cell.y == 1))) {
+			if (cell.playerName.equals("None") && !((cell.x == 0 && cell.y == 0))) {
 				cell.playerName = playerName;
 				break;
 			}
 		}
 
-		datastore.delete(boardList.get(0).getKey());
-		tx.commit();
 		String newBoard = CellContainer.toJson(container);
 		GameModel.storeCurrentBoard(newBoard);
 
 
-		query = new Query("Player", playerKey);
+		Query query = new Query("Player", playerKey);
 		List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 
 		//Broadcast message to every player in player list besides the sender

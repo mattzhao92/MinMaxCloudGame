@@ -27,14 +27,14 @@ import com.google.gson.Gson;
 public class GameModel {
 	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	public static Key boardKey = KeyFactory.createKey("BoardKey", "MyBoard");
-    public static final Logger log = Logger.getLogger(GameModel.class.getName());
+    //public static final Logger log = Logger.getLogger(GameModel.class.getName());
 
     
-	public static String turnControlPath = "https://1-dot-turncontrol.appspot.com";
-	public static String gameServerPath = "https://1-dot-gameserver4052.appspot.com";
+	public static String turnControlPath = "http://localhost:8887";
+	public static String gameServerPath = "http://localhost:8886";
 
-	//public static String turnControlPath = "https://1-dot-striped-buckeye-555.appspot.com";
-	//public static String gameServerPath = "https://app405cloudgame.appspot.com";
+	//public static String turnControlPath = "https://1-dot-striped-buckeye-555zz81.appspot.com";
+	//public static String gameServerPath = "https://app405cloudgamezz81.appspot.com";
 
 
 	/**
@@ -78,15 +78,29 @@ public class GameModel {
 
 		//Send the board to resp
 		System.out.println("getCurrentBoard: board list size "+boardList.size());
-		if (boardList.size() == 1) {
-			String board = ((Text) boardList.get(0).getProperty("board")).getValue();
-			System.out.println("getCurrentBoard: returning board "+board);
+		if (boardList.size() >= 1) {
+			String board = ((Text) boardList.get(boardList.size()-1).getProperty("board")).getValue();
+			System.out.println("GetBoardServlet: returning board "+board);
+			
+			// delete all the other boards
+			Entity lastBoard = boardList.get(boardList.size()-1);
+			
+//			Transaction tx = datastore.beginTransaction();
+//			try {
+//				for (Entity e : boardList) {
+//					datastore.delete(e.getKey());
+//				}
+//				datastore.put(lastBoard);
+//			} catch(Exception e) {
+//				e.printStackTrace();
+//			}
+			//tx.commit();
+			
 			return board;
 		} else {
-			return null;
+			return "";
 		}
 	}
-
 	/**
 	 * Convenience method
 	 * Equivalent to theirPlayerName.equals("None");
@@ -209,7 +223,7 @@ public class GameModel {
 				if (!cell.playerName.equals("None")) {
 					int value = 0;
 					
-					if (cell.x == 0 || (cell.y == 0 || cell.y == 1)) {
+					if (cell.x == 0 || (cell.y == 0)) {
 						long portalID = 0;
 						
 						Key newIDsKey = KeyFactory.createKey("PortalList", "MyPortalList");
@@ -227,11 +241,12 @@ public class GameModel {
 						// make a get request to GetScoreForPortalServlet
 						UrlPost httpUtil = new UrlPost();
 						
-						log.info("GameModel: GetScoreForPortalServlet portalID " + portalID + " playerID " + playerID);
+						////Log.info("GameModel: GetScoreForPortalServlet portalID " + portalID + " playerID " + playerID);
 
-						String portalMoveScoreStr = httpUtil.sendGet("?portalID="+portalID +"&playerID="+playerID, GameModel.gameServerPath+"/getScoreForPortal");
-						log.info("GameModel: portalMoveScoreStr is "+portalMoveScoreStr);
-						int portalMoveScore = Integer.parseInt(portalMoveScoreStr);
+						//CHANGEME
+						//String portalMoveScoreStr = httpUtil.sendGet("?portalID="+portalID +"&playerID="+playerID, GameModel.gameServerPath+"/getScoreForPortal");
+						////Log.info("GameModel: portalMoveScoreStr is "+portalMoveScoreStr);
+						int portalMoveScore = 5;//Integer.parseInt(portalMoveScoreStr);
 						value = portalMoveScore;
 					}
 					

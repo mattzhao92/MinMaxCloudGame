@@ -327,8 +327,7 @@ var GameView = Class.extend({
 				var intersection = intersects[ 0 ],
 				obj = intersection.object;
 				
-				console.log("onMouseMove "+ obj.owner.playerName);
-				console.log("onMouseMove "+ obj.owner.free);
+
 				if (!obj.owner.free) return;
 				
 				if (this.previousHeightedCell != null) {

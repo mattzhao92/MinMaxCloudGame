@@ -26,18 +26,18 @@ public class UrlPost {
 	}
 
 
-	public boolean sendPost(String data, String url) {
-		MakePost mp = new MakePost(url);
-		try {
-			if (mp.execute(data) != null) {
-				return true;
-			}
-		} 
-		catch (Exception exception) {
-			exception.printStackTrace();
-		}	
-		return false;
-	}
+//	public boolean sendPost(String data, String url) {
+//		MakePost mp = new MakePost(url);
+//		try {
+//			if (mp.execute(data) != null) {
+//				return true;
+//			}
+//		} 
+//		catch (Exception exception) {
+//			exception.printStackTrace();
+//		}	
+//		return false;
+//	}
 
 
 	public String sendGet(String data, String url) {
@@ -54,17 +54,18 @@ public class UrlPost {
 	}
 
 	public String sendCallbackPost(String data, String url) {
-		MakePost mp = new MakePost(url);
-		try {
-			String response = mp.execute(data);
-			if (response != null) {
-				return response;
-			}
-		} 
-		catch (Exception exception) {
-			exception.printStackTrace();
-		}	
-		return "bad request";
+		while (true) {
+			MakePost mp = new MakePost(url);
+			try {
+				String response = mp.execute(data);
+				if (response != null) {
+					return response;
+				}
+			} 
+			catch (Exception exception) {
+				exception.printStackTrace();
+			}	
+		}
 
 	}
 }

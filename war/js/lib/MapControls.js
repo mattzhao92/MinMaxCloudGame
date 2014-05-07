@@ -74,7 +74,7 @@ THREE.MapControls = function ( object, scene, domElement ) {
 
     this.mouseBounds = {minX: SCREEN_MARGIN, minY: SCREEN_MARGIN, maxX: scope.screen.width - SCREEN_MARGIN, maxY: scope.screen.height - SCREEN_MARGIN};
 
-    // can put in resize logic later
+    // can put in resize Logic later
     this.radius = ( this.screen.width + this.screen.height ) / 4;
 
     _eye = new THREE.Vector3();

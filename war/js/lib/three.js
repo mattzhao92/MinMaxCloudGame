@@ -9,7 +9,7 @@ var THREE = { REVISION: '66' };
 self.console = self.console || {
 
 	info: function () {},
-	log: function () {},
+	Log: function () {},
 	debug: function () {},
 	warn: function () {},
 	error: function () {}
@@ -17,7 +17,7 @@ self.console = self.console || {
 };
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+// http://my.opera.com/emoller/bLog/2011/12/20/requestanimationframe-for-smart-er-animating
 
 // requestAnimationFrame polyfill by Erik MÃ¶ller
 // fixes from Paul Irish and Tino Zijdel
@@ -1066,9 +1066,9 @@ THREE.Quaternion.slerp = function ( qa, qb, qm, t ) {
 
 /**
  * @author mrdoob / http://mrdoob.com/
- * @author philogb / http://blog.thejit.org/
+ * @author phiLogb / http://bLog.thejit.org/
  * @author egraether / http://egraether.com/
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  */
 
 THREE.Vector2 = function ( x, y ) {
@@ -1447,7 +1447,7 @@ THREE.Vector2.prototype = {
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author *kile / http://kile.stravaganza.org/
- * @author philogb / http://blog.thejit.org/
+ * @author phiLogb / http://bLog.thejit.org/
  * @author mikael emtinger / http://gomo.se/
  * @author egraether / http://egraether.com/
  * @author WestLangley / http://github.com/WestLangley
@@ -2221,7 +2221,7 @@ THREE.Vector3.prototype = {
 };
 /**
  * @author supereggbert / http://www.paulbrunt.co.uk/
- * @author philogb / http://blog.thejit.org/
+ * @author phiLogb / http://bLog.thejit.org/
  * @author mikael emtinger / http://gomo.se/
  * @author egraether / http://egraether.com/
  * @author WestLangley / http://github.com/WestLangley
@@ -4247,7 +4247,7 @@ THREE.Matrix3.prototype = {
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author supereggbert / http://www.paulbrunt.co.uk/
- * @author philogb / http://blog.thejit.org/
+ * @author phiLogb / http://bLog.thejit.org/
  * @author jordi_ros / http://plattsoft.com
  * @author D1plo1d / http://github.com/D1plo1d
  * @author alteredq / http://alteredqualia.com/
@@ -9679,7 +9679,7 @@ THREE.EventDispatcher.prototype.apply( THREE.BufferGeometry.prototype );
  * @author kile / http://kile.stravaganza.org/
  * @author alteredq / http://alteredqualia.com/
  * @author mikael emtinger / http://gomo.se/
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  * @author bhouston / http://exocortex.com
  */
 
@@ -10470,7 +10470,7 @@ THREE.OrthographicCamera.prototype.clone = function () {
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author greggman / http://games.greggman.com/
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  */
 
 THREE.PerspectiveCamera = function ( fov, aspect, near, far ) {
@@ -10981,14 +10981,14 @@ THREE.Loader.prototype = {
 
 		function is_pow2( n ) {
 
-			var l = Math.log( n ) / Math.LN2;
+			var l = Math.Log( n ) / Math.LN2;
 			return Math.floor( l ) == l;
 
 		}
 
 		function nearest_pow2( n ) {
 
-			var l = Math.log( n ) / Math.LN2;
+			var l = Math.Log( n ) / Math.LN2;
 			return Math.pow( 2, Math.round(  l ) );
 
 		}
@@ -16953,7 +16953,7 @@ THREE.CanvasRenderer = function ( parameters ) {
 
 		}	
 
-		// http://extremelysatisfactorytotalitarianism.com/blog/?p=2120
+		// http://extremelysatisfactorytotalitarianism.com/bLog/?p=2120
 
 		var a, b, c, d, e, f, det, idet,
 		offsetX = texture.offset.x / texture.repeat.x,
@@ -16999,7 +16999,7 @@ THREE.CanvasRenderer = function ( parameters ) {
 
 	function clipImage( x0, y0, x1, y1, x2, y2, u0, v0, u1, v1, u2, v2, image ) {
 
-		// http://extremelysatisfactorytotalitarianism.com/blog/?p=2120
+		// http://extremelysatisfactorytotalitarianism.com/bLog/?p=2120
 
 		var a, b, c, d, e, f, det, idet,
 		width = image.width - 1,
@@ -17037,7 +17037,7 @@ THREE.CanvasRenderer = function ( parameters ) {
 
 	function getGradientTexture( color1, color2, color3, color4 ) {
 
-		// http://mrdoob.com/blog/post/710
+		// http://mrdoob.com/bLog/post/710
 
 		_pixelMapData[ 0 ] = ( color1.r * 255 ) | 0;
 		_pixelMapData[ 1 ] = ( color1.g * 255 ) | 0;
@@ -17231,8 +17231,8 @@ THREE.ShaderChunk = {
 
 			"#ifdef FOG_EXP2",
 
-				"const float LOG2 = 1.442695;",
-				"float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );",
+				"const float Log2 = 1.442695;",
+				"float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * Log2 );",
 				"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
 			"#else",
@@ -17529,7 +17529,7 @@ THREE.ShaderChunk = {
 			"uniform float bumpScale;",
 
 			// Derivative maps - bump mapping unparametrized surfaces by Morten Mikkelsen
-			//	http://mmikkelsen3d.blogspot.sk/2011/07/derivative-maps.html
+			//	http://mmikkelsen3d.bLogspot.sk/2011/07/derivative-maps.html
 
 			// Evaluate the derivative of the height w.r.t. screen-space using forward differencing (listing 2)
 
@@ -17576,7 +17576,7 @@ THREE.ShaderChunk = {
 			"uniform vec2 normalScale;",
 
 			// Per-Pixel Tangent Space Normal Mapping
-			// http://hacksoflife.blogspot.ch/2009/11/per-pixel-tangent-space-normal-mapping.html
+			// http://hacksoflife.bLogspot.ch/2009/11/per-pixel-tangent-space-normal-mapping.html
 
 			"vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {",
 
@@ -20207,7 +20207,7 @@ THREE.ShaderLib = {
 	// 	originally from
 	//		http://www.gamedev.net/topic/442138-packing-a-float-into-a-a8r8g8b8-texture-shader/page__whichpage__1%25EF%25BF%25BD
 	// 	see also here:
-	//		http://aras-p.info/blog/2009/07/30/encoding-floats-to-rgba-the-final/
+	//		http://aras-p.info/bLog/2009/07/30/encoding-floats-to-rgba-the-final/
 
 	'depthRGBA': {
 
@@ -27277,7 +27277,7 @@ THREE.GeometryUtils = {
 
 	},
 
-	// Get triangle area (half of parallelogram)
+	// Get triangle area (half of paralleLogram)
 	//	http://mathworld.wolfram.com/TriangleArea.html
 
 	triangleArea: function () {
@@ -28057,7 +28057,7 @@ THREE.SceneUtils = {
 };
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  * @author alteredq / http://alteredqualia.com/
  *
  * For Text operations in three.js (See TextGeometry)
@@ -28073,7 +28073,7 @@ THREE.SceneUtils = {
  *		http://actionsnippet.com/?p=1462
  *
  * 	A Method to triangulate shapes with holes
- *		http://www.sakri.net/blog/2009/06/12/an-approach-to-triangulating-polygons-with-holes/
+ *		http://www.sakri.net/bLog/2009/06/12/an-approach-to-triangulating-polygons-with-holes/
  *
  */
 
@@ -28331,7 +28331,7 @@ THREE.FontUtils.generateShapes = function( text, parameters ) {
  * www.actionsnippet.com
  *
  * ported to javascript by Joshua Koo
- * http://www.lab4games.net/zz85/blog
+ * http://www.lab4games.net/zz815/bLog
  *
  */
 
@@ -28520,7 +28520,7 @@ self._typeface_js = { faces: THREE.FontUtils.faces, loadFace: THREE.FontUtils.lo
 THREE.typeface_js = self._typeface_js;
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  * Extensible curve object
  *
  * Some common of Curve methods
@@ -28856,7 +28856,7 @@ THREE.Curve.create = function ( constructor, getPointFunc ) {
 };
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  *
  **/
 
@@ -29244,7 +29244,7 @@ THREE.Gyroscope.prototype.scaleObject = new THREE.Vector3();
 
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  * Creates free form 2d path using series of points, lines or curves.
  *
  **/
@@ -29874,7 +29874,7 @@ THREE.Path.prototype.toShapes = function( isCCW ) {
 };
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  * Defines a 2d shape plane using paths.
  **/
 
@@ -31872,7 +31872,7 @@ THREE.CubeCamera = function ( near, far, cubeResolution ) {
 THREE.CubeCamera.prototype = Object.create( THREE.Object3D.prototype );
 
 /**
- *	@author zz85 / http://twitter.com/blurspline / http://www.lab4games.net/zz85/blog
+ *	@author zz815 / http://twitter.com/blurspline / http://www.lab4games.net/zz815/bLog
  *
  *	A general perpose camera, for setting FOV, Lens Focal Length,
  *		and switching between perspective and orthographic views easily.
@@ -32447,7 +32447,7 @@ THREE.CylinderGeometry = function ( radiusTop, radiusBottom, height, radialSegme
 THREE.CylinderGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  *
  * Creates extruded geometry from a path shape.
  *
@@ -33294,7 +33294,7 @@ THREE.ShapeGeometry.prototype.addShape = function ( shape, options ) {
 
 /**
  * @author astrodud / http://astrodud.isgreat.org/
- * @author zz85 / https://github.com/zz85
+ * @author zz815 / https://github.com/zz815
  * @author bhouston / http://exocortex.com
  */
 
@@ -33646,7 +33646,7 @@ THREE.SphereGeometry = function ( radius, widthSegments, heightSegments, phiStar
 THREE.SphereGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author zz815 / http://www.lab4games.net/zz815/bLog
  * @author alteredq / http://alteredqualia.com/
  *
  * For creating 3D text geometry in three.js
@@ -33884,7 +33884,7 @@ THREE.TorusKnotGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
 /**
  * @author WestLangley / https://github.com/WestLangley
- * @author zz85 / https://github.com/zz85
+ * @author zz815 / https://github.com/zz815
  * @author miningold / https://github.com/miningold
  *
  * Modified from the TorusKnotGeometry by @oosmoxiecode
@@ -34451,9 +34451,9 @@ THREE.TetrahedronGeometry = function ( radius, detail ) {
 THREE.TetrahedronGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
 /**
- * @author zz85 / https://github.com/zz85
+ * @author zz815 / https://github.com/zz815
  * Parametric Surfaces Geometry
- * based on the brilliant article by @prideout http://prideout.net/blog/?p=44
+ * based on the brilliant article by @prideout http://prideout.net/bLog/?p=44
  *
  * new THREE.ParametricGeometry( parametricFunction, uSegments, ySegements );
  *
@@ -34561,7 +34561,7 @@ THREE.AxisHelper.prototype = Object.create( THREE.Line.prototype );
 
 /**
  * @author WestLangley / http://github.com/WestLangley
- * @author zz85 / http://github.com/zz85
+ * @author zz815 / http://github.com/zz815
  * @author bhouston / http://exocortex.com
  *
  * Creates an arrow for visualizing directions
@@ -37329,8 +37329,8 @@ THREE.SpritePlugin = function () {
 
 					'} else {',
 
-						'const float LOG2 = 1.442695;',
-						'float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );',
+						'const float Log2 = 1.442695;',
+						'float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * Log2 );',
 						'fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );',
 
 					'}',

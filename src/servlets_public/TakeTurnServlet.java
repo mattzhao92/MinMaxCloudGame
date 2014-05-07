@@ -47,26 +47,15 @@ public class TakeTurnServlet extends HttpServlet{
 		
 		// get current state of the board
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-	    Query query = new Query("Board", GameModel.boardKey);
-	    List<Entity> boardList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 	    
-	    if (boardList == null || boardList.size() != 1) {
-	    	String msg = "We dont have a board "+ boardList.size();
-			StatusResponse status = new StatusResponse("fail",msg);
-			resp.getWriter().println(gson.toJson(status, StatusResponse.class));
-			System.err.println(msg);
-			return;
-	    }
-	    
-	    String board = ((Text) boardList.get(0).getProperty("board")).getValue();
+	    String board = GameModel.getCurrentBoard();
 		System.out.println("board: " + board);
 		// get the channel id corresponding to that player, if that player cannot be found
 	    // return a packet with status "fail"
 	    String token = null;
 	    
 	    Key playerKey = KeyFactory.createKey("PlayerList", "MyPlayerList");
-	    query = new Query("Player", playerKey);
+	    Query query = new Query("Player", playerKey);
 	    List<Entity> playerList = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
 	   
 	    System.out.println("myPlayerID "+ playerID);
@@ -106,7 +95,7 @@ public class TakeTurnServlet extends HttpServlet{
 					mami.board = board;
 					mami.playerID = playerID;
 					UrlPost postUtil = new UrlPost();
-					postUtil.sendPost(gson.toJson(mami), GameModel.gameServerPath + "/makeAIMove");
+					postUtil.sendCallbackPost(gson.toJson(mami), GameModel.gameServerPath + "/makeAIMove");
 					return;
 				}
 				else{

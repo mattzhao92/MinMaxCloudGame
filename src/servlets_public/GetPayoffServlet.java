@@ -35,7 +35,7 @@ public class GetPayoffServlet extends HttpServlet{
 		GetPayoffOutput gpo = new GetPayoffOutput();
 		int payoff = GameModel.getPayoff(request.nextPlayerID, request.currentBoard);
 		//System.out.println("payoff: " + payoff);
-		gpo.number = payoff;
+		gpo.payoff = payoff;
 		resp.getWriter().println(gson.toJson(gpo));
 	}
 }
